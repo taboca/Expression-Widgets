@@ -37,6 +37,14 @@ Project Status
 * 
 * December 29th - Github project - the idea is to show the development milestones in a more open format. For this reason GitHub was selected and also because it serves well as a code repository. 
 
+Development Documentation
+===
 
+Sync Repositories
 
+* Mozilla Wiki pages - The mozilla wiki pages are going to serve as initial temporary repositories to execute some of the tests. The Mozilla wiki.mozilla.org system does not offer the API, so we may simply use JetPack to seamless read/write as an end-user, to the wiki pages. We have created a space for tests: https://wiki.mozilla.org/Education/Projects/JetpackForLearning/Profiles/expressionWidjets/class1 class2, class3, etc. 
 
+JEP dependencies
+
+* https://wiki.mozilla.org/Labs/Jetpack/JEP/16 - Slidebar 
+* https://wiki.mozilla.org/Labs/Jetpack/JEP/12 - Selection
