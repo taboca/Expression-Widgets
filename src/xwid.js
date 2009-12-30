@@ -2,7 +2,8 @@
 //// Expression Widgets 
 ///
 //
-jetpack.future.import("selection");
+jetpack.future.import("selection");   // https://wiki.mozilla.org/Labs/Jetpack/JEP/12
+jetpack.future.import("slideBar");    // https://wiki.mozilla.org/Labs/Jetpack/JEP/16
 
 jetpack.selection.onSelection(function regionCapture() {
 
@@ -48,8 +49,25 @@ var xWid = {
     canvas.height=h;
     canvas.getContext("2d").drawWindow(cw, x, y, w,h, "white");
     return canvas;
-  }
+  }, 
+
+  ////
+  /// man init point
+  //
+  init: function () { 
+	jetpack.slideBar.append({
+		url: "http://blog.taboca.com/",
+		width: 400,
+		onClick: function(slide) {
+			slide.icon.src = "chrome://branding/content/icon48.png";
+		}
+	);
+  } 
+
 
 }  // End of general widget code 
 
+
+
+xWid.init();
 
