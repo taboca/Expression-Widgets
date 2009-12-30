@@ -14,16 +14,11 @@ var xWid = {
    slideContent: null, 
  
    launchForGrab : function (currWin,x,y,w,h){
-    this.canvasTab = jetpack.tabs.open("about:blank");
-    this.canvasTab.focus();
-
-    this.canvasTab.onReady( function(doc){
-      jQuery(doc.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",doc)).append("body{background:#131313;color:white;text-align:center;} canvas{cursor:pointer;opacity:0.5;}canvas:hover{opacity:1;}");
-     this.canvas = doc.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
-     jQuery(this.canvas).appendTo(jQuery("body",doc));
+    
+     this.canvas = this.slideContent.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
+     jQuery(this.canvas).appendTo(jQuery("body",this.slideContent));
      xWid.createPreviewFromArea( currWin ,x,y,w,h, this.canvas);
 
-    });
   }, 
   createPreviewFromArea : function(cw, x,y,w,h, canvas){
     canvas.width=w;
@@ -44,6 +39,7 @@ var xWid = {
 			slide.icon.src = "chrome://branding/content/icon48.png";
 		},   
                 onReady: function(slide) { 
+			xWid.slideContent= slide.contentDocument; 
 			jQuery("body", slide.contentDocument).html("Hello - Welcome to Expression Widgets");
                 }
 	});
@@ -70,7 +66,10 @@ jetpack.selection.onSelection(function regionCapture() {
     /// for the selection range of a page. 
     //
     //setTimeout("xWid.launchForGrab("+currWin+","+x+","+y+","+w+","+h+")", 2000 );
-    xWid.init();
+     var canvas = xWid.slideContent.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
+     jQuery(canvas).appendTo(jQuery("body",xWid.slideContent));
+     xWid.createPreviewFromArea( currWin ,x,y,w,h, canvas);
+    //xWid.init();
 
 });
 
