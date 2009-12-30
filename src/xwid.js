@@ -3,7 +3,7 @@
 ///
 //
 jetpack.future.import("selection");   // https://wiki.mozilla.org/Labs/Jetpack/JEP/12
-jetpack.future.import("slideBar");   
+jetpack.future.import("slideBar");    // https://wiki.mozilla.org/Labs/Jetpack/JEP/16
 
 /// in this same file. This may change in the future. 
 //
@@ -11,6 +11,7 @@ var xWid = {
 
    canvas: null, 
    canvasTab: null, 
+   slideContent: null, 
  
    launchForGrab : function (currWin,x,y,w,h){
     this.canvasTab = jetpack.tabs.open("about:blank");
@@ -35,12 +36,16 @@ var xWid = {
   /// man init point
   //
   init: function () { 
-	jetpack.slideBar.append({
-		url: "http://blog.taboca.com/",
+	this.slideContent = jetpack.slideBar.append({
+		url: "about:blank",
 		width: 400,
+ 		persist: true, 
 		onClick: function(slide) {
 			slide.icon.src = "chrome://branding/content/icon48.png";
-		}
+		},   
+                onReady: function(slide) { 
+			jQuery("body", slide.contentDocument).html("Hello - Welcome to Expression Widgets");
+                }
 	});
   } 
 
