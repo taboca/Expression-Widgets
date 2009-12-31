@@ -36,6 +36,9 @@ Project Status
 * Documentation Wiki - General Parent Project - https://wiki.mozilla.org/Education/Projects/JetpackForLearning
 * 
 * December 29th - Github project - the idea is to show the development milestones in a more open format. For this reason GitHub was selected and also because it serves well as a code repository. 
+* Dec 30th - Landing partial support to web page capture. It holds a canvas and screensaved element in the local slideBar. We need the concept of an element that represents the element the user wants to send to the repositoty to his/her communciation. 
+
+* Dec 30th - The xStatement Object as being { time_uuid, who, referto, relation/data }. This is suppose to be something like an RDF and also to represent an input from user. User may be able to create operations with other items or collection of items from other users. So in some cases the referto can also support a range of objects under the store. 
 
 Development Documentation
 ===

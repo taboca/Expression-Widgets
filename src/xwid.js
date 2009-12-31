@@ -40,7 +40,37 @@ var xWid = {
 		},   
                 onReady: function(slide) { 
 			xWid.slideContent= slide.contentDocument; 
-			jQuery("body", slide.contentDocument).html("Hello - Welcome to Expression Widgets");
+			jQuery("body", slide.contentDocument).html("Hello - Welcome to Expression Widgets<button id='gofetch'>Fetch Wiki</button>");
+			jQuery("#gofetch",slide.contentDocument).click( function () { 
+
+			 	jQuery("a[title^='Edit section: Marcio']", jetpack.tabs.focused.contentDocument).each( function () { 
+
+					item = jQuery(this).attr("href");
+
+					var toURL = "https://wiki.mozilla.org"+item;
+					//jetpack.tabs.focused.contentDocument.location=toURL;
+				 	var editTab = jetpack.tabs.open(toURL);
+					editTab.focus();
+
+				}) 
+				
+
+			});
+
+
+
+
+ jQuery(canvas).click( function () {
+                var targetTab = jQuery(this).attr("id");
+
+                JetTabs.selectThumb(targetTab, doc);
+                JetTabs.expandTab(targetTab,doc);
+                JetTabs.service.selectedTabIndex = counterTab;
+
+          });
+
+
+
                 }
 	});
   } 
