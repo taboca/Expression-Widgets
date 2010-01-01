@@ -11,12 +11,14 @@ var xWid = {
 
    canvas: null, 
    canvasTab: null, 
-   slideContent: null, 
+
+   uiDoc     : null, 
+   transport : null, 
  
    launchForGrab : function (currWin,x,y,w,h){
     
-     this.canvas = this.slideContent.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
-     jQuery(this.canvas).appendTo(jQuery("body",this.slideContent));
+     this.canvas = this.uiDoc.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
+     jQuery(this.canvas).appendTo(jQuery("body",this.uiDoc));
      xWid.createPreviewFromArea( currWin ,x,y,w,h, this.canvas);
 
   }, 
@@ -31,7 +33,7 @@ var xWid = {
   /// man init point
   //
   init: function () { 
-	this.slideContent = jetpack.slideBar.append({
+	this.uiDoc = jetpack.slideBar.append({
 		url: "about:blank",
 		width: 400,
  		persist: true, 
@@ -39,34 +41,21 @@ var xWid = {
 			slide.icon.src = "chrome://branding/content/icon48.png";
 		},   
                 onReady: function(slide) { 
-			xWid.slideContent= slide.contentDocument; 
-			jQuery("body", slide.contentDocument).html("Hello - Welcome to Expression Widgets<button id='gofetch'>Fetch Wiki</button>");
+			////	
+			/// We set the transport 
+			//
+			xWid.transport = libCataliser_Wikimedia; 
+			xWid.transport.repository = "https://wiki.mozilla.org/Education/Projects/JetpackForLearning/Profiles/expressionWidjets/class1"; 
+			xWid.transport.userName = "Marcio";
+
+			xWid.uiDoc= slide.contentDocument; 
+			jQuery("body", slide.contentDocument).html("<button id='gofetch'>Fetch Wiki</button>");
+
+			xWid.transport.init();
+
 			jQuery("#gofetch",slide.contentDocument).click( function () { 
-			 	jQuery("a[title^='Edit section: Marcio']", jetpack.tabs.focused.contentDocument).each( function () { 
-					item = jQuery(this).attr("href");
-					var toURL = "https://wiki.mozilla.org"+item;
-				 	var editTab = jetpack.tabs.open(toURL);
-					editTab.focus();
-
-				}) 
-				
-
+				xWid.transport.load();
 			});
-
-
-
-
- jQuery(canvas).click( function () {
-                var targetTab = jQuery(this).attr("id");
-
-                JetTabs.selectThumb(targetTab, doc);
-                JetTabs.expandTab(targetTab,doc);
-                JetTabs.service.selectedTabIndex = counterTab;
-
-          });
-
-
-
                 }
 	});
   } 
@@ -92,40 +81,41 @@ jetpack.selection.onSelection(function regionCapture() {
     /// for the selection range of a page. 
     //
     //setTimeout("xWid.launchForGrab("+currWin+","+x+","+y+","+w+","+h+")", 2000 );
-     var canvas = xWid.slideContent.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
-     jQuery(canvas).appendTo(jQuery("body",xWid.slideContent));
+     var canvas = xWid.uiDoc.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
+     jQuery(canvas).appendTo(jQuery("body",xWid.uiDoc));
      xWid.createPreviewFromArea( currWin ,x,y,w,h, canvas);
     //xWid.init();
 
 });
 
 
-////
-/// lib wiki deals with a wiki page, a class or repository where multuple students  ( other users ) 
-/// may also be editing. Conflict resolution is kept via maintaining wiki-friendly separated sections. 
-//
+// Lib Transport 
+
 var libCataliser_Wikimedia = { 
 
-	/* 
-		Wiki format we are compatible 
-		
-		== topic ==
+	repository  : null, 
+	status      : null,
+	wikiTab     : null, 
+        userName    : null, 
 
-		=== username ===
+  	init: function () { 
+		this.wikiTab = jetpack.tabs.open(this.repository); 
+		this.wikiTab.focus(); 	// TODO remove the focus to the tab soon
+ 	}, 
 
-		=== username ===
-
-	*/
- 	
-	currentRepository: null,  	// indicates the current set repository - wiki page 
-	status: null, 			// indicates which mode you are - read, logged-read, editing, sending..
-	loadWiki: function () { 
-
+	load: function () { 
+		var doc = this.wikiTab.contentDocument; 
+		jQuery("a[title^='Edit section: "+this.userName+"']", doc).each( function () {
+                         item = jQuery(this).attr("href");
+                         var toURL = "https://wiki.mozilla.org"+item;
+                         var editTab = jetpack.tabs.open(toURL);
+                         editTab.focus();
+                })
 	}, 
-	grabEdit: function () { 
+	grab: function () { 
 
   	}, 
-	sendEdit: function () { 
+	sync: function () { 
 
 	} 
 } 
