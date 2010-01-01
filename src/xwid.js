@@ -42,13 +42,9 @@ var xWid = {
 			xWid.slideContent= slide.contentDocument; 
 			jQuery("body", slide.contentDocument).html("Hello - Welcome to Expression Widgets<button id='gofetch'>Fetch Wiki</button>");
 			jQuery("#gofetch",slide.contentDocument).click( function () { 
-
 			 	jQuery("a[title^='Edit section: Marcio']", jetpack.tabs.focused.contentDocument).each( function () { 
-
 					item = jQuery(this).attr("href");
-
 					var toURL = "https://wiki.mozilla.org"+item;
-					//jetpack.tabs.focused.contentDocument.location=toURL;
 				 	var editTab = jetpack.tabs.open(toURL);
 					editTab.focus();
 
@@ -102,4 +98,36 @@ jetpack.selection.onSelection(function regionCapture() {
     //xWid.init();
 
 });
+
+
+////
+/// lib wiki deals with a wiki page, a class or repository where multuple students  ( other users ) 
+/// may also be editing. Conflict resolution is kept via maintaining wiki-friendly separated sections. 
+//
+var libCataliser_Wikimedia = { 
+
+	/* 
+		Wiki format we are compatible 
+		
+		== topic ==
+
+		=== username ===
+
+		=== username ===
+
+	*/
+ 	
+	currentRepository: null,  	// indicates the current set repository - wiki page 
+	status: null, 			// indicates which mode you are - read, logged-read, editing, sending..
+	loadWiki: function () { 
+
+	}, 
+	grabEdit: function () { 
+
+  	}, 
+	sendEdit: function () { 
+
+	} 
+} 
+
 
