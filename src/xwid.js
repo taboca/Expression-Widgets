@@ -50,7 +50,7 @@ var xWid = {
 			xWid.transport.userName = "Marcio";
 
 			xWid.uiDoc= slide.contentDocument; 
-			jQuery("body", slide.contentDocument).html("<button id='goinit'>Init Wiki</button><button id='gofetch'>Fetch Wiki</button>");
+			jQuery("body", slide.contentDocument).html("<button id='goinit'>Init Wiki</button><button id='gofetch'>Fetch Wiki</button><button id='gosave'>Save wiki</button>");
 
 
 			jQuery("#goinit",slide.contentDocument).click( function () { 
@@ -59,6 +59,11 @@ var xWid = {
 			jQuery("#gofetch",slide.contentDocument).click( function () { 
 				xWid.digester.init(xWid.uiDoc);
 				var content = xWid.transport.load();
+
+			});
+			jQuery("#gosave",slide.contentDocument).click( function () { 
+				xWid.digester.refreshSelfTextArea();
+				xWid.transport.sync(xWid.digester.userContent);
 
 			});
                 }
@@ -108,9 +113,10 @@ xWid.digester = {
 	}, 
  	load: function () { 
 		jQuery("#wikitextarea",this.slideDoc).val(this.userContent);
-	}
-
-	
+	}, 
+	refreshSelfTextArea: function () { 
+		this.userContent = jQuery("#wikitextarea",this.slideDoc).val();
+	} 
 } 
 
 
@@ -118,8 +124,10 @@ var libCataliser_Wikimedia = {
 
 	repository  : null, 
 	status      : null,
-	wikiTab     : null, 
         userName    : null, 
+
+	wikiTab     : null, 
+	wikiEditDoc : null, 
 
   	init: function () { 
 		this.wikiTab = jetpack.tabs.open(this.repository); 
@@ -132,9 +140,12 @@ var libCataliser_Wikimedia = {
                         item = jQuery(this).attr("href");
                         var toURL = "https://wiki.mozilla.org"+item;
                         var editTab = jetpack.tabs.open(toURL);
+
+
                         editTab.focus();
 			editTab.onReady(function(doc){
 				xWid.digester.userContent = jQuery("#wpTextbox1",doc).val();
+				xWid.transport.wikiEditDoc = doc;
 				xWid.digester.load();	
 			}); 
 
@@ -143,8 +154,9 @@ var libCataliser_Wikimedia = {
 	grab: function () { 
 
   	}, 
-	sync: function () { 
-
+	sync: function (dataContentString) { 
+		jQuery("#wpTextbox1", this.wikiEditDoc).val(dataContentString);
+		jQuery("#wpSave",this.wikiEditDoc).trigger("click");
 	} 
 } 
 
