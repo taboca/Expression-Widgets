@@ -4,6 +4,7 @@
 //
 jetpack.future.import("selection");   // https://wiki.mozilla.org/Labs/Jetpack/JEP/12
 jetpack.future.import("slideBar");    // https://wiki.mozilla.org/Labs/Jetpack/JEP/16
+jetpack.future.import("me"); 
 
 /// in this same file. This may change in the future. 
 //
@@ -35,7 +36,7 @@ var xWid = {
   init: function () { 
 	this.uiDoc = jetpack.slideBar.append({
 		url: "about:blank",
-		width: 400,
+		width: 200,
  		persist: true, 
 		onClick: function(slide) {
 			slide.icon.src = "chrome://branding/content/icon48.png";
@@ -49,10 +50,12 @@ var xWid = {
 			xWid.transport.userName = "Marcio";
 
 			xWid.uiDoc= slide.contentDocument; 
-			jQuery("body", slide.contentDocument).html("<button id='gofetch'>Fetch Wiki</button>");
+			jQuery("body", slide.contentDocument).html("<button id='goinit'>Init Wiki</button><button id='gofetch'>Fetch Wiki</button>");
 
-			xWid.transport.init();
 
+			jQuery("#goinit",slide.contentDocument).click( function () { 
+				xWid.transport.init();
+			});
 			jQuery("#gofetch",slide.contentDocument).click( function () { 
 				xWid.transport.load();
 			});
@@ -120,4 +123,16 @@ var libCataliser_Wikimedia = {
 	} 
 } 
 
+/* firstRun */
 
+var manifest = {  
+  firstRunPage: <>  
+    <p>  
+	Welcome to Expression Widgets. 
+    </p>  
+  </>  
+}; 
+
+jetpack.me.onFirstRun(function () {
+  jetpack.notifications.show("Oh boy, I'm installed!");
+});
