@@ -57,7 +57,9 @@ var xWid = {
 				xWid.transport.init();
 			});
 			jQuery("#gofetch",slide.contentDocument).click( function () { 
-				xWid.transport.load();
+				xWid.digester.init(xWid.uiDoc);
+				var content = xWid.transport.load();
+
 			});
                 }
 	});
@@ -94,6 +96,24 @@ jetpack.selection.onSelection(function regionCapture() {
 
 // Lib Transport 
 
+xWid.digester = { 
+
+	slideDoc        : null, 
+        userContent     : null,  /* content from the wiki */
+
+	init: function (refDocument) { 
+		this.slideDoc = refDocument;
+		jQuery("body",this.slideDoc).append("<div id='wikisection'><textarea id='wikitextarea'></textarea></div>");
+		
+	}, 
+ 	load: function () { 
+		jQuery("#wikitextarea",this.slideDoc).val(this.userContent);
+	}
+
+	
+} 
+
+
 var libCataliser_Wikimedia = { 
 
 	repository  : null, 
@@ -109,10 +129,15 @@ var libCataliser_Wikimedia = {
 	load: function () { 
 		var doc = this.wikiTab.contentDocument; 
 		jQuery("a[title^='Edit section: "+this.userName+"']", doc).each( function () {
-                         item = jQuery(this).attr("href");
-                         var toURL = "https://wiki.mozilla.org"+item;
-                         var editTab = jetpack.tabs.open(toURL);
-                         editTab.focus();
+                        item = jQuery(this).attr("href");
+                        var toURL = "https://wiki.mozilla.org"+item;
+                        var editTab = jetpack.tabs.open(toURL);
+                        editTab.focus();
+			editTab.onReady(function(doc){
+				xWid.digester.userContent = jQuery("#wpTextbox1",doc).val();
+				xWid.digester.load();	
+			}); 
+
                 })
 	}, 
 	grab: function () { 
