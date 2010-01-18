@@ -69,7 +69,7 @@ var xWid = {
 
 			for (key in widgets.list) { 
 				var currWidget = widgets.list[key];
-				var objRegister = currWidget.register();
+				var objRegister = currWidget.register(slide.contentDocument);
 				jQuery("body",slide.contentDocument).append(objRegister.markup_menu);
 				jQuery("#"+objRegister.init_bind_id, slide.contentDocument).click (function () { 
 					objRegister.click_menu();		
@@ -204,19 +204,21 @@ var widgets = {
 
 widgets.snapshot = { 
 
-  referenceTab  : null, 
+  referenceContentWindow  : null, 
   canvasTab     : null,
   canvas        : null, 
+  slideDoc      : null, 
   resources     : {
 
-  	style_head     : "html { background:white; } body { text-align:center; margin;auto; } canvas { width:600px; height:600px; border:1px solid black } ",
+  	style_head     : "html { background:#ddd; } body { text-align:center; margin;auto; }  canvas { border:1px solid black}  ",
   	html_container : "<canvas id='workingcanvas'></canvas>"
 
   },
 
-  register: function () { 
+  register: function (slideDoc) { 
+	this.slideDoc = slideDoc; 
 	var obj =  {   
-		markup_menu: "<button id='snapshot_do'>C</button>",
+		markup_menu: "<button id='snapshot_do'>Widget:capture</button>",
 		markup_init: "<button>get</button>",
 		init_bind_id: "snapshot_do",
 		click_menu : widgets.snapshot.init,
@@ -226,63 +228,38 @@ widgets.snapshot = {
   },
 
   init: function () { 
-	this.referenceTab = jetpack.tabs.focused; 
+
+	widgets.snapshot.referenceContentWindow = jetpack.tabs.focused.contentWindow;
+
 	this.canvasTab    = jetpack.tabs.open("about:blank");
 	this.canvasTab.focus();
 	this.canvasTab.onReady(function(doc) { 
 		var these = widgets.snapshot;
 		jQuery("head title",doc).text("xWidgets: Snapshot");
 		jQuery(doc.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",doc)).append( these.resources.style_head );
-    		jQuery("body",doc).append( these.resources.html_container );
-		these.canvas = doc.getElementById("workingcanvas");
-		these.createPreviewRaw(these.referenceTab, these.canvas, 0,0, 600, 300);
+		these.canvas = doc.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
+    		jQuery("body",doc).append( these.canvas );
+		jQuery("body",these.slideDoc).append("Dump:"+ these.referenceContentWindow);
+		widgets.snapshot.createPreviewRaw(these.referenceContentWindow, these.canvas);
         } )
   }, 
 
-  createPreviewRaw: function (tab, canvas, x,y,dx,dy) {
-
-    var content = tab.contentWindow;
+  createPreviewRaw: function (content, canvas, x,y,dx,dy) {
     var w = content.innerWidth  + content.scrollMaxX;
     var h = content.innerHeight + content.scrollMaxY;
-
     var ctx = canvas.getContext("2d");
-
-    var refWidth = 600;
-    var scaleView = refWidth/w;
-    var canvasStyleH = Math.round(h*scaleView);
-
-//    var sl = JetBin.editor.doc.body.scrollLeft;
-//    var st = JetBin.editor.doc.body.scrollTop;
-
-    var sl=0; 
-    var st=0;
-    var canvasx = canvas.getBoundingClientRect().left + sl; //offsetLeft; 
-    var canvasy = canvas.getBoundingClientRect().top  + st; //offsetTop;
-
-    x = x-canvasx;
-    y = y-canvasy;
-
-    var ex = parseInt((w*x)/refWidth);
-    var ey = parseInt((h*y)/canvasStyleH);
-    var edx = parseInt((w*dx)/refWidth);
-    var edy = parseInt((h*dy)/canvasStyleH);
-    var canvasW = edx;
-    var canvasH = edy;
-
-    canvas.style.width  = edx+"px";
-    canvas.style.height = edy+"px";
-
-    canvas.width  = canvasW;
-    canvas.height = canvasH;
-
-    ctx.scale(1,1);
-    ctx.clearRect(0, 0, canvasW, canvasH);
+    var scaledWidth = 600; 
+    var scaledHeight = (h*scaledWidth)/w;
+    canvas.style.width  = scaledWidth  +"px";
+    canvas.style.height = scaledHeight +"px";
+    canvas.width  = scaledWidth;
+    canvas.height = scaledHeight;
+    ctx.scale(scaledWidth/w,scaledHeight/h);
+    ctx.clearRect(0, 0, w,h);
     ctx.save();
-    //ctx.drawWindow(content, ex, ey, edx, edy, "rgb(255,255,255)");
-    ctx.drawWindow(content, 0, 0, 100, 100, "rgb(255,255,255)");
+    ctx.drawWindow(content, 0, 0, w, h, "rgb(255,255,255)");
     ctx.restore();
     return canvas;
-
   }
 
 } 
