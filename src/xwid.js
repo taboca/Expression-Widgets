@@ -72,7 +72,6 @@ var xWid = {
 
 }  // End of general widget code 
 
-
 xWid.init();
 
 jetpack.selection.onSelection(function regionCapture() {
@@ -105,6 +104,7 @@ xWid.digester = {
 
 	slideDoc        : null, 
         userContent     : null,  /* content from the wiki */
+        cycle 		: null,  // state machine r/w modes etc
 
 	init: function (refDocument) { 
 		this.slideDoc = refDocument;
@@ -116,6 +116,13 @@ xWid.digester = {
 	}, 
 	refreshSelfTextArea: function () { 
 		this.userContent = jQuery("#wikitextarea",this.slideDoc).val();
+	} , 
+ 
+	// We now parse the items from the wiki section to have the 
+	// in-memory events. 
+
+  	parse: function () { 
+
 	} 
 } 
 
@@ -173,3 +180,74 @@ var manifest = {
 jetpack.me.onFirstRun(function () {
   jetpack.notifications.show("Oh boy, I'm installed!");
 });
+
+
+
+/* 
+   Widgets 
+*/
+
+var widgets = { 
+	list: new Array
+} 
+
+widgets.snapshot = { 
+
+  register: function () { 
+
+
+  },
+
+
+  createPreviewRaw: function (tab, canvas, x,y,dx,dy) {
+
+    var content = tab.contentWindow;
+    var w = content.innerWidth  + content.scrollMaxX;
+    var h = content.innerHeight + content.scrollMaxY;
+
+    var ctx = canvas.getContext("2d");
+
+    var refWidth = 600;
+    var scaleView = refWidth/w;
+    var canvasStyleH = Math.round(h*scaleView);
+
+    var sl = JetBin.editor.doc.body.scrollLeft;
+    var st = JetBin.editor.doc.body.scrollTop;
+    var canvasx = canvas.getBoundingClientRect().left + sl; //offsetLeft; 
+    var canvasy = canvas.getBoundingClientRect().top  + st; //offsetTop;
+
+    x = x-canvasx;
+    y = y-canvasy;
+
+    var ex = parseInt((w*x)/refWidth);
+    var ey = parseInt((h*y)/canvasStyleH);
+    var edx = parseInt((w*dx)/refWidth);
+    var edy = parseInt((h*dy)/canvasStyleH);
+    var canvasW = edx;
+    var canvasH = edy;
+
+    canvas.style.width  = edx+"px";
+    canvas.style.height = edy+"px";
+
+    canvas.width  = canvasW;
+    canvas.height = canvasH;
+
+    ctx.scale(1,1);
+    ctx.clearRect(0, 0, canvasW, canvasH);
+    ctx.save();
+    ctx.drawWindow(content, ex, ey, edx, edy, "rgb(255,255,255)");
+    ctx.restore();
+    return canvas;
+
+  }
+
+} 
+
+
+/* 
+ * We keep the registered widgets 
+ * We may change this to be jetpack-based widgets in the future..
+ * .. in case we find a way to let them talk each other...
+ */
+widgets.list.push(widgets.snapshot); 
+
