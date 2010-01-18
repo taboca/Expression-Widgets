@@ -66,6 +66,16 @@ var xWid = {
 				xWid.transport.sync(xWid.digester.userContent);
 
 			});
+
+			for (key in widgets.list) { 
+				var currWidget = widgets.list[key];
+				var objRegister = currWidget.register();
+				jQuery("body",slide.contentDocument).append(objRegister.markup_menu);
+				jQuery("#"+objRegister.init_bind_id, slide.contentDocument).click (function () { 
+					objRegister.click_menu();		
+				}) 
+				
+			} 
                 }
 	});
   } 
@@ -188,7 +198,8 @@ jetpack.me.onFirstRun(function () {
 */
 
 var widgets = { 
-	list: new Array
+	list: new Array(),
+	snapshot: {}
 } 
 
 widgets.snapshot = { 
@@ -196,36 +207,37 @@ widgets.snapshot = {
   referenceTab  : null, 
   canvasTab     : null,
   canvas        : null, 
+  resources     : {
+
+  	style_head     : "html { background:white; } body { text-align:center; margin;auto; } canvas { width:600px; height:600px; border:1px solid black } ",
+  	html_container : "<canvas id='workingcanvas'></canvas>"
+
+  },
 
   register: function () { 
-	return {   
-		markup_menu: "<button>C</button>",
-		markup_init: "<button>get</button",
+	var obj =  {   
+		markup_menu: "<button id='snapshot_do'>C</button>",
+		markup_init: "<button>get</button>",
+		init_bind_id: "snapshot_do",
 		click_menu : widgets.snapshot.init,
 		click_init : widgets.snapshot.close
   	} 
+ 	return obj;
   },
-
-  resources.style_head     = "html { background:white; }",
-  resources.html_container = "<canvas id='workingcanvas'></canvas>",
 
   init: function () { 
 	this.referenceTab = jetpack.tabs.focused; 
 	this.canvasTab    = jetpack.tabs.open("about:blank");
-	this.canvasTab.onReady = function(doc) { 
-
-		these = widgets.snapshot;
-
+	this.canvasTab.focus();
+	this.canvasTab.onReady(function(doc) { 
+		var these = widgets.snapshot;
 		jQuery("head title",doc).text("xWidgets: Snapshot");
 		jQuery(doc.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",doc)).append( these.resources.style_head );
     		jQuery("body",doc).append( these.resources.html_container );
-
 		these.canvas = doc.getElementById("workingcanvas");
-
 		these.createPreviewRaw(these.referenceTab, these.canvas, 0,0, 600, 300);
-        } 
+        } )
   }, 
-
 
   createPreviewRaw: function (tab, canvas, x,y,dx,dy) {
 
@@ -239,8 +251,11 @@ widgets.snapshot = {
     var scaleView = refWidth/w;
     var canvasStyleH = Math.round(h*scaleView);
 
-    var sl = JetBin.editor.doc.body.scrollLeft;
-    var st = JetBin.editor.doc.body.scrollTop;
+//    var sl = JetBin.editor.doc.body.scrollLeft;
+//    var st = JetBin.editor.doc.body.scrollTop;
+
+    var sl=0; 
+    var st=0;
     var canvasx = canvas.getBoundingClientRect().left + sl; //offsetLeft; 
     var canvasy = canvas.getBoundingClientRect().top  + st; //offsetTop;
 
@@ -263,7 +278,8 @@ widgets.snapshot = {
     ctx.scale(1,1);
     ctx.clearRect(0, 0, canvasW, canvasH);
     ctx.save();
-    ctx.drawWindow(content, ex, ey, edx, edy, "rgb(255,255,255)");
+    //ctx.drawWindow(content, ex, ey, edx, edy, "rgb(255,255,255)");
+    ctx.drawWindow(content, 0, 0, 100, 100, "rgb(255,255,255)");
     ctx.restore();
     return canvas;
 
@@ -272,10 +288,5 @@ widgets.snapshot = {
 } 
 
 
-/* 
- * We keep the registered widgets 
- * We may change this to be jetpack-based widgets in the future..
- * .. in case we find a way to let them talk each other...
- */
 widgets.list.push(widgets.snapshot); 
 
