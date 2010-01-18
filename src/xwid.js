@@ -193,10 +193,38 @@ var widgets = {
 
 widgets.snapshot = { 
 
+  referenceTab  : null, 
+  canvasTab     : null,
+  canvas        : null, 
+
   register: function () { 
-
-
+	return {   
+		markup_menu: "<button>C</button>",
+		markup_init: "<button>get</button",
+		click_menu : widgets.snapshot.init,
+		click_init : widgets.snapshot.close
+  	} 
   },
+
+  resources.style_head     = "html { background:white; }",
+  resources.html_container = "<canvas id='workingcanvas'></canvas>",
+
+  init: function () { 
+	this.referenceTab = jetpack.tabs.focused; 
+	this.canvasTab    = jetpack.tabs.open("about:blank");
+	this.canvasTab.onReady = function(doc) { 
+
+		these = widgets.snapshot;
+
+		jQuery("head title",doc).text("xWidgets: Snapshot");
+		jQuery(doc.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",doc)).append( these.resources.style_head );
+    		jQuery("body",doc).append( these.resources.html_container );
+
+		these.canvas = doc.getElementById("workingcanvas");
+
+		these.createPreviewRaw(these.referenceTab, these.canvas, 0,0, 600, 300);
+        } 
+  }, 
 
 
   createPreviewRaw: function (tab, canvas, x,y,dx,dy) {
