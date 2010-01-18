@@ -1,0 +1,4 @@
+== Templates in JetPack ==
+
+* http://decafbad.com/blog/2008/09/01/writing-a-delicious-command-for-ubiquity
+
