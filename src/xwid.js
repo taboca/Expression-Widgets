@@ -67,6 +67,7 @@ var xWid = {
 
 			});
 
+
 			for (key in widgets.list) { 
 				var currWidget = widgets.list[key];
 				var objRegister = currWidget.register(slide.contentDocument);
@@ -203,8 +204,19 @@ jetpack.me.onFirstRun(function () {
 
 var widgets = { 
 	list: new Array(),
-	snapshot: {}
+	snapshot: {} // SnapShot is our first widget - it can take a screenshot from any page 
+        , 
+        text: {}     // text allows you to type TEXT ! 
+	
 } 
+
+
+/* Please code your widget here using the format widgets.widgetname.... 
+   Notice that each widget has some expected "interface" functions 
+   so that the main app can load them. For now the register function returns the markup 
+   "the icon of the app" that gets inserted to the slidebar... 
+*/ 
+
 
 widgets.snapshot = { 
 
@@ -225,13 +237,17 @@ widgets.snapshot = {
   },
 
   register: function (slideDoc) { 
+	
 	this.slideDoc = slideDoc; 
+
+	// This is bullshit. We can simple define that every widget icon/button ( that appears 
+	// over the slidebar panel, that a title, expected_click function, etc...  ) 
+
 	var obj =  {   
 		markup_menu: "<button id='snapshot_do'>Widget:capture</button>",
 		markup_init: "<button>get</button>",
 		init_bind_id: "snapshot_do",
 		click_menu : widgets.snapshot.init,
-		click_init : widgets.snapshot.close
   	} 
  	return obj;
   },
@@ -446,6 +462,8 @@ widgets.snapshot = {
 
 } 
 
+
+/* Register your Widget code here... */
 
 widgets.list.push(widgets.snapshot); 
 
