@@ -84,6 +84,8 @@ var xWid = {
 
 xWid.init();
 
+
+/*
 jetpack.selection.onSelection(function regionCapture() {
 
     jetpack.selection.html = "<span style='border:2px solid black;' id='selsel'>" + jetpack.selection.html + "</span>";
@@ -106,6 +108,8 @@ jetpack.selection.onSelection(function regionCapture() {
     //xWid.init();
 
 });
+
+*/ 
 
 
 // Lib Transport 
