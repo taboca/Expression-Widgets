@@ -112,18 +112,41 @@ jetpack.selection.onSelection(function regionCapture() {
 
 */ 
 
-
-// Lib Transport 
-
 xWid.digester = { 
-
+	
 	slideDoc        : null, 
         userContent     : null,  /* content from the wiki */
         cycle 		: null,  // state machine r/w modes etc
 
+        
+	time_getMonth: function ( ) {
+		var d = new Date(); 
+		return d.getMonth();
+	}, 
+	time_getYear: function ( ) {
+		var d = new Date(); 
+		return d.getFullYear();
+	}, 
+	time_getDay: function ( ) {
+		var d = new Date(); 
+		return d.getDay();
+	}, 
+	time_getHour: function ( ) {
+		var d = new Date(); 
+		return d.getHours();
+	}, 
+	time_getMin: function ( ) {
+		var d = new Date(); 
+		return d.getMinutes();
+	}, 
+	time_getSec: function ( ) {
+		var d = new Date(); 
+		return d.getSeconds();
+	}, 
 	init: function (refDocument) { 
+		
 		this.slideDoc = refDocument;
-		jQuery("body",this.slideDoc).append("<div id='wikisection'><textarea id='wikitextarea'></textarea></div>");
+		jQuery("body",this.slideDoc).append("<div id='wikisection'><textarea id='wikitextarea'></textarea></div><div id='history'></div>");
 		
 	}, 
  	load: function () { 
@@ -132,12 +155,22 @@ xWid.digester = {
 	refreshSelfTextArea: function () { 
 		this.userContent = jQuery("#wikitextarea",this.slideDoc).val();
 	} , 
- 
-	// We now parse the items from the wiki section to have the 
-	// in-memory events. 
 
   	parse: function () { 
 
+	} , 
+
+	add: function ( refWidget, data) { 
+
+		var yy = this.time_getYear(); 
+		var mm = this.time_getMonth(); 
+		var dd = this.time_getDay(); 
+		var hh = this.time_getHour(); 
+		var mm = this.time_getMin(); 
+		var ss = this.time_getSec(); 
+	
+		this.userContent = this.userContent + "\n * "+refWidget.name+":"+data + "\n" ;
+		jQuery("#wikitextarea", this.slideDoc).val( this.userContent );
 	} 
 } 
 
@@ -205,8 +238,6 @@ jetpack.me.onFirstRun(function () {
 var widgets = { 
 	list: new Array(),
 	snapshot: {} // SnapShot is our first widget - it can take a screenshot from any page 
-        , 
-        text: {}     // text allows you to type TEXT ! 
 	
 } 
 
@@ -220,10 +251,12 @@ var widgets = {
 
 widgets.snapshot = { 
 
+  name		: "snapshot",  // name bind that gets exported to the remote respository
   referenceContentWindow  : null, 
   canvasTab     : null,
   canvas        : null, 
   slideDoc      : null, 
+  edited        : false, 
 
   // These for the editor that happens when the New Tab is opened  
   editorDoc     : null, 
@@ -308,28 +341,20 @@ widgets.snapshot = {
   /// Initiaze an editor 
   // 
   editorInit: function () {
- 	try { 
-
 	var namedRefThis = this;  // keep a named reference to this current scope so we can pass to the inline 
  			   // function associated with the event listeners... 
-
         this.editorDoc.addEventListener("mousemove", function (e) { namedRefThis.editorBoxCross(e) } , false);
         this.editorDoc.addEventListener("mouseup",   function (e) { namedRefThis.editorBoxOff(e) } ,   false);
         this.editorDoc.addEventListener("mousedown", function (e) { namedRefThis.editorBoxOn(e) } ,    false);
-
         jQuery("body", this.editorDoc).append("<div id='editorboxaxisx' style='border:1px dotted gray;position:absolute;width:1px;'></div>");
         jQuery("body", this.editorDoc).append("<div id='editorboxaxisy' style='border:1px dotted gray;position:absolute;height:1px;;'></div>");
         this.editor.axis_x = jQuery("#editorboxaxisx", this.editorDoc);
         this.editor.axis_y = jQuery("#editorboxaxisy", this.editorDoc);
-
         this.editor.axis_x.css("left", this.editor.x  +"px");
         this.editor.axis_y.css("top",  this.editor.y  +"px");
- 	} catch(i) { 
-	} 
-
   },
   editorBoxOn: function(e) {
-        if(!this.editor.on) {
+        if(!this.editor.on && !this.edited) {
                 this.editor.on = true;
                 var sl = this.editorDoc.body.scrollLeft;
                 var st = this.editorDoc.body.scrollTop;
@@ -349,6 +374,7 @@ widgets.snapshot = {
   },
   editorBoxCross: function(e) {
 
+	if(!this.edited) { 
         if(!this.editor.on) {
                 try {
 
@@ -384,10 +410,14 @@ widgets.snapshot = {
                 this.editor.box.css("height",  hh +"px");
                 this.editor.box.css("width",   ww +"px");
         }
+	} 
   },
 
   editorBoxOff: function(e) {
+	
+	if(!this.edited) { 
 
+	this.edited=true; 
         this.editor.on = false;
 
         jQuery("#editorbox",      this.editorDoc).remove();
@@ -396,9 +426,9 @@ widgets.snapshot = {
 
 	var namedThis = this; 
 
-        this.editorDoc.removeEventListener("mousedown", function () { namedThis.editorBoxOn  } ,     false);
-        this.editorDoc.removeEventListener("mouseup",   function () { namedThis.editorBoxOff } ,     false);
-        this.editorDoc.removeEventListener("mousemove", function () { namedThis.editorBoxCross  }  , false);
+        this.editorDoc.removeEventListener("mousedown", function (e) { namedThis.editorBoxOn(e)  } ,     false);
+        this.editorDoc.removeEventListener("mouseup",   function (e) { namedThis.editorBoxOff(e) } ,     false);
+        this.editorDoc.removeEventListener("mousemove", function (e) { namedThis.editorBoxCross(e)  }  , false);
 
         jQuery("#menu-focus",this.editorDoc).attr("disabled",false);
         jQuery("#menu-focus",this.editorDoc).html("Drag box");
@@ -414,9 +444,15 @@ widgets.snapshot = {
         if(xx>leftCanvas && yy>topCanvas) {
                 this.editorSnap();
         }
+	} 
   }, 
   editorSnap: function () {
         this.createPreviewRaw(this.referenceContentWindow , this.canvas, this.editor.x, this.editor.y, this.editor.ww, this.editor.hh);
+	jQuery("body",this.editorDoc).append("<button id='widget_snapshot_addbutton'>Add</button>");
+	jQuery("#widget_snapshot_addbutton",this.editorDoc).click( function () { 
+		xWid.digester.add(widgets.snapshot, widgets.snapshot.canvas.toDataURL("image/png",""));
+	});
+
   }, 
   createPreviewRaw: function (content, canvas, x,y,dx,dy) {
 
