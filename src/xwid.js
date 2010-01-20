@@ -29,6 +29,11 @@ var xWid = {
     canvas.getContext("2d").drawWindow(cw, x, y, w,h, "white");
     return canvas;
   }, 
+ 
+  dump: function (str) { 
+	jQuery("#debug",this.uiDoc).append(str);
+
+  } ,
 
   ////
   /// man init point
@@ -45,7 +50,8 @@ var xWid = {
 			////	
 			/// We set the transport 
 			//
-			xWid.transport = libCataliser_Wikimedia; 
+			//xWid.transport = libCataliser_Wikimedia; 
+			xWid.transport = libCataliser_post; 
 			xWid.transport.repository = "https://wiki.mozilla.org/Education/Projects/JetpackForLearning/Profiles/expressionWidjets/class1"; 
 			xWid.transport.userName = "Marcio";
 
@@ -68,6 +74,8 @@ var xWid = {
 			});
 
 
+ 			jQuery("body",slide.contentDocument).append("<div id='debug'></div>");
+
 			for (key in widgets.list) { 
 				var currWidget = widgets.list[key];
 				var objRegister = currWidget.register(slide.contentDocument);
@@ -77,6 +85,7 @@ var xWid = {
 				}) 
 				
 			} 
+
                 }
 	});
   } 
@@ -174,6 +183,62 @@ xWid.digester = {
 	} 
 } 
 
+
+var libCataliser_post = { 
+
+        repository  : null,
+        status      : null,
+        userName    : null,
+
+        wikiDoc     : null,
+        bufferFrame : null, 
+        wikiEditDoc : null,
+
+        init: function () {
+
+ 		jQuery("body",xWid.uiDoc).append('<iframe id="frame" class="frame" height="99" width="100%" border="no" style="border:none;padding:0;margin:0;background-color:#fff;" src="about:blank"></frame>');	
+		var stampedThis = this; 
+	 		
+		jQuery(".frame", xWid.uiDoc).load( function(){
+				stampedThis.wikiDoc = xWid.uiDoc.getElementById('frame').contentDocument;
+			});
+
+      		jQuery(".frame", xWid.uiDoc).attr("src", this.repository);
+        },
+
+        load: function () {
+
+
+		try { 
+		var doc = this.wikiDoc; 
+		
+                jQuery("a[title^='Edit section: "+this.userName+"']", doc).each( function () {
+                        item = jQuery(this).attr("href");
+                        var toURL = "https://wiki.mozilla.org"+item;
+
+			jQuery(".frame", xWid.uiDoc).load( function(){
+                                let doc = xWid.uiDoc.getElementById('frame').contentDocument;
+				xWid.digester.userContent = jQuery("#wpTextbox1",doc).val();
+                                xWid.transport.wikiEditDoc = doc;
+                                xWid.digester.load();
+
+                        });
+
+			jQuery(".frame", xWid.uiDoc).attr("src", toURL);
+
+                })
+
+		} catch(i) { xWid.dump(i) } 
+        },
+        grab: function () {
+
+        },
+        sync: function (dataContentString) {
+                jQuery("#wpTextbox1", this.wikiEditDoc).val(dataContentString);
+                jQuery("#wpSave",this.wikiEditDoc).trigger("click");
+        }
+
+} 
 
 var libCataliser_Wikimedia = { 
 
