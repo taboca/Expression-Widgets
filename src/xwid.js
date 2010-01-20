@@ -1,22 +1,36 @@
+//////
 /////
-//// Expression Widgets 
+////         Expression Widgets - JetPack for Learning 2010
 ///
 //
-jetpack.future.import("selection");   // https://wiki.mozilla.org/Labs/Jetpack/JEP/12
-jetpack.future.import("slideBar");    // https://wiki.mozilla.org/Labs/Jetpack/JEP/16
-jetpack.future.import("me"); 
+/* JEP Profile Disclaimer 
+   ---
+*/
 
-/// in this same file. This may change in the future. 
-//
+// https://wiki.mozilla.org/Labs/Jetpack/JEP/12
+jetpack.future.import("selection");   
+// https://wiki.mozilla.org/Labs/Jetpack/JEP/16
+jetpack.future.import("slideBar"); 
+jetpack.future.import("me"); 
+// https://developer.mozilla.org/en/Jetpack/Storage/Simple_storage
+jetpack.future.import("storage.simple");
+
+/* App Core 
+   --- 
+   The xWid is the application code. We have here the basic user experience so 
+   the user/participant can feel they can use this app to engage in a give 
+   collaboration session, associate their user with the remote repository, 
+   and also means to deal with the widgets. 
+*/
 var xWid = { 
 
-   canvas: null, 
-   canvasTab: null, 
+  canvas: null, 
+  canvasTab: null, 
 
-   uiDoc     : null, 
-   transport : null, 
+  uiDoc     : null, 
+  transport : null, 
  
-   launchForGrab : function (currWin,x,y,w,h){
+  launchForGrab : function (currWin,x,y,w,h){
     
      this.canvas = this.uiDoc.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
      jQuery(this.canvas).appendTo(jQuery("body",this.uiDoc));
@@ -56,7 +70,7 @@ var xWid = {
 			xWid.transport.userName = "Marcio";
 
 			xWid.uiDoc= slide.contentDocument; 
-			jQuery("body", slide.contentDocument).html("<button id='goinit'>Init Wiki</button><button id='gofetch'>Fetch Wiki</button><button id='gosave'>Save wiki</button>");
+			jQuery("body", slide.contentDocument).html(xWid.resources.html_panel);
 
 
 			jQuery("#goinit",slide.contentDocument).click( function () { 
@@ -295,9 +309,20 @@ jetpack.me.onFirstRun(function () {
 });
 
 
+/* Local Resources 
+   ---
+   Under this section you can keep simply the assets related to HTML and aCSS. These
+   elements can get inserted in Documents/UI that is part of this basic JetPack UX. 
+*/
+
+xWid.resources = { 
+    html_panel: "<button id='goinit'>Init Wiki</button><button id='gofetch'>Fetch Wiki</button><button id='gosave'>Save wiki</button>",
+} 
 
 /* 
    Widgets 
+   ---
+   Check the last line in this code if you want to register your widget
 */
 
 var widgets = { 
