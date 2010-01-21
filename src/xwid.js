@@ -26,6 +26,9 @@ var xWid = {
 
   canvas: null, 
   canvasTab: null, 
+ 
+  localStore: jetpack.storage.simple,  // This is the interface to the local 
+					   // and persistant storage service. 
 
   uiDoc     : null, 
   transport : null, 
@@ -66,8 +69,9 @@ var xWid = {
 			//
 			//xWid.transport = libCataliser_Wikimedia; 
 			xWid.transport = libCataliser_post; 
-			xWid.transport.repository = "https://wiki.mozilla.org/Education/Projects/JetpackForLearning/Profiles/expressionWidjets/class1"; 
-			xWid.transport.userName = "Marcio";
+
+			xWid.transport.repository = this.localStore.repository; 
+			xWid.transport.userName =   this.localStore.username; 
 
 			xWid.uiDoc= slide.contentDocument; 
 			jQuery("body", slide.contentDocument).html(xWid.resources.html_panel);
@@ -305,7 +309,13 @@ var manifest = {
 }; 
 
 jetpack.me.onFirstRun(function () {
-  jetpack.notifications.show("Oh boy, I'm installed!");
+  jetpack.notifications.show("Oh boy, I'm installed! you are running as alpha test so I did set the repository as being mozilla wiki page and also the username");
+	if(xWid.localStore.repository) { 
+		// In case we have no previous settings.. 
+ 	} else { 
+ 		xWid.localStore.repository = "https://wiki.mozilla.org/Education/Projects/JetpackForLearning/Profiles/expressionWidjets/class1"; 
+		xWid.localStore.username = "Marcio";
+	} 
 });
 
 
