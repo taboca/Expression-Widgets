@@ -51,6 +51,22 @@ var xWid = {
 
   } ,
 
+  settingsChanged: function () { 
+
+ 	this.localStore.login    = jQuery("#login",     xWid.uiDoc).val();
+ 	this.localStore.repository  = jQuery("#repository",xWid.uiDoc).val();
+	jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
+        jQuery("#notificationpanel",xWid.uiDoc).html("Just saved your screenname URL settings. <button id='godone'>Done</button>");
+
+	xWid.transport.repository = xWid.localStore.repository;
+	xWid.transport.login   = xWid.localStore.login;
+
+        jQuery("#godone",xWid.uiDoc).click( function () {
+              jQuery("#notificationpanel",xWid.uiDoc).html("");
+              jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
+        });
+
+  },
   ////
   /// man init point
   //
@@ -77,10 +93,16 @@ var xWid = {
 			jQuery("body", slide.contentDocument).html(xWid.resources.html_panel);
 
 			xWid.transport.repository = xWid.localStore.repository; 
-			xWid.transport.userName   = xWid.localStore.username; 
+			xWid.transport.login   = xWid.localStore.login; 
 
- 			jQuery("#login", slide.contentDocument).val(xWid.transport.userName); 
+ 			jQuery("#login", slide.contentDocument).val(xWid.transport.login); 
  			jQuery("#repository", slide.contentDocument).val(xWid.transport.repository); 
+			jQuery("#login", slide.contentDocument).change( function () { 
+				xWid.settingsChanged();
+			});
+			jQuery("#repository", slide.contentDocument).change( function () { 
+				xWid.settingsChanged();
+			});
 
 			jQuery("#goinit",slide.contentDocument).click( function () { 
 				xWid.transport.init();
@@ -98,6 +120,10 @@ var xWid = {
 
  			jQuery("body",slide.contentDocument).append("<div id='debug'></div>");
 
+			// Notice we populate the widgets here in the menu but we dont yet 
+			// enable the #widgetspanel UI element .. only if they are logged in 
+			// soon later on depends on state / wiki flow...
+
 			for (key in widgets.list) { 
 				var currWidget = widgets.list[key];
 				var objRegister = currWidget.register(slide.contentDocument);
@@ -105,9 +131,7 @@ var xWid = {
 				jQuery("#"+objRegister.init_bind_id, slide.contentDocument).click (function () { 
 					objRegister.click_menu();		
 				}) 
-				
 			} 
-
                 }
 	});
   } 
@@ -177,7 +201,7 @@ xWid.digester = {
 	init: function (refDocument) { 
 		
 		this.slideDoc = refDocument;
-		jQuery("body",this.slideDoc).append("<div id='wikisection'><textarea id='wikitextarea'></textarea></div><div id='history'></div>");
+		jQuery("#historypanel",this.slideDoc).append("<div id='wikisection'><textarea style='width:100%' id='wikitextarea'></textarea></div><div id='history'></div>");
 		
 	}, 
  	load: function () { 
@@ -210,47 +234,74 @@ var libCataliser_post = {
 
         repository  : null,
         status      : null,
-        userName    : null,
+        login    : null,
 
         wikiDoc     : null,
+        wikiTab     : null, 
         bufferFrame : null, 
+        bufferFrameLoadCallback : function () { } , 
         wikiEditDoc : null,
 
-        init: function () {
+ 	helper_login: function () { 
+   		this.wikiTab = jetpack.tabs.open(this.repository);
+                this.wikiTab.focus();   // TODO remove the focus to the tab soon
+    	}, 
 
- 		jQuery("body",xWid.uiDoc).append('<iframe id="frame" class="frame" height="99" width="100%" border="no" style="border:none;padding:0;margin:0;background-color:#fff;" src="about:blank"></frame>');	
+        init: function () {
+		 
 		var stampedThis = this; 
-	 		
-		jQuery(".frame", xWid.uiDoc).load( function(){
+		if(!this.bufferFrame) { 
+ 			jQuery("body",xWid.uiDoc).append('<iframe id="frame" class="frame" src="about:blank"></frame>');	
+		 	this.bufferFrame = xWid.uiDoc.getElementById("frame");
+			jQuery(".frame", xWid.uiDoc).load( function () { stampedThis.bufferFrameLoadCallback() } );
+ 		} 
+		this.bufferFrameLoadCallback =  function(){
 				stampedThis.wikiDoc = xWid.uiDoc.getElementById('frame').contentDocument;
-			});
+				xWid.digester.init(xWid.uiDoc);
+				stampedThis.load();	
+		};
 
       		jQuery(".frame", xWid.uiDoc).attr("src", this.repository);
         },
 
         load: function () {
 
-
-		try { 
 		var doc = this.wikiDoc; 
-		
-                jQuery("a[title^='Edit section: "+this.userName+"']", doc).each( function () {
+		var foundLogin = false; 
+		var stampedThis = this; 
+                jQuery("a[title^='Edit section: "+this.login+"']", doc).each( function () {
                         item = jQuery(this).attr("href");
                         var toURL = "https://wiki.mozilla.org"+item;
-
-			jQuery(".frame", xWid.uiDoc).load( function(){
+			foundLogin = true; 
+			stampedThis.bufferFrameLoadCallback = function () { 
                                 let doc = xWid.uiDoc.getElementById('frame').contentDocument;
 				xWid.digester.userContent = jQuery("#wpTextbox1",doc).val();
                                 xWid.transport.wikiEditDoc = doc;
                                 xWid.digester.load();
-
-                        });
-
+			} 
 			jQuery(".frame", xWid.uiDoc).attr("src", toURL);
 
                 })
 
-		} catch(i) { xWid.dump(i) } 
+		if(!foundLogin) { 
+			jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
+			jQuery("#notificationpanel",xWid.uiDoc).append(xWid.resources.html_login_helper);
+			this.helper_login();
+			jQuery("#gotry",xWid.uiDoc).click( function () { 
+				jQuery("#notificationpanel",xWid.uiDoc).html("");
+				jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
+				xWid.transport.init();
+			});
+		} else { 
+			jQuery("#goinit", xWid.uiDoc).html("Expressing");
+			jQuery("#goinit", xWid.uiDoc).attr("disabled","disabled");
+			jQuery("#gosave", xWid.uiDoc).removeAttr("disabled");
+			jQuery("#historypanel", xWid.uiDoc).css("display","block");
+			jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
+			
+
+		} 
+
         },
         grab: function () {
 
@@ -266,7 +317,7 @@ var libCataliser_Wikimedia = {
 
 	repository  : null, 
 	status      : null,
-        userName    : null, 
+        login    : null, 
 
 	wikiTab     : null, 
 	wikiEditDoc : null, 
@@ -278,7 +329,7 @@ var libCataliser_Wikimedia = {
 
 	load: function () { 
 		var doc = this.wikiTab.contentDocument; 
-		jQuery("a[title^='Edit section: "+this.userName+"']", doc).each( function () {
+		jQuery("a[title^='Edit section: "+this.login+"']", doc).each( function () {
                         item = jQuery(this).attr("href");
                         var toURL = "https://wiki.mozilla.org"+item;
                         var editTab = jetpack.tabs.open(toURL);
@@ -313,12 +364,12 @@ var manifest = {
 }; 
 
 jetpack.me.onFirstRun(function () {
-	jetpack.notifications.show("Oh boy, I'm installed! you are running as alpha test so I did set the repository as being mozilla wiki page and also the username");
+	jetpack.notifications.show("Oh boy, I'm installed! you are running as alpha test so I did set the repository as being mozilla wiki page and also the login");
 	if(xWid.localStore.repository) { 
 		// In case we have no previous settings.. 
  	} else { 
  		xWid.localStore.repository = "https://wiki.mozilla.org/Education/Projects/JetpackForLearning/Profiles/expressionWidjets/class1"; 
-		xWid.localStore.username = "Marcio";
+		xWid.localStore.login = "Marcio";
 	} 
 });
 
@@ -330,9 +381,10 @@ jetpack.me.onFirstRun(function () {
 */
 
 xWid.resources = { 
-    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td>Class</td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Init</button><button id='gofetch'>Fetch Wiki</button><button id='gosave'>Save wiki</button></td></tr></table> <div id='widgetspanel'></div>", 
+    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td>Class</td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Login</button><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='notificationpanel'></div> <div id='widgetspanel'></div> <div id='historypanel'></div>", 
+    html_login_helper: "<div id='helper'>You are not logged in. Log over the wiki and then click here <button id='gotry'>Retry</button> </div>",
     style_head     : "html {background:#ddd;} body { text-align:center; margin;auto; }  canvas { border:1px solid black}  ",
-    style_slidebar_head: " table { margin:auto;  margin-top:1em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:90%; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; } #widgetspanel { margin:auto; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightblue, #fff);  } ",
+    style_slidebar_head: " table { margin:auto;  margin-top:1em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:90%; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; } #widgetspanel { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightblue, #fff);  } #notificationpanel { margin:auto; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historypanel {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #ddd, #fff); display:none }  ",
     html_container : "<canvas id='workingcanvas'></canvas>"
 } 
 
