@@ -24,17 +24,16 @@ jetpack.future.import("storage.simple");
 */
 var xWid = { 
 
-  canvas: null, 
-  canvasTab: null, 
+  canvas    : null, 
+  canvasTab : null, 
  
   localStore: jetpack.storage.simple,  // This is the interface to the local 
 					   // and persistant storage service. 
-
+  resources : null, // check for xWid.resources section in this file... 
   uiDoc     : null, 
   transport : null, 
  
   launchForGrab : function (currWin,x,y,w,h){
-    
      this.canvas = this.uiDoc.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
      jQuery(this.canvas).appendTo(jQuery("body",this.uiDoc));
      xWid.createPreviewFromArea( currWin ,x,y,w,h, this.canvas);
@@ -58,7 +57,7 @@ var xWid = {
   init: function () { 
 	this.uiDoc = jetpack.slideBar.append({
 		url: "about:blank",
-		width: 200,
+		width: 250,
  		persist: true, 
 		onClick: function(slide) {
 			slide.icon.src = "chrome://branding/content/icon48.png";
@@ -70,12 +69,17 @@ var xWid = {
 			//xWid.transport = libCataliser_Wikimedia; 
 			xWid.transport = libCataliser_post; 
 
-			xWid.transport.repository = this.localStore.repository; 
-			xWid.transport.userName =   this.localStore.username; 
 
 			xWid.uiDoc= slide.contentDocument; 
+
+			jQuery(slide.contentDocument.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",slide.contentDocument)).append( xWid.resources.style_slidebar_head );
+
 			jQuery("body", slide.contentDocument).html(xWid.resources.html_panel);
 
+			xWid.transport.repository = xWid.localStore.repository; 
+			xWid.transport.userName   = xWid.localStore.username; 
+
+ 			jQuery("#login", slide.contentDocument).val(xWid.transport.userName); 
 
 			jQuery("#goinit",slide.contentDocument).click( function () { 
 				xWid.transport.init();
@@ -90,7 +94,6 @@ var xWid = {
 				xWid.transport.sync(xWid.digester.userContent);
 
 			});
-
 
  			jQuery("body",slide.contentDocument).append("<div id='debug'></div>");
 
@@ -309,7 +312,7 @@ var manifest = {
 }; 
 
 jetpack.me.onFirstRun(function () {
-  jetpack.notifications.show("Oh boy, I'm installed! you are running as alpha test so I did set the repository as being mozilla wiki page and also the username");
+	jetpack.notifications.show("Oh boy, I'm installed! you are running as alpha test so I did set the repository as being mozilla wiki page and also the username");
 	if(xWid.localStore.repository) { 
 		// In case we have no previous settings.. 
  	} else { 
@@ -326,7 +329,10 @@ jetpack.me.onFirstRun(function () {
 */
 
 xWid.resources = { 
-    html_panel: "<button id='goinit'>Init Wiki</button><button id='gofetch'>Fetch Wiki</button><button id='gosave'>Save wiki</button>",
+    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td>Class</td><td><input type='text' /></td></tr></table><button id='goinit'>Init Wiki</button><button id='gofetch'>Fetch Wiki</button><button id='gosave'>Save wiki</button>", 
+    style_head     : "html {background:#ddd;} body { text-align:center; margin;auto; }  canvas { border:1px solid black}  ",
+    style_slidebar_head: " table { margin:auto;  margin-top:1em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:90%; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; } ",
+    html_container : "<canvas id='workingcanvas'></canvas>"
 } 
 
 /* 
@@ -338,7 +344,6 @@ xWid.resources = {
 var widgets = { 
 	list: new Array(),
 	snapshot: {} // SnapShot is our first widget - it can take a screenshot from any page 
-	
 } 
 
 
@@ -362,12 +367,6 @@ widgets.snapshot = {
   editorDoc     : null, 
   editor:  { axis_x: null, axis_y: null, x:0, y:0, on: false, box:null, ww: 0, hh:0  }, 
   
-  resources     : {
-
-  	style_head     : "html {background:#ddd;} body { text-align:center; margin;auto; }  canvas { border:1px solid black}  ",
-  	html_container : "<canvas id='workingcanvas'></canvas>"
-
-  },
 
   register: function (slideDoc) { 
 	
@@ -594,8 +593,6 @@ widgets.snapshot = {
     return canvas;
 
   }
-
-
 } 
 
 
