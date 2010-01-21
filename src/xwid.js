@@ -80,6 +80,7 @@ var xWid = {
 			xWid.transport.userName   = xWid.localStore.username; 
 
  			jQuery("#login", slide.contentDocument).val(xWid.transport.userName); 
+ 			jQuery("#repository", slide.contentDocument).val(xWid.transport.repository); 
 
 			jQuery("#goinit",slide.contentDocument).click( function () { 
 				xWid.transport.init();
@@ -100,7 +101,7 @@ var xWid = {
 			for (key in widgets.list) { 
 				var currWidget = widgets.list[key];
 				var objRegister = currWidget.register(slide.contentDocument);
-				jQuery("body",slide.contentDocument).append(objRegister.markup_menu);
+				jQuery("#widgetspanel",slide.contentDocument).append(objRegister.markup_menu);
 				jQuery("#"+objRegister.init_bind_id, slide.contentDocument).click (function () { 
 					objRegister.click_menu();		
 				}) 
@@ -329,9 +330,9 @@ jetpack.me.onFirstRun(function () {
 */
 
 xWid.resources = { 
-    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td>Class</td><td><input type='text' /></td></tr></table><button id='goinit'>Init Wiki</button><button id='gofetch'>Fetch Wiki</button><button id='gosave'>Save wiki</button>", 
+    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td>Class</td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Init</button><button id='gofetch'>Fetch Wiki</button><button id='gosave'>Save wiki</button></td></tr></table> <div id='widgetspanel'></div>", 
     style_head     : "html {background:#ddd;} body { text-align:center; margin;auto; }  canvas { border:1px solid black}  ",
-    style_slidebar_head: " table { margin:auto;  margin-top:1em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:90%; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; } ",
+    style_slidebar_head: " table { margin:auto;  margin-top:1em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:90%; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; } #widgetspanel { margin:auto; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightblue, #fff);  } ",
     html_container : "<canvas id='workingcanvas'></canvas>"
 } 
 
