@@ -139,8 +139,9 @@ var xWid = {
 					currWidget.init();
 				}) 
 			} 
+
 			// use this to speed up widgets panels in the UI aside from the login state
-			jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
+//			jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
                 }
 	});
   } 
