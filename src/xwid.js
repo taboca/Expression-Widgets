@@ -67,6 +67,13 @@ var xWid = {
         });
 
   },
+
+  loadingOn: function () { 
+	jQuery("#loadingfeedback",this.uiDoc).css("display","block");
+  }, 
+  loadingOff: function () { 
+	jQuery("#loadingfeedback",this.uiDoc).css("display","none");
+  },
   ////
   /// man init point
   //
@@ -247,6 +254,7 @@ var libCataliser_post = {
                 this.wikiTab.focus();   // TODO remove the focus to the tab soon
     	}, 
 
+
         init: function () {
 		 
 		var stampedThis = this; 
@@ -257,11 +265,15 @@ var libCataliser_post = {
  		} 
 		this.bufferFrameLoadCallback =  function(){
 				stampedThis.wikiDoc = xWid.uiDoc.getElementById('frame').contentDocument;
-				xWid.digester.init(xWid.uiDoc);
 				stampedThis.load();	
+
+				stampedThis.isloading=false;
+				xWid.loadingOff();
 		};
 
       		jQuery(".frame", xWid.uiDoc).attr("src", this.repository);
+		this.isloading=true;
+		xWid.loadingOn(); // animation
         },
 
         load: function () {
@@ -273,7 +285,18 @@ var libCataliser_post = {
                         item = jQuery(this).attr("href");
                         var toURL = "https://wiki.mozilla.org"+item;
 			foundLogin = true; 
+
+		 	stampedThis.isloading=true;	
+			xWid.loadingOn();
+
 			stampedThis.bufferFrameLoadCallback = function () { 
+				stampedThis.isloading=false;
+				xWid.loadingOff();
+				
+				// warning - just moved here to load the text
+				// content area just one time. 
+
+				xWid.digester.init(xWid.uiDoc);
                                 let doc = xWid.uiDoc.getElementById('frame').contentDocument;
 				xWid.digester.userContent = jQuery("#wpTextbox1",doc).val();
                                 xWid.transport.wikiEditDoc = doc;
@@ -381,11 +404,9 @@ jetpack.me.onFirstRun(function () {
 */
 
 xWid.resources = { 
-    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td>Class</td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Login</button><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='notificationpanel'></div> <div id='widgetspanel'></div> <div id='historypanel'></div>", 
+    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td>Class</td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Login</button><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='loadingfeedback'><img src='chrome://global/skin/media/throbber.png'></div><div id='notificationpanel'></div> <div id='widgetspanel'></div> <div id='historypanel'></div>", 
     html_login_helper: "<div id='helper'>You are not logged in. Log over the wiki and then click here <button id='gotry'>Retry</button> </div>",
-    style_head     : "html {background:#ddd;} body { text-align:center; margin;auto; }  canvas { border:1px solid black}  ",
-    style_slidebar_head: " table { margin:auto;  margin-top:1em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:90%; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; } #widgetspanel { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightblue, #fff);  } #notificationpanel { margin:auto; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historypanel {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #ddd, #fff); display:none }  ",
-    html_container : "<canvas id='workingcanvas'></canvas>"
+    style_slidebar_head: " #loadingfeedback { padding:1em; display:none;text-align:center } table { margin:auto;  margin-top:1em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:90%; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; } #widgetspanel { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightblue, #fff);  } #notificationpanel { margin:auto; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historypanel {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #ddd, #fff); display:none }  ",
 } 
 
 /* 
@@ -419,7 +440,11 @@ widgets.snapshot = {
   // These for the editor that happens when the New Tab is opened  
   editorDoc     : null, 
   editor:  { axis_x: null, axis_y: null, x:0, y:0, on: false, box:null, ww: 0, hh:0  }, 
-  
+   
+  resources: {
+    style_head     : "html {background:#ddd;} body { text-align:center; margin;auto; }  canvas { border:1px solid black}  ",
+    html_container : "<canvas id='workingcanvas'></canvas>"
+  },
 
   register: function (slideDoc) { 
 	
@@ -429,7 +454,7 @@ widgets.snapshot = {
 	// over the slidebar panel, that a title, expected_click function, etc...  ) 
 
 	var obj =  {   
-		markup_menu: "<button id='snapshot_do'>Widget:capture</button>",
+		markup_menu: "<button id='snapshot_do'>Capture</button>",
 		markup_init: "<button>get</button>",
 		init_bind_id: "snapshot_do",
 		click_menu : widgets.snapshot.init,
@@ -445,7 +470,7 @@ widgets.snapshot = {
 	this.canvasTab.focus();
 	this.canvasTab.onReady(function(doc) { 
 
-		var namedRefThis = widgets.snapshot; // like 'this', just a ref to the global scope widgets.snapshot
+		var namedRefThis = widgets.snapshot; 
 
 		// We populate the new Opened Tab with a canvas tag so that we can capture the previously opened 
 		// default tab screenshot onto this Tab, this canvas... 
