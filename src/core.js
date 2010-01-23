@@ -233,7 +233,12 @@ xWid.digester = {
 		var mm = this.time_getMin(); 
 		var ss = this.time_getSec(); 
 	
-		this.userContent = this.userContent + "\n * "+refWidget.name+":"+data + "\n" ;
+		/* We now have to send the time stamp using some form of universal date time 
+		pattern that can be sortable as we may want to later on sort all the participants
+		data by the time they posted */
+
+		var sortableDateTimeStamp = yy+"-"+mm+"-"+dd+" "+hh+":"+mm+":"+ss+" ";	
+		this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+":"+data + "\n" ;
 		jQuery("#wikitextarea", this.slideDoc).val( this.userContent );
 	} 
 } 
