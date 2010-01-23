@@ -1,7 +1,0 @@
-* http://www.texify.com/ - Recommended by Felipe Gomes
-* MathML
-* SVG
-* Canvas Draw
-* Think abiout extreme case of Mutation and Constructions over DOM for 3rd-party pages. Something like the wiki is a social binding to any online Client app on the Web - games included.
-
-

@@ -132,15 +132,13 @@ var xWid = {
 			// soon later on depends on state / wiki flow...
 
 			for (key in widgets.list) { 
-				let currWidget = widgets.list[key];
-				let objRegister = currWidget.register(slide.contentDocument);
+				var currWidget = widgets.list[key];
+				var objRegister = currWidget.register(slide.contentDocument);
 				jQuery("#widgetspanel",slide.contentDocument).append(objRegister.markup_menu);
 				jQuery("#"+objRegister.init_bind_id, slide.contentDocument).click (function () { 
-					currWidget.init();
+					objRegister.click_menu();		
 				}) 
 			} 
-			// use this to speed up widgets panels in the UI aside from the login state
-			jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
                 }
 	});
   } 
@@ -285,9 +283,6 @@ var libCataliser_post = {
 		var stampedThis = this; 
                 jQuery("a[title^='Edit section: "+this.login+"']", doc).each( function () {
                         item = jQuery(this).attr("href");
-	
-			// warning replace this to the base for the wiki site
-
                         var toURL = "https://wiki.mozilla.org"+item;
 			foundLogin = true; 
 
@@ -326,6 +321,8 @@ var libCataliser_post = {
 			jQuery("#gosave", xWid.uiDoc).removeAttr("disabled");
 			jQuery("#historypanel", xWid.uiDoc).css("display","block");
 			jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
+			
+
 		} 
 
         },
@@ -407,9 +404,9 @@ jetpack.me.onFirstRun(function () {
 */
 
 xWid.resources = { 
-    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td>Class</td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Login</button><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='loadingfeedback'><img src='chrome://global/skin/media/throbber.png'></div><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historypanel'></div>", 
+    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td>Class</td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Login</button><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='loadingfeedback'><img src='chrome://global/skin/media/throbber.png'></div><div id='notificationpanel'></div> <div id='widgetspanel'></div> <div id='historypanel'></div>", 
     html_login_helper: "<div id='helper'>You are not logged in. Log over the wiki and then click here <button id='gotry'>Retry</button> </div>",
-    style_slidebar_head: " #loadingfeedback { padding:1em; display:none;text-align:center } table { margin:auto;  margin-top:1em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:90%; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; } #widgetspanel { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #fdd, #fff);  } #widgetscanvas { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #fdd, #fff); }  #notificationpanel { margin:auto; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historypanel {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #ddd, #fff); display:none }  ",
+    style_slidebar_head: " #loadingfeedback { padding:1em; display:none;text-align:center } table { margin:auto;  margin-top:1em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:90%; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; } #widgetspanel { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightblue, #fff);  } #notificationpanel { margin:auto; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historypanel {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #ddd, #fff); display:none }  ",
 } 
 
 /* 
@@ -419,7 +416,8 @@ xWid.resources = {
 */
 
 var widgets = { 
-	list: new Array()
+	list: new Array(),
+	snapshot: {} // SnapShot is our first widget - it can take a screenshot from any page 
 } 
 
 
@@ -428,6 +426,7 @@ var widgets = {
    so that the main app can load them. For now the register function returns the markup 
    "the icon of the app" that gets inserted to the slidebar... 
 */ 
+
 
 widgets.snapshot = { 
 
@@ -450,12 +449,15 @@ widgets.snapshot = {
   register: function (slideDoc) { 
 	
 	this.slideDoc = slideDoc; 
-	refThis = this; 
+
+	// This is bullshit. We can simple define that every widget icon/button ( that appears 
+	// over the slidebar panel, that a title, expected_click function, etc...  ) 
 
 	var obj =  {   
 		markup_menu: "<button id='snapshot_do'>Capture</button>",
 		markup_init: "<button>get</button>",
-		init_bind_id: "snapshot_do"
+		init_bind_id: "snapshot_do",
+		click_menu : widgets.snapshot.init,
   	} 
  	return obj;
   },
@@ -670,39 +672,9 @@ widgets.snapshot = {
 
   }
 } 
+
+
 /* Register your Widget code here... */
 
 widgets.list.push(widgets.snapshot); 
 
-
-widgets.text = { 
-
-  name		: "text",  // name bind that gets exported to the remote respository
-  slideDoc      : null, 
-
-  register: function (slideDoc) { 
-	
-	this.slideDoc = slideDoc; 
-	refThis = this; 
-	var obj =  {   
-		markup_menu: "<button id='text_do'>Text</button>",
-		markup_init: "<button>get</button>",
-		init_bind_id: "text_do"
-  	} 
- 	return obj;
-  },
-
-  init: function () { 
-	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
-        jQuery("#widgetscanvas",this.slideDoc).html("<input id='widget_text_field' /><button id='widget_text_send'>Send</button>");
-	refThis = this; 
-        jQuery("#widget_text_send",this.slideDoc).click( function () {
-                xWid.digester.add(refThis, jQuery("#widget_text_field",refThis.slideDoc).val());
-                jQuery("#widgetscanvas",refThis.slideDoc).html("");
-                jQuery("#widgetscanvas",refThis.slideDoc).css("display","none");
-        })
-
-  } 
-} 
-
-widgets.list.push(widgets.text); 

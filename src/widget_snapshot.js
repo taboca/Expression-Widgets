@@ -26,15 +26,12 @@ widgets.snapshot = {
   register: function (slideDoc) { 
 	
 	this.slideDoc = slideDoc; 
-
-	// This is bullshit. We can simple define that every widget icon/button ( that appears 
-	// over the slidebar panel, that a title, expected_click function, etc...  ) 
+	refThis = this; 
 
 	var obj =  {   
 		markup_menu: "<button id='snapshot_do'>Capture</button>",
 		markup_init: "<button>get</button>",
-		init_bind_id: "snapshot_do",
-		click_menu : widgets.snapshot.init,
+		init_bind_id: "snapshot_do"
   	} 
  	return obj;
   },
