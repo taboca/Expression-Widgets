@@ -15,9 +15,7 @@ var libCataliser_post = {
                 this.wikiTab.focus();   // TODO remove the focus to the tab soon
     	}, 
 
-
         init: function () {
-		 
 		var stampedThis = this; 
 		if(!this.bufferFrame) { 
  			jQuery("body",xWid.uiDoc).append('<iframe id="frame" class="frame" src="about:blank"></frame>');	
@@ -27,11 +25,9 @@ var libCataliser_post = {
 		this.bufferFrameLoadCallback =  function(){
 				stampedThis.wikiDoc = xWid.uiDoc.getElementById('frame').contentDocument;
 				stampedThis.load();	
-
 				stampedThis.isloading=false;
 				xWid.loadingOff();
 		};
-
       		jQuery(".frame", xWid.uiDoc).attr("src", this.repository);
 		this.isloading=true;
 		xWid.loadingOn(); // animation

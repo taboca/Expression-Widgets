@@ -4,7 +4,7 @@
 xWid.transport = libCataliser_post; 
 
 // Enable this to disable debugging 
-xWid.dump = function () { } 
+//xWid.dump = function () { } 
 
 
 
