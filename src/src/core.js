@@ -3,6 +3,7 @@
 ////         Expression Widgets - JetPack for Learning 2010
 ///
 //
+
 /* JEP Profile Disclaimer 
    ---
 */
@@ -20,8 +21,12 @@ jetpack.future.import("storage.simple");
    The xWid is the application code. We have here the basic user experience so 
    the user/participant can feel they can use this app to engage in a give 
    collaboration session, associate their user with the remote repository, 
-   and also means to deal with the widgets. 
+   and also means to deal with the widgets. We now keep the widget codes 
+   separated from this. So, from a certain angle, the Expression Widgets, 
+   is like JetPack. It aims to create a model that Widgets can work together
+   and load/post/sync with the repository ( contribution from others ). 
 */
+
 var xWid = { 
 
   canvas    : null, 
@@ -31,7 +36,7 @@ var xWid = {
 					   // and persistant storage service. 
   resources : null, // check for xWid.resources section in this file... 
   uiDoc     : null, 
-  transport : null, 
+  transport : null,       // This is a plugin. See the build system. 
  
   launchForGrab : function (currWin,x,y,w,h){
      this.canvas = this.uiDoc.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
@@ -45,27 +50,23 @@ var xWid = {
     canvas.getContext("2d").drawWindow(cw, x, y, w,h, "white");
     return canvas;
   }, 
- 
   dump: function (str) { 
 	jQuery("#debug",this.uiDoc).append(str);
 
   } ,
-
   settingsChanged: function () { 
-
- 	this.localStore.login    = jQuery("#login",     xWid.uiDoc).val();
+ 	this.localStore.login       = jQuery("#login",     xWid.uiDoc).val();
  	this.localStore.repository  = jQuery("#repository",xWid.uiDoc).val();
 	jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
         jQuery("#notificationpanel",xWid.uiDoc).html("Just saved your screenname URL settings. <button id='godone'>Done</button>");
 
 	xWid.transport.repository = xWid.localStore.repository;
-	xWid.transport.login   = xWid.localStore.login;
+	xWid.transport.login      = xWid.localStore.login;
 
         jQuery("#godone",xWid.uiDoc).click( function () {
               jQuery("#notificationpanel",xWid.uiDoc).html("");
               jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
         });
-
   },
 
   loadingOn: function () { 
@@ -86,14 +87,8 @@ var xWid = {
 			slide.icon.src = "chrome://branding/content/icon48.png";
 		},   
                 onReady: function(slide) { 
-			////	
-			/// We set the transport 
-			//
-			//xWid.transport = libCataliser_Wikimedia; 
-			xWid.transport = libCataliser_post; 
 
-
-			xWid.uiDoc= slide.contentDocument; 
+			xWid.uiDoc = slide.contentDocument; 
 
 			jQuery(slide.contentDocument.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",slide.contentDocument)).append( xWid.resources.style_slidebar_head );
 
@@ -113,11 +108,6 @@ var xWid = {
 
 			jQuery("#goinit",slide.contentDocument).click( function () { 
 				xWid.transport.init();
-			});
-			jQuery("#gofetch",slide.contentDocument).click( function () { 
-				xWid.digester.init(xWid.uiDoc);
-				var content = xWid.transport.load();
-
 			});
 			jQuery("#gosave",slide.contentDocument).click( function () { 
 				xWid.digester.refreshSelfTextArea();
@@ -151,31 +141,10 @@ var xWid = {
 xWid.init();
 
 
-/*
-jetpack.selection.onSelection(function regionCapture() {
-
-    jetpack.selection.html = "<span style='border:2px solid black;' id='selsel'>" + jetpack.selection.html + "</span>";
-    var currDoc = jetpack.tabs.focused.contentDocument;
-    var currWin = jetpack.tabs.focused.contentWindow;
-    var embedBox = currDoc.getElementById("selsel").getBoundingClientRect(); 
-    x = embedBox.left;
-    y = embedBox.top;
-    w = parseInt(embedBox.width);
-    h = parseInt(embedBox.height);
-
-    ////
-    /// This is a selection capture that allows for canvas window capture 
-    /// for the selection range of a page. 
-    //
-    //setTimeout("xWid.launchForGrab("+currWin+","+x+","+y+","+w+","+h+")", 2000 );
-     var canvas = xWid.uiDoc.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
-     jQuery(canvas).appendTo(jQuery("body",xWid.uiDoc));
-     xWid.createPreviewFromArea( currWin ,x,y,w,h, canvas);
-    //xWid.init();
-
-});
-
-*/ 
+/* 
+ Digester 
+ ---
+*/
 
 xWid.digester = { 
 	
@@ -218,7 +187,7 @@ xWid.digester = {
 		jQuery("#wikitextarea",this.slideDoc).val(this.userContent);
 	}, 
 	refreshSelfTextArea: function () { 
-		this.userContent = jQuery("#wikitextarea",this.slideDoc).val();
+	 	jQuery("#wikitextarea",this.slideDoc).val(this.userContent);
 	} , 
 
   	parse: function () { 
@@ -241,147 +210,7 @@ xWid.digester = {
 		var sortableDateTimeStamp = yy+"-"+mm+"-"+dd+" "+hh+":"+mm+":"+ss+" ";	
 		this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+":"+data + "\n" ;
 		jQuery("#wikitextarea", this.slideDoc).val( this.userContent );
-	} 
-} 
 
-
-var libCataliser_post = { 
-
-        repository  : null,
-        status      : null,
-        login    : null,
-
-        wikiDoc     : null,
-        wikiTab     : null, 
-        bufferFrame : null, 
-        bufferFrameLoadCallback : function () { } , 
-        wikiEditDoc : null,
-
- 	helper_login: function () { 
-   		this.wikiTab = jetpack.tabs.open(this.repository);
-                this.wikiTab.focus();   // TODO remove the focus to the tab soon
-    	}, 
-
-
-        init: function () {
-		 
-		var stampedThis = this; 
-		if(!this.bufferFrame) { 
- 			jQuery("body",xWid.uiDoc).append('<iframe id="frame" class="frame" src="about:blank"></frame>');	
-		 	this.bufferFrame = xWid.uiDoc.getElementById("frame");
-			jQuery(".frame", xWid.uiDoc).load( function () { stampedThis.bufferFrameLoadCallback() } );
- 		} 
-		this.bufferFrameLoadCallback =  function(){
-				stampedThis.wikiDoc = xWid.uiDoc.getElementById('frame').contentDocument;
-				stampedThis.load();	
-
-				stampedThis.isloading=false;
-				xWid.loadingOff();
-		};
-
-      		jQuery(".frame", xWid.uiDoc).attr("src", this.repository);
-		this.isloading=true;
-		xWid.loadingOn(); // animation
-        },
-
-        load: function () {
-
-		var doc = this.wikiDoc; 
-		var foundLogin = false; 
-		var stampedThis = this; 
-                jQuery("a[title^='Edit section: "+this.login+"']", doc).each( function () {
-                        item = jQuery(this).attr("href");
-	
-			// warning replace this to the base for the wiki site
-
-                        var toURL = "https://wiki.mozilla.org"+item;
-			foundLogin = true; 
-
-		 	stampedThis.isloading=true;	
-			xWid.loadingOn();
-
-			stampedThis.bufferFrameLoadCallback = function () { 
-				stampedThis.isloading=false;
-				xWid.loadingOff();
-				
-				// warning - just moved here to load the text
-				// content area just one time. 
-
-				xWid.digester.init(xWid.uiDoc);
-                                let doc = xWid.uiDoc.getElementById('frame').contentDocument;
-				xWid.digester.userContent = jQuery("#wpTextbox1",doc).val();
-                                xWid.transport.wikiEditDoc = doc;
-                                xWid.digester.load();
-			} 
-			jQuery(".frame", xWid.uiDoc).attr("src", toURL);
-
-                })
-
-		if(!foundLogin) { 
-			jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
-			jQuery("#notificationpanel",xWid.uiDoc).append(xWid.resources.html_login_helper);
-			this.helper_login();
-			jQuery("#gotry",xWid.uiDoc).click( function () { 
-				jQuery("#notificationpanel",xWid.uiDoc).html("");
-				jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
-				xWid.transport.init();
-			});
-		} else { 
-			jQuery("#goinit", xWid.uiDoc).html("Expressing");
-			jQuery("#goinit", xWid.uiDoc).attr("disabled","disabled");
-			jQuery("#gosave", xWid.uiDoc).removeAttr("disabled");
-			jQuery("#historypanel", xWid.uiDoc).css("display","block");
-			jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
-		} 
-
-        },
-        grab: function () {
-
-        },
-        sync: function (dataContentString) {
-                jQuery("#wpTextbox1", this.wikiEditDoc).val(dataContentString);
-                jQuery("#wpSave",this.wikiEditDoc).trigger("click");
-        }
-
-} 
-
-var libCataliser_Wikimedia = { 
-
-	repository  : null, 
-	status      : null,
-        login    : null, 
-
-	wikiTab     : null, 
-	wikiEditDoc : null, 
-
-  	init: function () { 
-		this.wikiTab = jetpack.tabs.open(this.repository); 
-		this.wikiTab.focus(); 	// TODO remove the focus to the tab soon
- 	}, 
-
-	load: function () { 
-		var doc = this.wikiTab.contentDocument; 
-		jQuery("a[title^='Edit section: "+this.login+"']", doc).each( function () {
-                        item = jQuery(this).attr("href");
-                        var toURL = "https://wiki.mozilla.org"+item;
-                        var editTab = jetpack.tabs.open(toURL);
-
-
-                        editTab.focus();
-			editTab.onReady(function(doc){
-				xWid.digester.userContent = jQuery("#wpTextbox1",doc).val();
-				xWid.transport.wikiEditDoc = doc;
-				xWid.digester.load();	
-			}); 
-
-                })
-	}, 
-	grab: function () { 
-
-  	}, 
-	sync: function (dataContentString) { 
-		jQuery("#wpTextbox1", this.wikiEditDoc).val(dataContentString);
-		jQuery("#wpSave",this.wikiEditDoc).trigger("click");
 	} 
 } 
 

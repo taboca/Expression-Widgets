@@ -1,1 +1,1 @@
-cat core.js widget_snapshot.js widget_text.js > xWid.js
+cat ./src/core.js ./src/transport_wiki_mozilla_post.js ./src/widget_snapshot.js ./src/widget_text.js after_settings.js > ./output/xWid.js
