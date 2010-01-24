@@ -38,6 +38,8 @@ var xWid = {
   uiDoc     : null, 
   transport : null,       // This is a plugin. See the build system. 
   digester  : null,       // This is a plugin. See the build system. 
+    
+  cssStack_slidebar: new Array(), 
  
   launchForGrab : function (currWin,x,y,w,h){
      this.canvas = this.uiDoc.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
@@ -91,12 +93,21 @@ var xWid = {
 
 			xWid.uiDoc = slide.contentDocument; 
 
-			jQuery(slide.contentDocument.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",slide.contentDocument)).append( xWid.resources.style_slidebar_head );
+			// This is a little framework to let others to add new style to the slidebar..
+			var cssBuffer = "";
+			for (var key in xWid.cssStack_slidebar) { 
+				cssBuffer += xWid.cssStack_slidebar[key];				
+				xWid.dump("Adding.. " + cssBuffer );
+ 			} 
+
+			jQuery(slide.contentDocument.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",slide.contentDocument)).append( xWid.resources.style_slidebar_head + cssBuffer );
+
+			// end..
 
 			jQuery("body", slide.contentDocument).html(xWid.resources.html_panel);
 
+			xWid.transport.login      = xWid.localStore.login; 
 			xWid.transport.repository = xWid.localStore.repository; 
-			xWid.transport.login   = xWid.localStore.login; 
 
  			jQuery("#login", slide.contentDocument).val(xWid.transport.login); 
  			jQuery("#repository", slide.contentDocument).val(xWid.transport.repository); 
@@ -110,13 +121,16 @@ var xWid = {
 			jQuery("#goinit",slide.contentDocument).click( function () { 
 				xWid.transport.init();
 			});
+			jQuery("#goclass",slide.contentDocument).click( function () { 
+				var visitRepo = jetpack.tabs.open(xWid.transport.repository);
+				visitRepo.focus();
+			});
 			jQuery("#gosave",slide.contentDocument).click( function () { 
 				xWid.digester.refreshSelfTextArea();
+				xWid.dump(xWid.digester.userContent);
 				xWid.transport.sync(xWid.digester.userContent);
 
 			});
-
- 			jQuery("body",slide.contentDocument).append("<div id='debug'></div>");
 
 			// Notice we populate the widgets here in the menu but we dont yet 
 			// enable the #widgetspanel UI element .. only if they are logged in 
@@ -132,7 +146,8 @@ var xWid = {
 			} 
 
 			// use this to speed up widgets panels in the UI aside from the login state
-//			jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
+			// jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
+
                 }
 	});
   } 
@@ -169,10 +184,11 @@ jetpack.me.onFirstRun(function () {
 */
 
 xWid.resources = { 
-    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td>Class</td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Login</button><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='loadingfeedback'><img src='chrome://global/skin/media/throbber.png'></div><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historypanel'></div>", 
+    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass'>Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Login</button><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='loadingfeedback'><img src='chrome://global/skin/media/throbber.png'></div><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historypanel'></div> <div id='debug'></div>", 
     html_login_helper: "<div id='helper'>You are not logged in. Log over the wiki and then click here <button id='gotry'>Retry</button> </div>",
     style_slidebar_head: " #loadingfeedback { padding:1em; display:none;text-align:center } table { margin:auto;  margin-top:1em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:90%; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; } #widgetspanel { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #fdd, #fff);  } #widgetscanvas { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #fdd, #fff); }  #notificationpanel { margin:auto; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historypanel {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #ddd, #fff); display:none }  ",
 } 
+
 
 /* 
    Widgets 

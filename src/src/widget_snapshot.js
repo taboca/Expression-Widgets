@@ -54,7 +54,7 @@ widgets.snapshot = {
 		namedRefThis.canvas = doc.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
 
     		jQuery("body",doc).append( namedRefThis.canvas );
-		jQuery("body",namedRefThis.slideDoc).append("Dump:"+ namedRefThis.referenceContentWindow);
+		xWid.dump("snapshot:"+ namedRefThis.referenceContentWindow);
 
 		// Take the screenshot! 
 		// widgets.snapshot.createPreviewRaw(namedRefThis.referenceContentWindow, namedRefThis.canvas);

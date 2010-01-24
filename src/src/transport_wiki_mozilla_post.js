@@ -18,7 +18,7 @@ var libCataliser_post = {
         init: function () {
 		var stampedThis = this; 
 		if(!this.bufferFrame) { 
- 			jQuery("body",xWid.uiDoc).append('<iframe id="frame" class="frame" src="about:blank"></frame>');	
+ 			jQuery("body",xWid.uiDoc).append('<iframe id="frame" class="frame" class="width:160px" src="about:blank"></frame>');	
 		 	this.bufferFrame = xWid.uiDoc.getElementById("frame");
 			jQuery(".frame", xWid.uiDoc).load( function () { stampedThis.bufferFrameLoadCallback() } );
  		} 
@@ -76,7 +76,7 @@ var libCataliser_post = {
 				xWid.transport.init();
 			});
 		} else { 
-			jQuery("#goinit", xWid.uiDoc).html("Expressing");
+			jQuery("#goinit", xWid.uiDoc).html("Expressing ON");
 			jQuery("#goinit", xWid.uiDoc).attr("disabled","disabled");
 			jQuery("#gosave", xWid.uiDoc).removeAttr("disabled");
 			jQuery("#historypanel", xWid.uiDoc).css("display","block");
@@ -88,8 +88,23 @@ var libCataliser_post = {
 
         },
         sync: function (dataContentString) {
+		let stampedThis = this; 
+
+ 		stampedThis.bufferFrameLoadCallback = function () {
+                                stampedThis.isloading=false;
+                                xWid.loadingOff();
+				xWid.dump("Saved...");
+				stampedThis.load();
+				xWid.dump("Loading again in edit mode....");
+                }
+
                 jQuery("#wpTextbox1", this.wikiEditDoc).val(dataContentString);
+
+		stampedThis.isloading = true; 
+		xWid.loadingOn();
                 jQuery("#wpSave",this.wikiEditDoc).trigger("click");
+		
+		
         }
 
 } 
