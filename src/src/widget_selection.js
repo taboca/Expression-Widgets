@@ -1,0 +1,52 @@
+// Uses 
+// https://wiki.mozilla.org/Labs/Jetpack/JEP/12  
+
+widgets.selection = { 
+
+  name		: "selection",  // name bind that gets exported to the remote respository
+  slideDoc      : null, 
+  selectedText  : "",
+
+  register: function (slideDoc) { 
+	
+	this.slideDoc = slideDoc; 
+	refThis = this; 
+	var obj =  {   
+		markup_menu: "<button style='background-color:lightgreen' id='selection_do'>Text/Selection</button>",
+		markup_init: "<button>get</button>",
+		init_bind_id: "selection_do"
+  	} 
+ 	return obj;
+  },
+
+  init: function () { 
+	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
+	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#cec");
+        jQuery("#widgetscanvas",this.slideDoc).html("Type text or select from browser:<br /> <input id='widget_selection_field' style='padding:.2em' /><button id='widget_selection_send'>Send</button>");
+	refThis = this; 
+	jQuery("#widget_selection_field",refThis.slideDoc).focus();
+        jQuery("#widget_selection_send",this.slideDoc).click( function () {
+                xWid.digester.add(refThis, jQuery("#widget_selection_field",refThis.slideDoc).val());
+                jQuery("#widgetscanvas",refThis.slideDoc).html("");
+                jQuery("#widgetscanvas",refThis.slideDoc).css("display","none");
+        })
+
+  } , 
+
+  refresh: function () { 
+	jQuery("#widget_selection_field", this.slideDoc).css("background-color","lightgreen");
+	jQuery("#widget_selection_field", this.slideDoc).val(this.selectedText);
+  } 
+} 
+
+// Register 
+widgets.list.push(widgets.selection); 
+
+// Extra https://wiki.mozilla.org/Labs/Jetpack/JEP/12
+jetpack.selection.onSelection(function keepText() {
+
+    widgets.selection.selectedText = jetpack.selection.text; 
+    widgets.selection.refresh(); 
+
+});
+
