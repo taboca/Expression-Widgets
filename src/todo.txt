@@ -1,0 +1,1 @@
+* Check the snapshot close() not working on tabs

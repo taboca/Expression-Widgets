@@ -387,6 +387,59 @@ var libCataliser_post = {
 
 } 
 
+widgets.drop = { 
+
+  name		: "drop",  // name bind that gets exported to the remote respository
+  slideDoc      : null, 
+  selectedText  : "",
+
+  register: function (slideDoc) { 
+	
+	this.slideDoc = slideDoc; 
+	refThis = this; 
+	var obj =  {   
+		markup_menu: "<button style='background-color:#cce' id='drop_do'>Drop</button>",
+		markup_init: "<button>get</button>",
+		init_bind_id: "drop_do"
+  	} 
+ 	return obj;
+  },
+
+  dropOn: function (e) { 
+	e.preventDefault();
+	var data = e.dataTransfer.getData("text/plain");
+	e.target.textContent = data;
+
+        jQuery("#widgetscanvas",this.slideDoc).html(data +" <button id='widget_drop_button_send'>Send</button>")
+	refThis = this; 
+	jQuery("#widget_drop_button_send",this.slideDoc).click( function() { 
+		xWid.digester.add(refThis, data);
+                jQuery("#widgetscanvas",refThis.slideDoc).html("");
+                jQuery("#widgetscanvas",refThis.slideDoc).css("display","none");
+	});
+	return true;
+  },
+
+  init: function () { 
+
+	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
+	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#cce");
+        jQuery("#widgetscanvas",this.slideDoc).html("<div style='padding:2em' id='widget_drop_droparea'  >Drop something here... </div>");
+
+	refThis = this; 
+
+	this.slideDoc.getElementById('widget_drop_droparea').addEventListener("drop", function (e) { return refThis.dropOn(e) } , false);
+	this.slideDoc.getElementById('widget_drop_droparea').addEventListener("dragenter", function (e) { e.preventDefault(); return false } , false);
+	this.slideDoc.getElementById('widget_drop_droparea').addEventListener("dragover", function (e) { e.preventDefault(); return false } , false);
+
+  }  
+
+} 
+
+// Register 
+widgets.list.push(widgets.drop); 
+
+
 /* Please code your widget here using the format widgets.widgetname.... 
    Notice that each widget has some expected "interface" functions 
    so that the main app can load them. For now the register function returns the markup 
@@ -407,7 +460,7 @@ widgets.snapshot = {
   editor:  { axis_x: null, axis_y: null, x:0, y:0, on: false, box:null, ww: 0, hh:0  }, 
    
   resources: {
-    style_head     : "html {background:#ddd;} body { text-align:center; margin;auto; }  canvas { border:1px solid black}  ",
+    style_head     : "html {background:#ecc;} body { text-align:center; margin;auto; }  canvas { border:5px solid black}  ",
     html_container : "<canvas id='workingcanvas'></canvas>"
   },
 
@@ -429,6 +482,9 @@ widgets.snapshot = {
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
 	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#ecc");
         jQuery("#widgetscanvas",this.slideDoc).html("Select area from the taken page screenshot.");
+
+	this.edited = false; 
+	this.editor.on = false; 
 
 	widgets.snapshot.referenceContentWindow = jetpack.tabs.focused.contentWindow;
 
@@ -591,8 +647,8 @@ widgets.snapshot = {
   }, 
   editorSnap: function () {
         this.createPreviewRaw(this.referenceContentWindow , this.canvas, this.editor.x, this.editor.y, this.editor.ww, this.editor.hh);
-	jQuery("body",this.editorDoc).append("<button id='widget_snapshot_addbutton'>Send</button>");
-        jQuery("#widgetscanvas",this.slideDoc).html("<button id='widget_snapshot_send'>Send</button>");
+	jQuery("body",this.editorDoc).append("<h2>Screenshot selected!</h2><p>Click Send to send this image to your history <button id='widget_snapshot_addbutton'>Send</button> or simply close this tab to give up. ");
+        jQuery("#widgetscanvas",this.slideDoc).html("Click the Send button to add the image. <button id='widget_snapshot_send'>Send</button>");
 
         jQuery("#widget_snapshot_send",this.slideDoc).click( function () {
                 jQuery("#widgetscanvas",refThis.slideDoc).html("");
@@ -604,6 +660,7 @@ widgets.snapshot = {
                 jQuery("#widgetscanvas",refThis.slideDoc).html("");
                 jQuery("#widgetscanvas",refThis.slideDoc).css("display","none");
 		xWid.digester.add(widgets.snapshot, widgets.snapshot.canvas.toDataURL("image/png",""));
+		refThis.canvasTab.contentWindow.close();
 	});
 
   }, 
