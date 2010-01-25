@@ -2,9 +2,15 @@
 
 var manifest = {  
   firstRunPage: <>  
+
+	<div style='padding:2em'>
+	<div style="padding:1em;-moz-box-shadow: black 0 0 30px; -moz-border-radius:30px;background-image: -moz-linear-gradient(top, lightblue, #fff);  ">
+	<h1>Welcome to Expression Widgets</h1>
     <p>  
-	Welcome to Expression Widgets. 
+	To open the Expression Widgets panel please use the slide bar element on the left acessible using the icon ( <img src='chrome://jetpack/content/gfx/arrowRight.png' /> ) at the left hand corder of your browser window. 
     </p>  
+	</div>
+	</div>
   </>  
 }; 
 

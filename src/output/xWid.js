@@ -156,27 +156,6 @@ var xWid = {
 
 xWid.init();
 
-/* firstRun */
-
-var manifest = {  
-  firstRunPage: <>  
-    <p>  
-	Welcome to Expression Widgets. 
-    </p>  
-  </>  
-}; 
-
-jetpack.me.onFirstRun(function () {
-	jetpack.notifications.show("Oh boy, I'm installed! you are running as alpha test so I did set the repository as being mozilla wiki page and also the login");
-	if(xWid.localStore.repository) { 
-		// In case we have no previous settings.. 
- 	} else { 
- 		xWid.localStore.repository = "https://wiki.mozilla.org/Education/Projects/JetpackForLearning/Profiles/expressionWidjets/class1"; 
-		xWid.localStore.login = "Marcio";
-	} 
-});
-
-
 /* Local Resources 
    ---
    Under this section you can keep simply the assets related to HTML and aCSS. These
@@ -199,6 +178,32 @@ xWid.resources = {
 var widgets = { 
 	list: new Array()
 } 
+
+/* firstRun */
+
+var manifest = {  
+  firstRunPage: <>  
+
+	<div style='padding:2em'>
+	<div style="padding:1em;-moz-box-shadow: black 0 0 30px; -moz-border-radius:30px;background-image: -moz-linear-gradient(top, lightblue, #fff);  ">
+	<h1>Welcome to Expression Widgets</h1>
+    <p>  
+	To open the Expression Widgets panel please use the slide bar element on the left acessible using the icon ( <img src='chrome://jetpack/content/gfx/arrowRight.png' /> ) at the left hand corder of your browser window. 
+    </p>  
+	</div>
+	</div>
+  </>  
+}; 
+
+jetpack.me.onFirstRun(function () {
+	jetpack.notifications.show("Oh boy, I'm installed! you are running as alpha test so I did set the repository as being mozilla wiki page and also the login");
+	if(xWid.localStore.repository) { 
+		// In case we have no previous settings.. 
+ 	} else { 
+ 		xWid.localStore.repository = "https://wiki.mozilla.org/Education/Projects/JetpackForLearning/Profiles/expressionWidjets/class1"; 
+		xWid.localStore.login = "Marcio";
+	} 
+});
 
 
 /* 
