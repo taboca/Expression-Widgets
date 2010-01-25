@@ -1,5 +1,8 @@
 Expression Widgets - JetPack for Learning Challenge 
 ---
+New project home
+http://taboca.github.com/Expression-Widgets/
+---
 This project supports the JetPack for Learning Project (http://design-challenge.mozillalabs.com/jetpack-for-learning/) organized by Mozilla and supported by Mozilla, MacArthur Foundation, and other peers. 
 
 Background: 
@@ -30,25 +33,3 @@ Original Documentation link:
 ===
 December 1st, 2009: 
 http://blog.taboca.com/jetpack-for-learning-submission
-
-Project Status
-===
-* Documentation Wiki - General Parent Project - https://wiki.mozilla.org/Education/Projects/JetpackForLearning
-* 
-* December 29th - Github project - the idea is to show the development milestones in a more open format. For this reason GitHub was selected and also because it serves well as a code repository. 
-* Dec 30th - Landing partial support to web page capture. It holds a canvas and screensaved element in the local slideBar. We need the concept of an element that represents the element the user wants to send to the repositoty to his/her communciation. 
-
-* Dec 30th - The xStatement Object as being { time_uuid, who, referto, relation/data }. This is suppose to be something like an RDF and also to represent an input from user. User may be able to create operations with other items or collection of items from other users. So in some cases the referto can also support a range of objects under the store. 
-
-Development Documentation
-===
-
-Sync Repositories
-
-* Mozilla Wiki pages - The mozilla wiki pages are going to serve as initial temporary repositories to execute some of the tests. The Mozilla wiki.mozilla.org system does not offer the API, so we may simply use JetPack to seamless read/write as an end-user, to the wiki pages. We have created a space for tests: https://wiki.mozilla.org/Education/Projects/JetpackForLearning/Profiles/expressionWidjets/class1 class2, class3, etc. 
-
-JEP dependencies
-
-* https://wiki.mozilla.org/Labs/Jetpack/JEP/16 - Slidebar 
-* https://wiki.mozilla.org/Labs/Jetpack/JEP/12 - Selection
-* FirstRun 30 
