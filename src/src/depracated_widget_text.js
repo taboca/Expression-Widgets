@@ -16,6 +16,10 @@ widgets.text = {
  	return obj;
   },
 
+  parse: function(data) { 
+ 	return data;	
+  },
+
   init: function () { 
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
         jQuery("#widgetscanvas",this.slideDoc).html("<input id='widget_text_field' /><button id='widget_text_send'>Send</button>");
@@ -29,4 +33,6 @@ widgets.text = {
   } 
 } 
 
-widgets.list.push(widgets.text); 
+//widgets.list.push(widgets.text); 
+widgets.list[widgets.text.name] = widgets.text;
+

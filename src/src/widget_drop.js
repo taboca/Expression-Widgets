@@ -17,6 +17,12 @@ widgets.drop = {
  	return obj;
   },
 
+
+  parse: function (data) {
+        return data;
+  },
+
+
   dropOn: function (e) { 
 	e.preventDefault();
 	var data = e.dataTransfer.getData("text/plain");
@@ -49,5 +55,6 @@ widgets.drop = {
 } 
 
 // Register 
-widgets.list.push(widgets.drop); 
+//widgets.list.push(widgets.drop); 
+widgets.list[widgets.drop.name] = widgets.drop;
 

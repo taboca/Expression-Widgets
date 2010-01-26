@@ -163,9 +163,9 @@ xWid.init();
 */
 
 xWid.resources = { 
-    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass'>Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Login</button><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='loadingfeedback'><img src='chrome://global/skin/media/throbber.png'></div><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historypanel'></div> <div id='debug'></div>", 
+    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass'>Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Login</button><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='loadingfeedback'><img src='chrome://global/skin/media/throbber.png'></div><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historycontainer'><div id='historypanel'></div></div> <div id='debug'></div>", 
     html_login_helper: "<div id='helper'>You are not logged in. Log over the wiki and then click here <button id='gotry'>Retry</button> </div>",
-    style_slidebar_head: " #loadingfeedback { padding:1em; display:none;text-align:center } table { margin:auto;  margin-top:1em; margin-bottom:0; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:92%; border:3px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; } #widgetspanel { display:none; margin:auto; margin-top:0; width:80%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius: 0 0 10px 10px; background-image: -moz-linear-gradient(top, #000, #000);  } #widgetscanvas { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%;  }  #notificationpanel { margin:auto; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historypanel {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #ddd, #fff); display:none } #widgetspanel button { -moz-border-radius:8px; border:1px solid black; padding:3px; margin:2px } .statement { border-bottom:1px solid gray; display:block; font-size:86%; font-family:arial; margin-bottom:.5em; }  ",
+    style_slidebar_head: " #loadingfeedback { padding:1em; display:none;text-align:center } table { margin:auto;  margin-top:1em; margin-bottom:0; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:92%; border:3px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; } #widgetspanel { display:none; margin:auto; margin-top:0; width:80%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius: 0 0 10px 10px; background-image: -moz-linear-gradient(top, #000, #000);  } #widgetscanvas { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%;  }  #notificationpanel { margin:auto; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historycontainer {  margin:auto; width:250px; height:300px; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px;  background-image: -moz-linear-gradient(top, #ddd, #fff); display:none; overflow:scroll } #historypanel { width:1400px; } #widgetspanel button { -moz-border-radius:8px; border:1px solid black; padding:3px; margin:2px } .statement { border-bottom:1px solid gray; display:block; font-size:86%; font-family:arial; margin-bottom:.5em; }  ",
 } 
 
 
@@ -256,21 +256,62 @@ xWid.digester = {
 
  	load: function () { 
 
+
+                jQuery("#historypanel", this.slideDoc).html("");
+
+
 		var preParse = this.userContent.split("=== "+xWid.transport.login+ " ===");
 		if (preParse.length==2) { 
 			xWid.dump("Found user..");
 			
 			var userData = preParse[1].split("*"); 
+
 			for (var key in userData) { 
 				let currLine = userData[key];
-				let nodeEntry = this.slideDoc.createElementNS("http://www.w3.org/1999/xhtml","span");
-				nodeEntry.setAttribute("class","statement"); 
-				nodeEntry.setAttribute("date",""); 
-				nodeEntry.innerHTML=currLine;
-				jQuery("#historypanel", this.slideDoc).append(nodeEntry);	
+
+				// We trim first
+				currLine = jQuery.trim(currLine);
+	
+				let dataChunks = currLine.split("  "); 
+				let metaChunks = dataChunks[0];
+			
+				if(metaChunks.length>=2) { 
+
+					let date = metaChunks[0]; 
+					let hour = metaChunks[1]; 
+				 	let data = dataChunks[1]; 	
+
+					var richNode=""; 
+ 					try { 
+						xWid.dump("==="+data);
+						richNode = this.parseData(data);
+					} catch(i) { richNode = "" } 
+//					richNode = data; 
+
+	
+					let nodeEntry = this.slideDoc.createElementNS("http://www.w3.org/1999/xhtml","span");
+					nodeEntry.setAttribute("class","statement"); 
+					nodeEntry.setAttribute("date",date); 
+					nodeEntry.setAttribute("hour",hour); 
+					nodeEntry.innerHTML=richNode;
+					jQuery("#historypanel", this.slideDoc).append(nodeEntry);	
+				
+				} else { 
+					xWid.dump("Not understand statement..");
+				} 	
+
 			} 
 		} 
 	}, 
+
+	/* So far we have the various types here hardcoded. But these visualization/parsing needs 
+	to be defined in the widget time. */
+	parseData: function (data) { 
+		var queryAppData = data.split("::");
+		var appName = queryAppData[0];
+		return widgets.list[appName].parse(queryAppData[1]);
+	},	
+
 	refreshSelfTextArea: function () { 
 	 //	jQuery("#wikitextarea",this.slideDoc).val(this.userContent);
 	} , 
@@ -281,7 +322,7 @@ xWid.digester = {
 
 	add: function ( refWidget, data) { 
 		var yy = this.time_getYear(); 
-		var mm = this.time_getMonth(); 
+		var mo = this.time_getMonth(); 
 		var dd = this.time_getDay(); 
 		var hh = this.time_getHour(); 
 		var mm = this.time_getMin(); 
@@ -289,8 +330,8 @@ xWid.digester = {
 		/* We now have to send the time stamp using some form of universal date time 
 		pattern that can be sortable as we may want to later on sort all the participants
 		data by the time they posted */
-		var sortableDateTimeStamp = yy+"-"+mm+"-"+dd+" "+hh+":"+mm+":"+ss+" ";	
-		this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+":"+data + "\n" ;
+		var sortableDateTimeStamp = yy+"-"+mo+"-"+dd+" "+hh+":"+mm+":"+ss+" ";	
+		this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+"::"+data + "\n" ;
 		//jQuery("#wikitextarea", this.slideDoc).val( this.userContent );
 
 	} 
@@ -377,7 +418,7 @@ var libCataliser_post = {
 			jQuery("#goinit", xWid.uiDoc).html("Expressing ON");
 			jQuery("#goinit", xWid.uiDoc).attr("disabled","disabled");
 			jQuery("#gosave", xWid.uiDoc).removeAttr("disabled");
-			jQuery("#historypanel", xWid.uiDoc).css("display","block");
+			jQuery("#historycontainer", xWid.uiDoc).css("display","block");
 			jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
 		} 
 
@@ -425,6 +466,12 @@ widgets.drop = {
  	return obj;
   },
 
+
+  parse: function (data) {
+        return data;
+  },
+
+
   dropOn: function (e) { 
 	e.preventDefault();
 	var data = e.dataTransfer.getData("text/plain");
@@ -457,7 +504,8 @@ widgets.drop = {
 } 
 
 // Register 
-widgets.list.push(widgets.drop); 
+//widgets.list.push(widgets.drop); 
+widgets.list[widgets.drop.name] = widgets.drop;
 
 
 /* Please code your widget here using the format widgets.widgetname.... 
@@ -482,6 +530,12 @@ widgets.snapshot = {
   resources: {
     style_head     : "html {background:#ecc;} body { text-align:center; margin;auto; }  canvas { border:5px solid black}  ",
     html_container : "<canvas id='workingcanvas'></canvas>"
+  },
+
+
+  parse: function (data) {
+	xWid.dump("Snapshot:"+data);
+        return "<img src='"+data+"' />";
   },
 
   register: function (slideDoc) { 
@@ -727,14 +781,17 @@ widgets.snapshot = {
 } 
 /* Register your Widget code here... */
 
-widgets.list.push(widgets.snapshot); 
+//widgets.list.push(widgets.snapshot); 
+widgets.list[widgets.snapshot.name] = widgets.snapshot;
+
+xWid.cssStack_slidebar.push(".statement img { width:64px; } ");
 
 // Uses 
 // https://wiki.mozilla.org/Labs/Jetpack/JEP/12  
 
 widgets.selection = { 
 
-  name		: "selection",  // name bind that gets exported to the remote respository
+  name		: "text",  // name bind that gets exported to the remote respository
   slideDoc      : null, 
   selectedText  : "",
 
@@ -748,6 +805,10 @@ widgets.selection = {
 		init_bind_id: "selection_do"
   	} 
  	return obj;
+  },
+
+  parse: function (data) { 
+	return data; 
   },
 
   init: function () { 
@@ -771,7 +832,7 @@ widgets.selection = {
 } 
 
 // Register 
-widgets.list.push(widgets.selection); 
+widgets.list[widgets.selection.name] = widgets.selection; 
 
 // Extra https://wiki.mozilla.org/Labs/Jetpack/JEP/12
 jetpack.selection.onSelection(function keepText() {

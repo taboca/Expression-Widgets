@@ -23,6 +23,12 @@ widgets.snapshot = {
     html_container : "<canvas id='workingcanvas'></canvas>"
   },
 
+
+  parse: function (data) {
+	xWid.dump("Snapshot:"+data);
+        return "<img src='"+data+"' />";
+  },
+
   register: function (slideDoc) { 
 	
 	this.slideDoc = slideDoc; 
@@ -266,5 +272,8 @@ widgets.snapshot = {
 } 
 /* Register your Widget code here... */
 
-widgets.list.push(widgets.snapshot); 
+//widgets.list.push(widgets.snapshot); 
+widgets.list[widgets.snapshot.name] = widgets.snapshot;
+
+xWid.cssStack_slidebar.push(".statement img { width:64px; } ");
 

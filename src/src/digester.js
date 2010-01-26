@@ -49,21 +49,62 @@ xWid.digester = {
 
  	load: function () { 
 
+
+                jQuery("#historypanel", this.slideDoc).html("");
+
+
 		var preParse = this.userContent.split("=== "+xWid.transport.login+ " ===");
 		if (preParse.length==2) { 
 			xWid.dump("Found user..");
 			
 			var userData = preParse[1].split("*"); 
+
 			for (var key in userData) { 
 				let currLine = userData[key];
-				let nodeEntry = this.slideDoc.createElementNS("http://www.w3.org/1999/xhtml","span");
-				nodeEntry.setAttribute("class","statement"); 
-				nodeEntry.setAttribute("date",""); 
-				nodeEntry.innerHTML=currLine;
-				jQuery("#historypanel", this.slideDoc).append(nodeEntry);	
+
+				// We trim first
+				currLine = jQuery.trim(currLine);
+	
+				let dataChunks = currLine.split("  "); 
+				let metaChunks = dataChunks[0];
+			
+				if(metaChunks.length>=2) { 
+
+					let date = metaChunks[0]; 
+					let hour = metaChunks[1]; 
+				 	let data = dataChunks[1]; 	
+
+					var richNode=""; 
+ 					try { 
+						xWid.dump("==="+data);
+						richNode = this.parseData(data);
+					} catch(i) { richNode = "" } 
+//					richNode = data; 
+
+	
+					let nodeEntry = this.slideDoc.createElementNS("http://www.w3.org/1999/xhtml","span");
+					nodeEntry.setAttribute("class","statement"); 
+					nodeEntry.setAttribute("date",date); 
+					nodeEntry.setAttribute("hour",hour); 
+					nodeEntry.innerHTML=richNode;
+					jQuery("#historypanel", this.slideDoc).append(nodeEntry);	
+				
+				} else { 
+					xWid.dump("Not understand statement..");
+				} 	
+
 			} 
 		} 
 	}, 
+
+	/* So far we have the various types here hardcoded. But these visualization/parsing needs 
+	to be defined in the widget time. */
+	parseData: function (data) { 
+		var queryAppData = data.split("::");
+		var appName = queryAppData[0];
+		return widgets.list[appName].parse(queryAppData[1]);
+	},	
+
 	refreshSelfTextArea: function () { 
 	 //	jQuery("#wikitextarea",this.slideDoc).val(this.userContent);
 	} , 
@@ -83,7 +124,7 @@ xWid.digester = {
 		pattern that can be sortable as we may want to later on sort all the participants
 		data by the time they posted */
 		var sortableDateTimeStamp = yy+"-"+mo+"-"+dd+" "+hh+":"+mm+":"+ss+" ";	
-		this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+":"+data + "\n" ;
+		this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+"::"+data + "\n" ;
 		//jQuery("#wikitextarea", this.slideDoc).val( this.userContent );
 
 	} 

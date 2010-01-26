@@ -3,7 +3,7 @@
 
 widgets.selection = { 
 
-  name		: "selection",  // name bind that gets exported to the remote respository
+  name		: "text",  // name bind that gets exported to the remote respository
   slideDoc      : null, 
   selectedText  : "",
 
@@ -17,6 +17,10 @@ widgets.selection = {
 		init_bind_id: "selection_do"
   	} 
  	return obj;
+  },
+
+  parse: function (data) { 
+	return data; 
   },
 
   init: function () { 
@@ -40,7 +44,7 @@ widgets.selection = {
 } 
 
 // Register 
-widgets.list.push(widgets.selection); 
+widgets.list[widgets.selection.name] = widgets.selection; 
 
 // Extra https://wiki.mozilla.org/Labs/Jetpack/JEP/12
 jetpack.selection.onSelection(function keepText() {
