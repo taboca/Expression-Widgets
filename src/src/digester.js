@@ -41,8 +41,28 @@ xWid.digester = {
 	
 		xWid.dump("Digester init...");	
 	}, 
+
+	// Digest the data loaded and kept in userContent 
+  	// to a new structure that can be displayed, maybe modified 
+	// maybe merged with other students. We are trying to understand
+ 	// the various ways we can digest the information. 
+
  	load: function () { 
-	//	jQuery("#wikitextarea",this.slideDoc).val(this.userContent);
+
+		var preParse = this.userContent.split("=== "+xWid.transport.login+ " ===");
+		if (preParse.length==2) { 
+			xWid.dump("Found user..");
+			
+			var userData = preParse[1].split("*"); 
+			for (var key in userData) { 
+				let currLine = userData[key];
+				let nodeEntry = this.slideDoc.createElementNS("http://www.w3.org/1999/xhtml","span");
+				nodeEntry.setAttribute("class","statement"); 
+				nodeEntry.setAttribute("date",""); 
+				nodeEntry.innerHTML=currLine;
+				jQuery("#historypanel", this.slideDoc).append(nodeEntry);	
+			} 
+		} 
 	}, 
 	refreshSelfTextArea: function () { 
 	 //	jQuery("#wikitextarea",this.slideDoc).val(this.userContent);
@@ -54,7 +74,7 @@ xWid.digester = {
 
 	add: function ( refWidget, data) { 
 		var yy = this.time_getYear(); 
-		var mm = this.time_getMonth(); 
+		var mo = this.time_getMonth(); 
 		var dd = this.time_getDay(); 
 		var hh = this.time_getHour(); 
 		var mm = this.time_getMin(); 
@@ -62,7 +82,7 @@ xWid.digester = {
 		/* We now have to send the time stamp using some form of universal date time 
 		pattern that can be sortable as we may want to later on sort all the participants
 		data by the time they posted */
-		var sortableDateTimeStamp = yy+"-"+mm+"-"+dd+" "+hh+":"+mm+":"+ss+" ";	
+		var sortableDateTimeStamp = yy+"-"+mo+"-"+dd+" "+hh+":"+mm+":"+ss+" ";	
 		this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+":"+data + "\n" ;
 		//jQuery("#wikitextarea", this.slideDoc).val( this.userContent );
 
