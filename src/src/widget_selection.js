@@ -3,7 +3,7 @@
 
 widgets.selection = { 
 
-  name		: "text",  // name bind that gets exported to the remote respository
+  name		: "text/selection",  // name bind that gets exported to the remote respository
   slideDoc      : null, 
   selectedText  : "",
 

@@ -7,7 +7,7 @@
 
 widgets.snapshot = { 
 
-  name		: "snapshot",  // name bind that gets exported to the remote respository
+  name		: "image/snapshot",  // name bind that gets exported to the remote respository
   referenceContentWindow  : null, 
   canvasTab     : null,
   canvas        : null, 

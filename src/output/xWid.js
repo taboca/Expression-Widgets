@@ -271,14 +271,14 @@ xWid.digester = {
 					let date = metaChunks[0]; 
 					let hour = metaChunks[1]; 
 				 	let data = dataChunks[1]; 	
-					var richNode=""; 
-					var appData ="";
+					var contentData =""; 
+					var appData  ="";
  					try { 
-						richNode = this.parseData(data);
-						appData  = data.split("::")[0];
-					} catch(i) { richNode = "" } 
+						appData     = data.split("::")[0];
+						contentData = data.split("::")[1];
+					} catch(i) {  } 
 
-					this.addStore(date, hour, appData, richNode); 
+					this.addStore(date, hour, appData, contentData); 
 
 				} else { 
 					xWid.dump("Not understand statement..");
@@ -301,23 +301,20 @@ xWid.digester = {
                         jQuery("#historypanel", this.slideDoc).append(this.render(this.storeIndex[keysArray[i]]));
                 }
         },
-
 	render: function (node) { 
-		// we are not using now node.app
 		let nodeEntry = this.slideDoc.createElementNS("http://www.w3.org/1999/xhtml","span");
 		nodeEntry.setAttribute("class","statement"); 
 		nodeEntry.setAttribute("date",node.date); 
 		nodeEntry.setAttribute("hour",node.hour); 
-		nodeEntry.innerHTML=node.data;
+		nodeEntry.innerHTML=this.parseData(node.app,node.data);
 		return nodeEntry;
 	}, 
 
 	/* So far we have the various types here hardcoded. But these visualization/parsing needs 
 	to be defined in the widget time. */
-	parseData: function (data) { 
-		var queryAppData = data.split("::");
-		var appName = queryAppData[0];
-		return widgets.list[appName].parse(queryAppData[1]);
+	parseData: function (app,data) { 
+xWid.dump("Parsing app="+app+" and data = "+data);
+		return widgets.list[app].parse(data);
 	},	
 
         addStore: function ( date, hour, app, data) {
@@ -479,7 +476,7 @@ var libCataliser_post = {
 
 widgets.drop = { 
 
-  name		: "drop",  // name bind that gets exported to the remote respository
+  name		: "text/drop",  // name bind that gets exported to the remote respository
   slideDoc      : null, 
   selectedText  : "",
 
@@ -545,7 +542,7 @@ widgets.list[widgets.drop.name] = widgets.drop;
 
 widgets.snapshot = { 
 
-  name		: "snapshot",  // name bind that gets exported to the remote respository
+  name		: "image/snapshot",  // name bind that gets exported to the remote respository
   referenceContentWindow  : null, 
   canvasTab     : null,
   canvas        : null, 
@@ -819,7 +816,7 @@ xWid.cssStack_slidebar.push(".statement img { width:64px; } ");
 
 widgets.selection = { 
 
-  name		: "text",  // name bind that gets exported to the remote respository
+  name		: "text/selection",  // name bind that gets exported to the remote respository
   slideDoc      : null, 
   selectedText  : "",
 

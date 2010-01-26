@@ -1,7 +1,7 @@
 
 widgets.drop = { 
 
-  name		: "text",  // name bind that gets exported to the remote respository
+  name		: "text/drop",  // name bind that gets exported to the remote respository
   slideDoc      : null, 
   selectedText  : "",
 
