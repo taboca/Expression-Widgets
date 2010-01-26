@@ -18,7 +18,7 @@ var libCataliser_post = {
         init: function () {
 		var stampedThis = this; 
 		if(!this.bufferFrame) { 
- 			jQuery("body",xWid.uiDoc).append('<iframe id="frame" class="frame" class="width:160px" src="about:blank"></frame>');	
+ 			jQuery("body",xWid.uiDoc).append('<iframe id="frame" class="frame"  src="about:blank"></frame>');	
 		 	this.bufferFrame = xWid.uiDoc.getElementById("frame");
 			jQuery(".frame", xWid.uiDoc).load( function () { stampedThis.bufferFrameLoadCallback() } );
  		} 
