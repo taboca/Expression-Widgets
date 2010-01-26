@@ -127,9 +127,8 @@ var xWid = {
 			});
 			jQuery("#gosave",slide.contentDocument).click( function () { 
 				xWid.digester.serialize();
-				xWid.dump(xWid.digester.userContent);
+				//xWid.dump(xWid.digester.userContent);
 				xWid.transport.sync(xWid.digester.userContent);
-
 			});
 
 			// Notice we populate the widgets here in the menu but we dont yet 
@@ -313,7 +312,6 @@ xWid.digester = {
 	/* So far we have the various types here hardcoded. But these visualization/parsing needs 
 	to be defined in the widget time. */
 	parseData: function (app,data) { 
-xWid.dump("Parsing app="+app+" and data = "+data);
 		return widgets.list[app].parse(data);
 	},	
 
@@ -837,13 +835,18 @@ widgets.selection = {
   },
 
   init: function () { 
+        jQuery("#widgetscanvas",this.slideDoc).html("<div>Type text or select from browser: <input id='widget_selection_field'  ><button id='widget_selection_send'>Send</button></div>");
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
 	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#cec");
-        jQuery("#widgetscanvas",this.slideDoc).html("Type text or select from browser:<br /> <input id='widget_selection_field' style='padding:.2em' /><button id='widget_selection_send'>Send</button>");
 	refThis = this; 
-	jQuery("#widget_selection_field",refThis.slideDoc).focus();
+	//jQuery("#widget_selection_field",this.slideDoc).focus();
         jQuery("#widget_selection_send",this.slideDoc).click( function () {
-                xWid.digester.add(refThis, jQuery("#widget_selection_field",refThis.slideDoc).val());
+		
+xWid.dump("!");
+		var data = jQuery("#widget_selection_field",refThis.slideDoc).val();
+
+		
+                xWid.digester.add(refThis, data);
                 jQuery("#widgetscanvas",refThis.slideDoc).html("");
                 jQuery("#widgetscanvas",refThis.slideDoc).css("display","none");
         })

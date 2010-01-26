@@ -127,9 +127,8 @@ var xWid = {
 			});
 			jQuery("#gosave",slide.contentDocument).click( function () { 
 				xWid.digester.serialize();
-				xWid.dump(xWid.digester.userContent);
+				//xWid.dump(xWid.digester.userContent);
 				xWid.transport.sync(xWid.digester.userContent);
-
 			});
 
 			// Notice we populate the widgets here in the menu but we dont yet 

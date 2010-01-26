@@ -24,13 +24,18 @@ widgets.selection = {
   },
 
   init: function () { 
+        jQuery("#widgetscanvas",this.slideDoc).html("<div>Type text or select from browser: <input id='widget_selection_field'  ><button id='widget_selection_send'>Send</button></div>");
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
 	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#cec");
-        jQuery("#widgetscanvas",this.slideDoc).html("Type text or select from browser:<br /> <input id='widget_selection_field' style='padding:.2em' /><button id='widget_selection_send'>Send</button>");
 	refThis = this; 
-	jQuery("#widget_selection_field",refThis.slideDoc).focus();
+	//jQuery("#widget_selection_field",this.slideDoc).focus();
         jQuery("#widget_selection_send",this.slideDoc).click( function () {
-                xWid.digester.add(refThis, jQuery("#widget_selection_field",refThis.slideDoc).val());
+		
+xWid.dump("!");
+		var data = jQuery("#widget_selection_field",refThis.slideDoc).val();
+
+		
+                xWid.digester.add(refThis, data);
                 jQuery("#widgetscanvas",refThis.slideDoc).html("");
                 jQuery("#widgetscanvas",refThis.slideDoc).css("display","none");
         })
