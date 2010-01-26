@@ -10,6 +10,7 @@ xWid.digester = {
         userContent     : null,  /* content from the wiki */
         cycle 		: null,  // state machine r/w modes etc
 
+	storeIndex	: null, 
         
 	time_getMonth: function ( ) {
 		var d = new Date(); 
@@ -48,85 +49,109 @@ xWid.digester = {
  	// the various ways we can digest the information. 
 
  	load: function () { 
-
-
                 jQuery("#historypanel", this.slideDoc).html("");
-
-
 		var preParse = this.userContent.split("=== "+xWid.transport.login+ " ===");
 		if (preParse.length==2) { 
 			xWid.dump("Found user..");
-			
 			var userData = preParse[1].split("*"); 
-
+			this.storeIndex = new Array();
 			for (var key in userData) { 
 				let currLine = userData[key];
-
-				// We trim first
 				currLine = jQuery.trim(currLine);
-	
 				let dataChunks = currLine.split("  "); 
-				let metaChunks = dataChunks[0];
-			
+				let metaChunks = dataChunks[0].split(" ");
 				if(metaChunks.length>=2) { 
-
 					let date = metaChunks[0]; 
 					let hour = metaChunks[1]; 
 				 	let data = dataChunks[1]; 	
-
-					var richNode=""; 
+					var contentData =""; 
+					var appData  ="";
  					try { 
-						xWid.dump("==="+data);
-						richNode = this.parseData(data);
-					} catch(i) { richNode = "" } 
-//					richNode = data; 
+						appData     = data.split("::")[0];
+						contentData = data.split("::")[1];
+					} catch(i) {  } 
 
-	
-					let nodeEntry = this.slideDoc.createElementNS("http://www.w3.org/1999/xhtml","span");
-					nodeEntry.setAttribute("class","statement"); 
-					nodeEntry.setAttribute("date",date); 
-					nodeEntry.setAttribute("hour",hour); 
-					nodeEntry.innerHTML=richNode;
-					jQuery("#historypanel", this.slideDoc).append(nodeEntry);	
-				
+					this.addStore(date, hour, appData, contentData); 
+
 				} else { 
 					xWid.dump("Not understand statement..");
 				} 	
-
 			} 
+			this.sortData();
 		} 
+	}, 
+
+        sortData: function () {
+                jQuery("#historypanel", this.slideDoc).html("");
+
+                var keysArray = new Array();
+                for (var k in this.storeIndex ) {
+                        keysArray.push(k);
+                }
+                keysArray.sort();
+                for(var i=0;i<keysArray.length;i++) {
+
+                        jQuery("#historypanel", this.slideDoc).append(this.render(this.storeIndex[keysArray[i]]));
+                }
+        },
+	render: function (node) { 
+		let nodeEntry = this.slideDoc.createElementNS("http://www.w3.org/1999/xhtml","span");
+		nodeEntry.setAttribute("class","statement"); 
+		nodeEntry.setAttribute("date",node.date); 
+		nodeEntry.setAttribute("hour",node.hour); 
+		nodeEntry.innerHTML=this.parseData(node.app,node.data);
+		return nodeEntry;
 	}, 
 
 	/* So far we have the various types here hardcoded. But these visualization/parsing needs 
 	to be defined in the widget time. */
-	parseData: function (data) { 
-		var queryAppData = data.split("::");
-		var appName = queryAppData[0];
-		return widgets.list[appName].parse(queryAppData[1]);
+	parseData: function (app,data) { 
+		return widgets.list[app].parse(data);
 	},	
 
-	refreshSelfTextArea: function () { 
-	 //	jQuery("#wikitextarea",this.slideDoc).val(this.userContent);
-	} , 
+        addStore: function ( date, hour, app, data) {
+                var nodeEntry = {
+                       date: date,
+                       hour: hour,
+                       app : app,
+                       data: data
+                }
+                this.storeIndex[date+hour] = nodeEntry;
+        },
+        add: function ( refWidget, data) {
+                var yy = this.time_getYear();
+                var mo = this.time_getMonth(); 
+                var dd = this.time_getDay(); 
 
-  	parse: function () { 
+                var date = yy+"-"+mo+"-"+dd; 
 
-	} , 
+                var hh = this.time_getHour(); 
+                var mm = this.time_getMin(); 
+                var ss = this.time_getSec(); 
+                
+                var hour = hh+":"+mm+":"+ss; 
 
-	add: function ( refWidget, data) { 
-		var yy = this.time_getYear(); 
-		var mo = this.time_getMonth(); 
-		var dd = this.time_getDay(); 
-		var hh = this.time_getHour(); 
-		var mm = this.time_getMin(); 
-		var ss = this.time_getSec(); 
-		/* We now have to send the time stamp using some form of universal date time 
-		pattern that can be sortable as we may want to later on sort all the participants
-		data by the time they posted */
-		var sortableDateTimeStamp = yy+"-"+mo+"-"+dd+" "+hh+":"+mm+":"+ss+" ";	
-		this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+"::"+data + "\n" ;
-		//jQuery("#wikitextarea", this.slideDoc).val( this.userContent );
+                this.addStore(date, hour, refWidget.name, data);
+//              var sortableDateTimeStamp = yy+"-"+mo+"-"+dd+" "+hh+":"+mm+":"+ss+" ";  
+//              this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+"::"+data + "\n" ;
+                //jQuery("#wikitextarea", this.slideDoc).val( this.userContent );
+		this.sortData();
+        }, 
 
-	} 
+        serialize: function () { 
+                var prefix = "=== "+xWid.transport.login+ " ===\n";
+                this.userContent = prefix;
+                var keysArray = new Array();
+                for (var k in this.storeIndex ) {
+                        keysArray.push(k);
+                }
+                keysArray.sort();
+                for(var i=0;i<keysArray.length;i++) {
+                        var current = this.storeIndex[keysArray[i]];
+                        let sortableDateTimeStamp = current.date+" "+current.hour; 
+                        this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +"  " +current.app+"::"+current.data + "\n" ;
+                }
+        } 
+
 } 
 

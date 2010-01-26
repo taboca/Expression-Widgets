@@ -25,7 +25,6 @@ widgets.snapshot = {
 
 
   parse: function (data) {
-	xWid.dump("Snapshot:"+data);
         return "<img src='"+data+"' />";
   },
 

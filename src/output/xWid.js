@@ -126,7 +126,7 @@ var xWid = {
 				visitRepo.focus();
 			});
 			jQuery("#gosave",slide.contentDocument).click( function () { 
-				xWid.digester.refreshSelfTextArea();
+				xWid.digester.serialize();
 				xWid.dump(xWid.digester.userContent);
 				xWid.transport.sync(xWid.digester.userContent);
 
@@ -217,6 +217,7 @@ xWid.digester = {
         userContent     : null,  /* content from the wiki */
         cycle 		: null,  // state machine r/w modes etc
 
+	storeIndex	: null, 
         
 	time_getMonth: function ( ) {
 		var d = new Date(); 
@@ -255,53 +256,60 @@ xWid.digester = {
  	// the various ways we can digest the information. 
 
  	load: function () { 
-
-
                 jQuery("#historypanel", this.slideDoc).html("");
-
-
 		var preParse = this.userContent.split("=== "+xWid.transport.login+ " ===");
 		if (preParse.length==2) { 
 			xWid.dump("Found user..");
-			
 			var userData = preParse[1].split("*"); 
-
+			this.storeIndex = new Array();
 			for (var key in userData) { 
 				let currLine = userData[key];
-
-				// We trim first
 				currLine = jQuery.trim(currLine);
-	
 				let dataChunks = currLine.split("  "); 
-				let metaChunks = dataChunks[0];
-			
+				let metaChunks = dataChunks[0].split(" ");
 				if(metaChunks.length>=2) { 
-
 					let date = metaChunks[0]; 
 					let hour = metaChunks[1]; 
 				 	let data = dataChunks[1]; 	
-
 					var richNode=""; 
+					var appData ="";
  					try { 
-						xWid.dump("==="+data);
 						richNode = this.parseData(data);
+						appData  = data.split("::")[0];
 					} catch(i) { richNode = "" } 
-//					richNode = data; 
 
-	
-					let nodeEntry = this.slideDoc.createElementNS("http://www.w3.org/1999/xhtml","span");
-					nodeEntry.setAttribute("class","statement"); 
-					nodeEntry.setAttribute("date",date); 
-					nodeEntry.setAttribute("hour",hour); 
-					nodeEntry.innerHTML=richNode;
-					jQuery("#historypanel", this.slideDoc).append(nodeEntry);	
-				
+					this.addStore(date, hour, appData, richNode); 
+
 				} else { 
 					xWid.dump("Not understand statement..");
 				} 	
-
 			} 
+			this.sortData();
 		} 
+	}, 
+
+        sortData: function () {
+                jQuery("#historypanel", this.slideDoc).html("");
+
+                var keysArray = new Array();
+                for (var k in this.storeIndex ) {
+                        keysArray.push(k);
+                }
+                keysArray.sort();
+                for(var i=0;i<keysArray.length;i++) {
+
+                        jQuery("#historypanel", this.slideDoc).append(this.render(this.storeIndex[keysArray[i]]));
+                }
+        },
+
+	render: function (node) { 
+		// we are not using now node.app
+		let nodeEntry = this.slideDoc.createElementNS("http://www.w3.org/1999/xhtml","span");
+		nodeEntry.setAttribute("class","statement"); 
+		nodeEntry.setAttribute("date",node.date); 
+		nodeEntry.setAttribute("hour",node.hour); 
+		nodeEntry.innerHTML=node.data;
+		return nodeEntry;
 	}, 
 
 	/* So far we have the various types here hardcoded. But these visualization/parsing needs 
@@ -312,29 +320,50 @@ xWid.digester = {
 		return widgets.list[appName].parse(queryAppData[1]);
 	},	
 
-	refreshSelfTextArea: function () { 
-	 //	jQuery("#wikitextarea",this.slideDoc).val(this.userContent);
-	} , 
+        addStore: function ( date, hour, app, data) {
+                var nodeEntry = {
+                       date: date,
+                       hour: hour,
+                       app : app,
+                       data: data
+                }
+                this.storeIndex[date+hour] = nodeEntry;
+        },
+        add: function ( refWidget, data) {
+                var yy = this.time_getYear();
+                var mo = this.time_getMonth(); 
+                var dd = this.time_getDay(); 
 
-  	parse: function () { 
+                var date = yy+"-"+mo+"-"+dd; 
 
-	} , 
+                var hh = this.time_getHour(); 
+                var mm = this.time_getMin(); 
+                var ss = this.time_getSec(); 
+                
+                var hour = hh+":"+mm+":"+ss; 
 
-	add: function ( refWidget, data) { 
-		var yy = this.time_getYear(); 
-		var mo = this.time_getMonth(); 
-		var dd = this.time_getDay(); 
-		var hh = this.time_getHour(); 
-		var mm = this.time_getMin(); 
-		var ss = this.time_getSec(); 
-		/* We now have to send the time stamp using some form of universal date time 
-		pattern that can be sortable as we may want to later on sort all the participants
-		data by the time they posted */
-		var sortableDateTimeStamp = yy+"-"+mo+"-"+dd+" "+hh+":"+mm+":"+ss+" ";	
-		this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+"::"+data + "\n" ;
-		//jQuery("#wikitextarea", this.slideDoc).val( this.userContent );
+                this.addStore(date, hour, refWidget.name, data);
+//              var sortableDateTimeStamp = yy+"-"+mo+"-"+dd+" "+hh+":"+mm+":"+ss+" ";  
+//              this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+"::"+data + "\n" ;
+                //jQuery("#wikitextarea", this.slideDoc).val( this.userContent );
+		this.sortData();
+        }, 
 
-	} 
+        serialize: function () { 
+                var prefix = "=== "+xWid.transport.login+ " ===\n";
+                this.userContent = prefix;
+                var keysArray = new Array();
+                for (var k in this.storeIndex ) {
+                        keysArray.push(k);
+                }
+                keysArray.sort();
+                for(var i=0;i<keysArray.length;i++) {
+                        var current = this.storeIndex[keysArray[i]];
+                        let sortableDateTimeStamp = current.date+" "+current.hour; 
+                        this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +"  " +current.app+"::"+current.data + "\n" ;
+                }
+        } 
+
 } 
 
 var libCataliser_post = { 
@@ -534,7 +563,6 @@ widgets.snapshot = {
 
 
   parse: function (data) {
-	xWid.dump("Snapshot:"+data);
         return "<img src='"+data+"' />";
   },
 
@@ -848,9 +876,9 @@ jetpack.selection.onSelection(function keepText() {
 xWid.transport = libCataliser_post; 
 
 // Enable this to disable debugging 
-xWid.dump = function () { } 
+//xWid.dump = function () { } 
 
-//xWid.cssStack_slidebar.push("#debug {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #555, #555); display:none;  display:block; font-size:80%; color: white; } ");
+xWid.cssStack_slidebar.push("#debug {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #555, #555); display:none;  display:block; font-size:80%; color: white; } ");
 
 xWid.cssStack_slidebar.push(".frame { width:1px; height:1px; position:absolute; left:-10px } ");
 

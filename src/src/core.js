@@ -126,7 +126,7 @@ var xWid = {
 				visitRepo.focus();
 			});
 			jQuery("#gosave",slide.contentDocument).click( function () { 
-				xWid.digester.refreshSelfTextArea();
+				xWid.digester.serialize();
 				xWid.dump(xWid.digester.userContent);
 				xWid.transport.sync(xWid.digester.userContent);
 
