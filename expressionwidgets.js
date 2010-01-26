@@ -84,7 +84,7 @@ var xWid = {
   init: function () { 
 	this.uiDoc = jetpack.slideBar.append({
 		url: "about:blank",
-		width: 250,
+		width: 300,
  		persist: true, 
 		onClick: function(slide) {
 			slide.icon.src = "chrome://branding/content/icon48.png";
@@ -126,10 +126,9 @@ var xWid = {
 				visitRepo.focus();
 			});
 			jQuery("#gosave",slide.contentDocument).click( function () { 
-				xWid.digester.refreshSelfTextArea();
-				xWid.dump(xWid.digester.userContent);
+				xWid.digester.serialize();
+				//xWid.dump(xWid.digester.userContent);
 				xWid.transport.sync(xWid.digester.userContent);
-
 			});
 
 			// Notice we populate the widgets here in the menu but we dont yet 
@@ -163,9 +162,9 @@ xWid.init();
 */
 
 xWid.resources = { 
-    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass'>Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Login</button><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='loadingfeedback'><img src='chrome://global/skin/media/throbber.png'></div><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historypanel'></div> <div id='debug'></div>", 
+    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass'>Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Login</button><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='loadingfeedback'><img src='chrome://global/skin/media/throbber.png'></div><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historycontainer'><div id='historypanel'></div></div> <div id='debug'></div>", 
     html_login_helper: "<div id='helper'>You are not logged in. Log over the wiki and then click here <button id='gotry'>Retry</button> </div>",
-    style_slidebar_head: " #loadingfeedback { padding:1em; display:none;text-align:center } table { margin:auto;  margin-top:1em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:90%; border:3px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; } #widgetspanel { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #fdd, #fff);  } #widgetscanvas { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #fdd, #fff); }  #notificationpanel { margin:auto; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historypanel {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #ddd, #fff); display:none }  ",
+    style_slidebar_head: " #loadingfeedback { padding:1em; display:none;text-align:center } table { margin:auto;  margin-top:1em; margin-bottom:0; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:92%; border:3px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; } #widgetspanel { display:none; margin:auto; margin-top:0; width:80%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius: 0 0 10px 10px; background-image: -moz-linear-gradient(top, #000, #000);  } #widgetscanvas { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%;  }  #notificationpanel { margin:auto; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historycontainer {  margin:auto; width:250px; height:300px; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px;  background-image: -moz-linear-gradient(top, #ddd, #fff); display:none; overflow:scroll } #historypanel { width:1400px; } #widgetspanel button { -moz-border-radius:8px; border:1px solid black; padding:3px; margin:2px } .statement { border-bottom:1px solid gray; display:block; font-size:86%; font-family:arial; margin-bottom:.5em; }  ",
 } 
 
 
@@ -217,6 +216,7 @@ xWid.digester = {
         userContent     : null,  /* content from the wiki */
         cycle 		: null,  // state machine r/w modes etc
 
+	storeIndex	: null, 
         
 	time_getMonth: function ( ) {
 		var d = new Date(); 
@@ -248,32 +248,117 @@ xWid.digester = {
 	
 		xWid.dump("Digester init...");	
 	}, 
+
+	// Digest the data loaded and kept in userContent 
+  	// to a new structure that can be displayed, maybe modified 
+	// maybe merged with other students. We are trying to understand
+ 	// the various ways we can digest the information. 
+
  	load: function () { 
-	//	jQuery("#wikitextarea",this.slideDoc).val(this.userContent);
+                jQuery("#historypanel", this.slideDoc).html("");
+		var preParse = this.userContent.split("=== "+xWid.transport.login+ " ===");
+		if (preParse.length==2) { 
+			xWid.dump("Found user..");
+			var userData = preParse[1].split("*"); 
+			this.storeIndex = new Array();
+			for (var key in userData) { 
+				let currLine = userData[key];
+				currLine = jQuery.trim(currLine);
+				let dataChunks = currLine.split("  "); 
+				let metaChunks = dataChunks[0].split(" ");
+				if(metaChunks.length>=2) { 
+					let date = metaChunks[0]; 
+					let hour = metaChunks[1]; 
+				 	let data = dataChunks[1]; 	
+					var contentData =""; 
+					var appData  ="";
+ 					try { 
+						appData     = data.split("::")[0];
+						contentData = data.split("::")[1];
+					} catch(i) {  } 
+
+					this.addStore(date, hour, appData, contentData); 
+
+				} else { 
+					xWid.dump("Not understand statement..");
+				} 	
+			} 
+			this.sortData();
+		} 
 	}, 
-	refreshSelfTextArea: function () { 
-	 //	jQuery("#wikitextarea",this.slideDoc).val(this.userContent);
-	} , 
 
-  	parse: function () { 
+        sortData: function () {
+                jQuery("#historypanel", this.slideDoc).html("");
 
-	} , 
+                var keysArray = new Array();
+                for (var k in this.storeIndex ) {
+                        keysArray.push(k);
+                }
+                keysArray.sort();
+                for(var i=0;i<keysArray.length;i++) {
 
-	add: function ( refWidget, data) { 
-		var yy = this.time_getYear(); 
-		var mm = this.time_getMonth(); 
-		var dd = this.time_getDay(); 
-		var hh = this.time_getHour(); 
-		var mm = this.time_getMin(); 
-		var ss = this.time_getSec(); 
-		/* We now have to send the time stamp using some form of universal date time 
-		pattern that can be sortable as we may want to later on sort all the participants
-		data by the time they posted */
-		var sortableDateTimeStamp = yy+"-"+mm+"-"+dd+" "+hh+":"+mm+":"+ss+" ";	
-		this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+":"+data + "\n" ;
-		//jQuery("#wikitextarea", this.slideDoc).val( this.userContent );
+                        jQuery("#historypanel", this.slideDoc).append(this.render(this.storeIndex[keysArray[i]]));
+                }
+        },
+	render: function (node) { 
+		let nodeEntry = this.slideDoc.createElementNS("http://www.w3.org/1999/xhtml","span");
+		nodeEntry.setAttribute("class","statement"); 
+		nodeEntry.setAttribute("date",node.date); 
+		nodeEntry.setAttribute("hour",node.hour); 
+		nodeEntry.innerHTML=this.parseData(node.app,node.data);
+		return nodeEntry;
+	}, 
 
-	} 
+	/* So far we have the various types here hardcoded. But these visualization/parsing needs 
+	to be defined in the widget time. */
+	parseData: function (app,data) { 
+		return widgets.list[app].parse(data);
+	},	
+
+        addStore: function ( date, hour, app, data) {
+                var nodeEntry = {
+                       date: date,
+                       hour: hour,
+                       app : app,
+                       data: data
+                }
+                this.storeIndex[date+hour] = nodeEntry;
+        },
+        add: function ( refWidget, data) {
+                var yy = this.time_getYear();
+                var mo = this.time_getMonth(); 
+                var dd = this.time_getDay(); 
+
+                var date = yy+"-"+mo+"-"+dd; 
+
+                var hh = this.time_getHour(); 
+                var mm = this.time_getMin(); 
+                var ss = this.time_getSec(); 
+                
+                var hour = hh+":"+mm+":"+ss; 
+
+                this.addStore(date, hour, refWidget.name, data);
+//              var sortableDateTimeStamp = yy+"-"+mo+"-"+dd+" "+hh+":"+mm+":"+ss+" ";  
+//              this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+"::"+data + "\n" ;
+                //jQuery("#wikitextarea", this.slideDoc).val( this.userContent );
+		this.sortData();
+        }, 
+
+        serialize: function () { 
+                var prefix = "=== "+xWid.transport.login+ " ===\n";
+                this.userContent = prefix;
+                var keysArray = new Array();
+                for (var k in this.storeIndex ) {
+                        keysArray.push(k);
+                }
+                keysArray.sort();
+                for(var i=0;i<keysArray.length;i++) {
+                        var current = this.storeIndex[keysArray[i]];
+                        let sortableDateTimeStamp = current.date+" "+current.hour; 
+                        this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +"  " +current.app+"::"+current.data + "\n" ;
+                }
+        } 
+
 } 
 
 var libCataliser_post = { 
@@ -296,7 +381,7 @@ var libCataliser_post = {
         init: function () {
 		var stampedThis = this; 
 		if(!this.bufferFrame) { 
- 			jQuery("body",xWid.uiDoc).append('<iframe id="frame" class="frame" class="width:160px" src="about:blank"></frame>');	
+ 			jQuery("body",xWid.uiDoc).append('<iframe id="frame" class="frame"  src="about:blank"></frame>');	
 		 	this.bufferFrame = xWid.uiDoc.getElementById("frame");
 			jQuery(".frame", xWid.uiDoc).load( function () { stampedThis.bufferFrameLoadCallback() } );
  		} 
@@ -357,7 +442,7 @@ var libCataliser_post = {
 			jQuery("#goinit", xWid.uiDoc).html("Expressing ON");
 			jQuery("#goinit", xWid.uiDoc).attr("disabled","disabled");
 			jQuery("#gosave", xWid.uiDoc).removeAttr("disabled");
-			jQuery("#historypanel", xWid.uiDoc).css("display","block");
+			jQuery("#historycontainer", xWid.uiDoc).css("display","block");
 			jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
 		} 
 
@@ -387,6 +472,66 @@ var libCataliser_post = {
 
 } 
 
+widgets.drop = { 
+
+  name		: "text/drop",  // name bind that gets exported to the remote respository
+  slideDoc      : null, 
+  selectedText  : "",
+
+  register: function (slideDoc) { 
+	
+	this.slideDoc = slideDoc; 
+	refThis = this; 
+	var obj =  {   
+		markup_menu: "<button style='background-color:#cce' id='drop_do'>Drop</button>",
+		markup_init: "<button>get</button>",
+		init_bind_id: "drop_do"
+  	} 
+ 	return obj;
+  },
+
+
+  parse: function (data) {
+        return data;
+  },
+
+
+  dropOn: function (e) { 
+	e.preventDefault();
+	var data = e.dataTransfer.getData("text/plain");
+	e.target.textContent = data;
+
+        jQuery("#widgetscanvas",this.slideDoc).html(data +" <button id='widget_drop_button_send'>Send</button>")
+	refThis = this; 
+	jQuery("#widget_drop_button_send",this.slideDoc).click( function() { 
+		xWid.digester.add(refThis, data);
+                jQuery("#widgetscanvas",refThis.slideDoc).html("");
+                jQuery("#widgetscanvas",refThis.slideDoc).css("display","none");
+	});
+	return true;
+  },
+
+  init: function () { 
+
+	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
+	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#cce");
+        jQuery("#widgetscanvas",this.slideDoc).html("<div style='padding:2em' id='widget_drop_droparea'  >Drop something here... </div>");
+
+	refThis = this; 
+
+	this.slideDoc.getElementById('widget_drop_droparea').addEventListener("drop", function (e) { return refThis.dropOn(e) } , false);
+	this.slideDoc.getElementById('widget_drop_droparea').addEventListener("dragenter", function (e) { e.preventDefault(); return false } , false);
+	this.slideDoc.getElementById('widget_drop_droparea').addEventListener("dragover", function (e) { e.preventDefault(); return false } , false);
+
+  }  
+
+} 
+
+// Register 
+//widgets.list.push(widgets.drop); 
+widgets.list[widgets.drop.name] = widgets.drop;
+
+
 /* Please code your widget here using the format widgets.widgetname.... 
    Notice that each widget has some expected "interface" functions 
    so that the main app can load them. For now the register function returns the markup 
@@ -395,7 +540,7 @@ var libCataliser_post = {
 
 widgets.snapshot = { 
 
-  name		: "snapshot",  // name bind that gets exported to the remote respository
+  name		: "image/snapshot",  // name bind that gets exported to the remote respository
   referenceContentWindow  : null, 
   canvasTab     : null,
   canvas        : null, 
@@ -407,8 +552,13 @@ widgets.snapshot = {
   editor:  { axis_x: null, axis_y: null, x:0, y:0, on: false, box:null, ww: 0, hh:0  }, 
    
   resources: {
-    style_head     : "html {background:#ddd;} body { text-align:center; margin;auto; }  canvas { border:1px solid black}  ",
+    style_head     : "html {background:#ecc;} body { text-align:center; margin;auto; }  canvas { border:5px solid black}  ",
     html_container : "<canvas id='workingcanvas'></canvas>"
+  },
+
+
+  parse: function (data) {
+        return "<img src='"+data+"' />";
   },
 
   register: function (slideDoc) { 
@@ -417,7 +567,7 @@ widgets.snapshot = {
 	refThis = this; 
 
 	var obj =  {   
-		markup_menu: "<button id='snapshot_do'>Capture</button>",
+		markup_menu: "<button style='background:#fcc' id='snapshot_do'>Capture</button>",
 		markup_init: "<button>get</button>",
 		init_bind_id: "snapshot_do"
   	} 
@@ -425,6 +575,13 @@ widgets.snapshot = {
   },
 
   init: function () { 
+
+	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
+	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#ecc");
+        jQuery("#widgetscanvas",this.slideDoc).html("Select area from the taken page screenshot.");
+
+	this.edited = false; 
+	this.editor.on = false; 
 
 	widgets.snapshot.referenceContentWindow = jetpack.tabs.focused.contentWindow;
 
@@ -587,9 +744,20 @@ widgets.snapshot = {
   }, 
   editorSnap: function () {
         this.createPreviewRaw(this.referenceContentWindow , this.canvas, this.editor.x, this.editor.y, this.editor.ww, this.editor.hh);
-	jQuery("body",this.editorDoc).append("<button id='widget_snapshot_addbutton'>Add</button>");
-	jQuery("#widget_snapshot_addbutton",this.editorDoc).click( function () { 
+	jQuery("body",this.editorDoc).append("<h2>Screenshot selected!</h2><p>Click Send to send this image to your history <button id='widget_snapshot_addbutton'>Send</button> or simply close this tab to give up. ");
+        jQuery("#widgetscanvas",this.slideDoc).html("Click the Send button to add the image. <button id='widget_snapshot_send'>Send</button>");
+
+        jQuery("#widget_snapshot_send",this.slideDoc).click( function () {
+                jQuery("#widgetscanvas",refThis.slideDoc).html("");
+                jQuery("#widgetscanvas",refThis.slideDoc).css("display","none");
 		xWid.digester.add(widgets.snapshot, widgets.snapshot.canvas.toDataURL("image/png",""));
+        })
+
+	jQuery("#widget_snapshot_addbutton",this.editorDoc).click( function () { 
+                jQuery("#widgetscanvas",refThis.slideDoc).html("");
+                jQuery("#widgetscanvas",refThis.slideDoc).css("display","none");
+		xWid.digester.add(widgets.snapshot, widgets.snapshot.canvas.toDataURL("image/png",""));
+		refThis.canvasTab.contentWindow.close();
 	});
 
   }, 
@@ -636,40 +804,72 @@ widgets.snapshot = {
 } 
 /* Register your Widget code here... */
 
-widgets.list.push(widgets.snapshot); 
+//widgets.list.push(widgets.snapshot); 
+widgets.list[widgets.snapshot.name] = widgets.snapshot;
 
+xWid.cssStack_slidebar.push(".statement img { width:64px; } ");
 
-widgets.text = { 
+// Uses 
+// https://wiki.mozilla.org/Labs/Jetpack/JEP/12  
 
-  name		: "text",  // name bind that gets exported to the remote respository
+widgets.selection = { 
+
+  name		: "text/selection",  // name bind that gets exported to the remote respository
   slideDoc      : null, 
+  selectedText  : "",
 
   register: function (slideDoc) { 
 	
 	this.slideDoc = slideDoc; 
 	refThis = this; 
 	var obj =  {   
-		markup_menu: "<button id='text_do'>Text</button>",
+		markup_menu: "<button style='background-color:lightgreen' id='selection_do'>Text/Selection</button>",
 		markup_init: "<button>get</button>",
-		init_bind_id: "text_do"
+		init_bind_id: "selection_do"
   	} 
  	return obj;
   },
 
+  parse: function (data) { 
+	return data; 
+  },
+
   init: function () { 
+        jQuery("#widgetscanvas",this.slideDoc).html("<div>Type text or select from browser: <input id='widget_selection_field'  ><button id='widget_selection_send'>Send</button></div>");
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
-        jQuery("#widgetscanvas",this.slideDoc).html("<input id='widget_text_field' /><button id='widget_text_send'>Send</button>");
+	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#cec");
 	refThis = this; 
-        jQuery("#widget_text_send",this.slideDoc).click( function () {
-                xWid.digester.add(refThis, jQuery("#widget_text_field",refThis.slideDoc).val());
+	//jQuery("#widget_selection_field",this.slideDoc).focus();
+        jQuery("#widget_selection_send",this.slideDoc).click( function () {
+		
+xWid.dump("!");
+		var data = jQuery("#widget_selection_field",refThis.slideDoc).val();
+
+		
+                xWid.digester.add(refThis, data);
                 jQuery("#widgetscanvas",refThis.slideDoc).html("");
                 jQuery("#widgetscanvas",refThis.slideDoc).css("display","none");
         })
 
+  } , 
+
+  refresh: function () { 
+	jQuery("#widget_selection_field", this.slideDoc).css("background-color","lightgreen");
+	jQuery("#widget_selection_field", this.slideDoc).val(this.selectedText);
   } 
 } 
 
-widgets.list.push(widgets.text); 
+// Register 
+widgets.list[widgets.selection.name] = widgets.selection; 
+
+// Extra https://wiki.mozilla.org/Labs/Jetpack/JEP/12
+jetpack.selection.onSelection(function keepText() {
+
+    widgets.selection.selectedText = jetpack.selection.text; 
+    widgets.selection.refresh(); 
+
+});
+
 /* Put this file at the end of the build :) process */
 
 // Enable the iframe-based wiki negotiation transport 
@@ -679,6 +879,8 @@ xWid.transport = libCataliser_post;
 //xWid.dump = function () { } 
 
 xWid.cssStack_slidebar.push("#debug {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #555, #555); display:none;  display:block; font-size:80%; color: white; } ");
+
+xWid.cssStack_slidebar.push(".frame { width:1px; height:1px; position:absolute; left:-10px } ");
 
 
 
