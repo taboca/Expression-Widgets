@@ -24,7 +24,7 @@ widgets.selection = {
   },
 
   init: function () { 
-        jQuery("#widgetscanvas",this.slideDoc).html("<div>Type text or select from browser: <input id='widget_selection_field'  ><button id='widget_selection_send'>Send</button></div>");
+        jQuery("#widgetscanvas",this.slideDoc).html("<div class='selection'>Type text or select from browser: <br /><input id='widget_selection_field'  ><br /><button id='widget_selection_send'>Send</button></div>");
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
 	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#cec");
 	refThis = this; 
@@ -58,4 +58,6 @@ jetpack.selection.onSelection(function keepText() {
     widgets.selection.refresh(); 
 
 });
+
+xWid.cssStack_slidebar.push("#widgetscanvas .selection  { text-align:center; padding:.5em  } #widgetscanvas .selection input { width:100% }   #widgetscanvas .selection button { margin:.5em }  ");
 

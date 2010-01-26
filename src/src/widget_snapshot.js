@@ -45,7 +45,7 @@ widgets.snapshot = {
 
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
 	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#ecc");
-        jQuery("#widgetscanvas",this.slideDoc).html("Select area from the taken page screenshot.");
+        jQuery("#widgetscanvas",this.slideDoc).html("<div class='snapshot'>Select area from the taken page screenshot.</div>");
 
 	this.edited = false; 
 	this.editor.on = false; 
@@ -274,5 +274,5 @@ widgets.snapshot = {
 //widgets.list.push(widgets.snapshot); 
 widgets.list[widgets.snapshot.name] = widgets.snapshot;
 
-xWid.cssStack_slidebar.push(".statement img { width:64px; } ");
+xWid.cssStack_slidebar.push(".statement img { width:64px; } #widgetscanvas .snapshot { padding:.5em }  ");
 

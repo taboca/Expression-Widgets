@@ -578,7 +578,7 @@ widgets.snapshot = {
 
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
 	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#ecc");
-        jQuery("#widgetscanvas",this.slideDoc).html("Select area from the taken page screenshot.");
+        jQuery("#widgetscanvas",this.slideDoc).html("<div class='snapshot'>Select area from the taken page screenshot.</div>");
 
 	this.edited = false; 
 	this.editor.on = false; 
@@ -807,7 +807,7 @@ widgets.snapshot = {
 //widgets.list.push(widgets.snapshot); 
 widgets.list[widgets.snapshot.name] = widgets.snapshot;
 
-xWid.cssStack_slidebar.push(".statement img { width:64px; } ");
+xWid.cssStack_slidebar.push(".statement img { width:64px; } #widgetscanvas .snapshot { padding:.5em }  ");
 
 // Uses 
 // https://wiki.mozilla.org/Labs/Jetpack/JEP/12  
@@ -835,7 +835,7 @@ widgets.selection = {
   },
 
   init: function () { 
-        jQuery("#widgetscanvas",this.slideDoc).html("<div>Type text or select from browser: <input id='widget_selection_field'  ><button id='widget_selection_send'>Send</button></div>");
+        jQuery("#widgetscanvas",this.slideDoc).html("<div class='selection'>Type text or select from browser: <br /><input id='widget_selection_field'  ><br /><button id='widget_selection_send'>Send</button></div>");
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
 	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#cec");
 	refThis = this; 
@@ -869,6 +869,8 @@ jetpack.selection.onSelection(function keepText() {
     widgets.selection.refresh(); 
 
 });
+
+xWid.cssStack_slidebar.push("#widgetscanvas .selection  { text-align:center; padding:.5em  } #widgetscanvas .selection input { width:100% }   #widgetscanvas .selection button { margin:.5em }  ");
 
 /* Put this file at the end of the build :) process */
 
