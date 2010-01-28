@@ -892,7 +892,7 @@ widgets.textify = {
   },
 
   parse: function (data) { 
-	return data; 
+	return "<img src='"+data+"' />"; 
   },
 
   init: function () { 
