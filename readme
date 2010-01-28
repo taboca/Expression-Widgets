@@ -1,35 +1,22 @@
 Expression Widgets - JetPack for Learning Challenge 
 ---
-New project home
+New project home ( Front end ) 
 http://taboca.github.com/Expression-Widgets/
----
-This project supports the JetPack for Learning Project (http://design-challenge.mozillalabs.com/jetpack-for-learning/) organized by Mozilla and supported by Mozilla, MacArthur Foundation, and other peers. 
+
+Mozilla wiki home ( Project ) 
+https://wiki.mozilla.org/Education/Projects/JetpackForLearning/Profiles/expressionWidjets
+
+JetPack for Learning Project Home
+http://design-challenge.mozillalabs.com/jetpack-for-learning/
 
 Background: 
-
+---
+This project supports the JetPack for Learning Project (http://design-challenge.mozillalabs.com/jetpack-for-learning/) organized by Mozilla and supported by Mozilla, MacArthur Foundation, and other peers. 
 The original ideas to this project are based on Felipe Gomes and Marcio Galli motivation, said initial motivation. We were students from the same university in Sao Carlos Brazil and we since we are Mozilla contributors we started talking about means, being tools or systems, to support the development of open resources to support education. The original motivation was something like a note book where students could share their notes, for a given lecture of live session. 
-
-Background for the JetPack for Learning Submission
-
-Marcio Galli is coordinating the Expression Widgets submission and developed the following document as being the original proposal: 
 
 Original Abstract: 
 ===
 Project Abstract
 
-An annotation system that uses JetPack infra-structure and introduces
-a concept of expression widgets. The model leverages the browsing
-experience and JetPacks are used to support learners to annotate using
-Web language, given a live session - let's say a lecture given by a
-professor. The model is suggested initially as a rich annotation and
-collaboration framework where students can interact with a variety of
-Web-based widgets. It explores various communication forms such as
-text, canvas-based drawing, SVG, MathML, and also some interactive
-scenarios where teams can build together. The annotated resources are
-organized and kept using simple wiki pages with less rules to the
-server and more focus on possibilities for team-centred conventions.
+An annotation system that uses JetPack infra-structure and introduces a concept of expression widgets. The model leverages the browsing experience and JetPacks are used to support learners to annotate using Web language, given a live session - let's say a lecture given by a professor. The model is suggested initially as a rich annotation and collaboration framework where students can interact with a variety of Web-based widgets. It explores various communication forms such as text, canvas-based drawing, SVG, MathML, and also some interactive scenarios where teams can build together. The annotated resources are organized and kept using simple wiki pages with less rules to the server and more focus on possibilities for team-centred conventions.
 
-Original Documentation link: 
-===
-December 1st, 2009: 
-http://blog.taboca.com/jetpack-for-learning-submission

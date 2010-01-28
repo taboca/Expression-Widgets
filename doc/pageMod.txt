@@ -1,6 +1,0 @@
-== Page Mods to change Web page content ==
-
-* https://wiki.mozilla.org/Labs/Jetpack/JEP/17
-* Data scrapping
-* 
-
