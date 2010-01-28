@@ -885,7 +885,7 @@ widgets.textify = {
 	this.slideDoc = slideDoc; 
 	refThis = this; 
 	var obj =  {   
-		markup_menu: "<button style='background-color:lightgreen' id='textify_do'>Textify</button>",
+		markup_menu: "<button style='background-color:#ffa' id='textify_do'>Textify</button>",
 		init_bind_id: "textify_do"
   	} 
  	return obj;
@@ -898,7 +898,7 @@ widgets.textify = {
   init: function () { 
         jQuery("#widgetscanvas",this.slideDoc).html("<div class='textify'>Type textify equation <br /><input id='widget_textify_field' value='' ><br /><button id='widget_textify_render'>Render</button><br /><div id='widget_textify_canvas'></div></div>");
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
-	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#cec");
+	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#ffa");
 	refThis = this; 
         jQuery("#widget_textify_render",this.slideDoc).click( function () {
 
