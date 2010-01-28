@@ -28,6 +28,7 @@ widgets.textify = {
         jQuery("#widget_textify_help",this.slideDoc).click( function () {
 		
 		var page = jetpack.tabs.open("http://www.texify.com/");
+		page.focus();
 
 	});
 

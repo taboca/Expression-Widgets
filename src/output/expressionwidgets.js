@@ -896,10 +896,17 @@ widgets.textify = {
   },
 
   init: function () { 
-        jQuery("#widgetscanvas",this.slideDoc).html("<div class='textify'>Type textify equation <br /><input id='widget_textify_field' value='' ><br /><button id='widget_textify_render'>Render</button><br /><div id='widget_textify_canvas'></div></div>");
+        jQuery("#widgetscanvas",this.slideDoc).html("<div class='textify'>Type textify equation <br /><input id='widget_textify_field' value='' ><br /><button id='widget_textify_render'>Render</button><button id='widget_textify_help'>Help</button><br /><div id='widget_textify_canvas'></div></div>");
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
 	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#ffa");
 	refThis = this; 
+        jQuery("#widget_textify_help",this.slideDoc).click( function () {
+		
+		var page = jetpack.tabs.open("http://www.texify.com/");
+		page.focus();
+
+	});
+
         jQuery("#widget_textify_render",this.slideDoc).click( function () {
 
 		var data = jQuery("#widget_textify_field",refThis.slideDoc).val();
