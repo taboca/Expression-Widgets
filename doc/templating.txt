@@ -1,3 +1,7 @@
+Jetpacks are great ways to extend the browsing experience with a more lightweight and dynamic extension system. This state of creation creates new possibilities for the development of web applications. A new world of web-service connected extensions could be deployed. In this sense, an end-user should be able to mash patterns of user experience with web services and deploy new experiences. Just like jQuery is the perfect almost templating way to query and modify thngs in the DOM a templating system could also be added to the infra-struture and serve as a way for new UI/User Experiences to be deployed based on very simple and statements and rules. 
+
+End users could create Jetpacks by just mixing resources, web-remote resources, with structured User Interface interaction elements. 
+
 == Templates in JetPack ==
 
 * http://decafbad.com/blog/2008/09/01/writing-a-delicious-command-for-ubiquity

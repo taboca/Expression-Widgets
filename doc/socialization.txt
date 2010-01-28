@@ -1,6 +1,4 @@
-Localization and other type of Build-based/Source-code socialization to JetPack codes and maybe means for JetPacks to talk each other. 
-
-The localization is an interesting case where a JetPack should be able to incorporate the benefit of a possible contribution by an user. As an example, the build/update state of a JetPack ( Update events in the gallery for eample ) could be associated with events from end-users. So, would be possible and user ( real end-user ) to add a chunk of data, as in a JSON, and that JSON to be an assciated resource that could eventually impact the execution/runtime/UI experience of a JetPack.  To make sure a resource can impact positivelly the lifetime of a jetpack, it would be necessary to have some security mechanisms. 
+Localization and other type of Build-based/Source-code socialization to JetPack codes and maybe means for JetPacks to talk each other.  The localization is an interesting case where a JetPack should be able to incorporate the benefit of a possible contribution by an user. As an example, the build/update state of a JetPack ( Update events in the gallery for eample ) could be associated with events from end-users. So, would be possible and user ( real end-user ) to add a chunk of data, as in a JSON, and that JSON to be an assciated resource that could eventually impact the execution/runtime/UI experience of a JetPack.  To make sure a resource can impact positivelly the lifetime of a jetpack, it would be necessary to have some security mechanisms. 
 
 The JetPack 
 
