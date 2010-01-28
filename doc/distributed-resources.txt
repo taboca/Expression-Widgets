@@ -1,0 +1,19 @@
+January 27, 2010 
+
+During the development of the ExpressionWidgets I feel I needed to use icons - like warnings, question marks so that  couldI point the user to help, etc. Inspired by the examples of the slidebar where I saw icons being used from the application chrome:// space ( like that little jetpack icon), I started searching for other firefox icons. Examples of icons I am now using are:
+
+chrome://global/skin/notification/warning-icon.png
+chrome://global/skin/notification/question-icon.png
+chrome://global/skin/media/throbber.png
+
+Here is how I am searching the icons - using the MXR source-code browse URL:
+http://mxr.mozilla.org/mozilla1.9.2/source/toolkit/themes/pinstripe/global/
+
+Just wanted to share this as I feel that the use of general icons seems to be a structured way to leverage existing value in user experience etc. Just like we are using JEPs for behavior. Beyond that I am also understanding better the future about JetPack apps and the space of resources. Localization and Graphic resources seems to be good examples of resources that could be separated from the app, and yet part of the app. I feel that would be interesting to have some sort of resources storage that could serve as a space where a JetPack could be packaged with these resources. For example if I developed JetPack A I could define local strings and also some graphics as being X, Y let's say. So A + X + Y could be a JetPack that I have deployed in the gallery. The gallery itself could be smart to know that A+X+Y is an item but also to know the degree of separation aiming that other combinations could be produced by developers or even end-users. This is a bit towards the idea of distributed resources forming an application. If we think in a social space, where users could be voting on things, and depending on licenses, creating variations, It seems that would really be amazing the impact.
+
+I can imagine users adding new localizations and creating "compound jetpacks" associating jetpacks and resources in different ways. The resource mechanism could also eventually go beyond code time ( download bits ) to reach a Web service level too.
+
+Apologize the e-mail a bit fuzzy. Time is short this week and also many fresh ideas in the air..
+
+/\/\arcio
+-- 
