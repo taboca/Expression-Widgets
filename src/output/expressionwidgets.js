@@ -39,6 +39,8 @@ var xWid = {
   transport : null,       // This is a plugin. See the build system. 
   digester  : null,       // This is a plugin. See the build system. 
   overlay   : null, 	  // This is a plugin. See the build system. 
+
+	icon: null, 
     
   cssStack_slidebar: new Array(), 
  
@@ -74,7 +76,7 @@ var xWid = {
   },
 
   loadingOn: function () { 
-	jQuery("#loadingfeedback",this.uiDoc).css("display","block");
+	jQuery("#loadingfeedback",this.uiDoc).css("display","inline");
   }, 
   loadingOff: function () { 
 	jQuery("#loadingfeedback",this.uiDoc).css("display","none");
@@ -89,6 +91,7 @@ var xWid = {
  		persist: true, 
 		onClick: function(slide) {
 			slide.icon.src = "chrome://branding/content/icon48.png";
+			this.icon = slide.icon; 
 		},   
                 onReady: function(slide) { 
 
@@ -162,9 +165,9 @@ xWid.init();
 */
 
 xWid.resources = { 
-    html_panel     : "<table><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass'>Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Login</button><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='loadingfeedback'><img src='chrome://global/skin/media/throbber.png'></div><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historycontainer'><div id='historypanel'></div></div> <div id='debug'></div>", 
+    html_panel     : "<div id='topheader'>ExpressionWidgets<img align='top' width='30' id='loadingfeedback' src='chrome://global/skin/media/throbber.png'></div><table id='mainpanel'><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass'>Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Login</button><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historybgcontainer'><div id='historycontainer'><div id='historypanel'></div></div></div> <div id='debug'></div>", 
     html_login_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You are not logged in. Log over the wiki and then click here <button id='gotry'>Retry</button> </div>",
-    style_slidebar_head: " #loadingfeedback { padding:1em; display:none;text-align:center } table { margin:auto;  margin-top:1em; margin-bottom:0; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:92%; border:3px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; } #widgetspanel { display:none; margin:auto; margin-top:0; width:80%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius: 0 0 10px 10px; background-image: -moz-linear-gradient(top, #000, #000);  } #widgetscanvas { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%;  }  #notificationpanel { margin:auto; padding:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:0 0 10px 10px; width: 210px; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historycontainer {  margin:auto; width:250px; height:300px; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px;  background-image: -moz-linear-gradient(top, #ddd, #fff); display:none; overflow:scroll } #historypanel { width:1400px; } #widgetspanel button { -moz-border-radius:8px; border:1px solid black; padding:3px; margin:2px } .statement { border-bottom:1px solid gray; display:block; font-size:86%; font-family:arial; margin-bottom:.5em; }  ",
+    style_slidebar_head: " #loadingfeedback { margin-left:6px; display:none; } table { margin:auto;  margin-top:0em; margin-bottom:0; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:92%; border:6px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; }  #topheader { text-align:center;  color:black; font-weight:bold; margin:auto; margin-top:0; margin-bottom:0; height:32px; width:80%;  padding:.2em } #widgetspanel { display:none; margin:auto; margin-top:0; width:80%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius: 0 0 10px 10px; background-image: -moz-linear-gradient(top, #000, #000);  } #widgetscanvas { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%;  }  #notificationpanel { margin:auto; padding:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:0 0 10px 10px; width: 210px; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historybgcontainer { display:none; margin:auto; width:250px; height:300px; padding:.5em; margin-top:.5em; -moz-border-radius:20px; -moz-box-shadow: black 0 0 10px;  background-image: -moz-linear-gradient(top, #fff, #fff);  } #historycontainer {  margin:auto; width:100%; height:100%; overflow:scroll } #historypanel { width:1400px; } #widgetspanel button { -moz-border-radius:8px; border:1px solid black; padding:3px; margin:2px } .statement {  display:block; font-size:86%; font-family:arial; margin-bottom:.5em; -moz-border-radius:10px; padding:4px; background-image: -moz-linear-gradient(top, #fff, #ddd);}  ",
 } 
 
 
@@ -444,7 +447,7 @@ var libCataliser_post = {
 			jQuery("#goinit", xWid.uiDoc).html("Expressing ON");
 			jQuery("#goinit", xWid.uiDoc).attr("disabled","disabled");
 			jQuery("#gosave", xWid.uiDoc).removeAttr("disabled");
-			jQuery("#historycontainer", xWid.uiDoc).css("display","block");
+			jQuery("#historybgcontainer", xWid.uiDoc).css("display","block");
 			jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
 		} 
 
@@ -837,7 +840,7 @@ widgets.selection = {
   },
 
   init: function () { 
-        jQuery("#widgetscanvas",this.slideDoc).html("<div class='selection'>Type text or select from browser: <br /><input id='widget_selection_field'  ><br /><button id='widget_selection_send'>Send</button></div>");
+        jQuery("#widgetscanvas",this.slideDoc).html("<div class='selection'>Type text or select from browser: <br /><textarea id='widget_selection_field'  /><br /><button id='widget_selection_send'>Send</button></div>");
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
 	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#cec");
 	refThis = this; 
@@ -954,33 +957,37 @@ xWid.overlay = {
   	start: function () { 
 		this.rawStore = new Array();
 		var refThis = this; 
-
 		if(this.contentTab && this.contentTab.contentDocument) { 
 			this.contentDoc.location=(xWid.transport.repository);
 		} 
 		else { 
 			this.contentTab = jetpack.tabs.open(xWid.transport.repository);
-			this.contentTab.onReady(function (doc) { refThis.readyTab(doc) }); 
+			this.contentTab.onReady(function (doc) { refThis.proxyReadyCallback(doc) }); 
 		} 
+		this.proxyReadyCallback = this.readyTab;
                 this.contentTab.focus();
 
 	}, 
 
+	proxyReadyCallback: function (doc) { 
+
+	},
+
 	readyTab: function(doc){
 			var refThis = this; 
 			refThis.contentDoc = doc; 
-			jQuery("body",doc).append("<div id='overlay_base'></div><div id='historypanel'></div>");
+
+			jQuery("body",doc).append("<div id='overlay_base'></div><div id='menu'></div><div id='historypanel'></div>");
 
 			var cc = refThis.contentTab.contentWindow; 
-			var ww = cc.innerWidth + cc.scrollMaxX; 
+			var ww = cc.innerWidth  + cc.scrollMaxX; 
 			var hh = cc.innerHeight + cc.scrollMaxY; 
 
 			if(ww<700) { 
 				ww = 700;
 			} 
 
-                        jQuery(doc.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",doc)).append( "#historypanel { background-color:white; padding:2em; width:80%; left:50px; top:80px; position:absolute; z-index:10000;   -moz-border-radius:30px; -moz-box-shadow: black 0 0 30px; border:1px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); }  #overlay_base {position:absolute; z-index:9999; width:"+ ww +"px; height:"+ hh+"px; left:0; top:0;;   background-color:rgba(0,0,0,.7);} span.statement { width:90%; overflow:hidden; display:block; -moz-border-radius:15px;  ; padding:1em; background-image: -moz-linear-gradient(top, #fff, #dee); margin-bottom:1em; } ");
-
+                        jQuery(doc.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",doc)).append( " #menu { background-color:white; padding:1em;  ; height:100px; left:50px; top:40px; position:absolute; z-index:9999;   -moz-border-radius:20px; -moz-box-shadow: black 0 0 30px; border:1px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } #historypanel { background-color:white; padding:2em; width:80%; left:50px; top:80px; position:absolute; z-index:10000;   -moz-border-radius:30px; -moz-box-shadow: black 0 0 30px; border:1px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); }  #overlay_base {position:absolute; z-index:9998; width:"+ ww +"px; height:"+ hh+"px; left:0; top:0;;   background-color:rgba(0,0,0,.7);} span.statement { width:90%; overflow:hidden; display:block; -moz-border-radius:15px;  ; padding:1em; background-image: -moz-linear-gradient(top, #fff, #dee); margin-bottom:1em; } ");
 
 
 			refThis.showHelp(); 
@@ -989,13 +996,15 @@ xWid.overlay = {
 
 	showHelp: function () { 
 			
-		jQuery("#notificationpanel",xWid.uiDoc).html("");
-		jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
-		jQuery("#notificationpanel",xWid.uiDoc).append(this.html_overlay_helper);
+		jQuery("#menu",this.contentDoc).html("");
+		jQuery("#menu",this.contentDoc).css("display","block");
+		jQuery("#menu",this.contentDoc).append(this.html_overlay_helper);
 		var refThis = this; 
-		jQuery("#overlay_hide",xWid.uiDoc).click(function () { 
+		jQuery("#overlay_hide",refThis.contentDoc).click(function () { 
 			jQuery("#overlay_base",refThis.contentDoc).css("display","none");
 			jQuery("#historypanel",refThis.contentDoc).css("display","none");
+			jQuery("#menu",refThis.contentDoc).css("display","none");
+			refThis.proxyReadyCallback = function () { }; 
 		});
 
 	},

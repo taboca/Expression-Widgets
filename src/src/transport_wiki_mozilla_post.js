@@ -79,7 +79,7 @@ var libCataliser_post = {
 			jQuery("#goinit", xWid.uiDoc).html("Expressing ON");
 			jQuery("#goinit", xWid.uiDoc).attr("disabled","disabled");
 			jQuery("#gosave", xWid.uiDoc).removeAttr("disabled");
-			jQuery("#historycontainer", xWid.uiDoc).css("display","block");
+			jQuery("#historybgcontainer", xWid.uiDoc).css("display","block");
 			jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
 		} 
 
