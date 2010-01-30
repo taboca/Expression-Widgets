@@ -66,13 +66,15 @@ var xWid = {
 	jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
         jQuery("#notificationpanel",xWid.uiDoc).html("Just saved your screenname URL settings. <button id='godone'>Done</button>");
 
+	jQuery("#godone",xWid.uiDoc).click( function () {
+		jQuery("#notificationpanel",xWid.uiDoc).html("");
+		jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
+	});
+
 	xWid.transport.repository = xWid.localStore.repository;
 	xWid.transport.login      = xWid.localStore.login;
 
-        jQuery("#godone",xWid.uiDoc).click( function () {
-              jQuery("#notificationpanel",xWid.uiDoc).html("");
-              jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
-        });
+	this.checkLoginRepoStates();
   },
 
   loadingOn: function () { 
@@ -80,6 +82,36 @@ var xWid = {
   }, 
   loadingOff: function () { 
 	jQuery("#loadingfeedback",this.uiDoc).css("display","none");
+  },
+  checkLoginRepoStates: function () { 
+
+	xWid.dump("(core) checking login and repository strings.. ");
+	var loginCheck = xWid.transport.login.replace(/^\s+|\s+$/g,"");
+	var repoCheck  = xWid.transport.repository.replace(/^\s+|\s+$/g,"");
+	if(loginCheck =="") { 
+		jQuery("#goinit", this.uiDoc).attr("disabled","true");	
+	} else { 
+		jQuery("#goinit", this.uiDoc).removeAttr("disabled");
+	} 
+	if(repoCheck =="") { 
+		jQuery("#goclass", this.uiDoc).attr("disabled","true");	
+	} else { 
+		jQuery("#goclass", this.uiDoc).removeAttr("disabled");
+	} 
+
+	if(loginCheck =="" || repoCheck == "") { 
+
+		jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
+                jQuery("#notificationpanel",xWid.uiDoc).append(xWid.resources.html_login_noinfo_helper);
+		let refThis = this;
+		jQuery("#gohelp",xWid.uiDoc).click( function () {
+			jQuery("#notificationpanel",xWid.uiDoc).html("");
+			jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
+			let help = jetpack.tabs.open("http://taboca.github.com/Expression-Widgets/instructions.html");
+		help.focus(); 
+		});
+	} 
+
   },
   ////
   /// man init point
@@ -126,6 +158,7 @@ var xWid = {
 				xWid.transport.init();
 			});
 			jQuery("#goclass",slide.contentDocument).click( function () { 
+
 				xWid.overlay.start();
 			});
 			jQuery("#gosave",slide.contentDocument).click( function () { 
@@ -133,6 +166,13 @@ var xWid = {
 				//xWid.dump(xWid.digester.userContent);
 				xWid.transport.sync(xWid.digester.userContent);
 			});
+
+
+			// We check the initial state. If we have no username and repository 
+			// then we simply point the basic instructions. 
+
+	
+			xWid.checkLoginRepoStates();
 
 			// Notice we populate the widgets here in the menu but we dont yet 
 			// enable the #widgetspanel UI element .. only if they are logged in 
@@ -165,9 +205,10 @@ xWid.init();
 */
 
 xWid.resources = { 
-    html_panel     : "<div id='topheader'>ExpressionWidgets<img align='top' width='30' id='loadingfeedback' src='chrome://global/skin/media/throbber.png'></div><table id='mainpanel'><tr><td><button id='goinit'>Login</button></td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass'>Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historybgcontainer'><div id='historycontainer'><div id='historypanel'></div></div></div> <div id='debug'></div>", 
+    html_panel     : "<div id='topheader'>ExpressionWidgets<img align='top' width='30' id='loadingfeedback' src='chrome://global/skin/media/throbber.png'></div><table id='mainpanel'><tr><td><button id='goinit'>Login</button></td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass'>Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2' id='topactions'><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historybgcontainer'><div id='historycontainer'><div id='historypanel'></div></div></div> <div id='debug'></div>", 
     html_login_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You are not logged in. Log over the wiki and then click here <button id='gotry'>Retry</button> </div>",
-    html_login_nouser_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You don't have the username/wiki settings. Please follow the instructions on how to set your user section in the wiki class repository.  <button id='gotry'>Retry</button> <button id='gohelp'>Instructions</button></div>",
+    html_login_nouser_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You don't have the username/wiki settings. Please follow the instructions on how to set your user section in the wiki class repository.  <button id='gotry'>Retry</button> <button style='margin:.5em' id='gohelp'>Instructions</button></div>",
+    html_login_noinfo_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You don't have the username/wiki settings. Please follow the instructions on how to set your user section in the wiki class repository. <button style='margin:1em' id='gohelp'>Instructions</button></div>",
 
     style_slidebar_head: " #loadingfeedback { margin-left:6px; display:none; } table { margin:auto;  margin-top:0em; margin-bottom:0; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:92%; border:6px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; }  #topheader { text-align:center;  color:black; font-weight:bold; margin:auto; margin-top:0; margin-bottom:0; height:32px; width:80%;  padding:.2em } #widgetspanel { display:none; margin:auto; margin-top:0; width:80%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius: 0 0 10px 10px; background-image: -moz-linear-gradient(top, #000, #000);  } #widgetscanvas { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%;  }  #notificationpanel { margin:auto; padding:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:0 0 10px 10px; width: 210px; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historybgcontainer { display:none; margin:auto; width:250px; height:300px; padding:.5em; margin-top:.5em; -moz-border-radius:20px; -moz-box-shadow: black 0 0 10px;  background-image: -moz-linear-gradient(top, #fff, #fff);  } #historycontainer {  margin:auto; width:100%; height:100%; overflow:scroll } #historypanel { width:1400px; } #widgetspanel button { -moz-border-radius:8px; border:1px solid black; padding:3px; margin:2px } .statement {  display:block; font-size:86%; font-family:arial; margin-bottom:.5em; -moz-border-radius:10px; padding:6px; background-image: -moz-linear-gradient(top, #fff, #ddd);}  ",
 } 

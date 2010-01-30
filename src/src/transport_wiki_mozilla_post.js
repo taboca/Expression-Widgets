@@ -46,7 +46,6 @@ var libCataliser_post = {
 	findDocBase: function () { 
 		var chunks = this.repository.split("/");
 		var base = chunks[0]+"/"+chunks[1]+"/"+chunks[2];
-xWid.dump("!");
 		return base; 
 	}, 
 
@@ -59,7 +58,6 @@ xWid.dump("!");
 		var loginSimpleTrap = this.login.replace(/^\s+|\s+$/g,""); 
 
 		if(loginSimpleTrap=="") { 
-			this.login="!!!nouser!!!";
 			foundLogin = -2; 
 		} else { 
 			jQuery("a[title^='Edit section: "+this.login+"']", doc).each( function () {
