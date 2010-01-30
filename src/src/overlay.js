@@ -3,12 +3,13 @@ xWid.overlay = {
 	contentTab: null, 
 	contentDoc: null, 
 
-	rawStore    : new Array(),
+	rawStore    : null,
 	storeIndex  : null, 
 
 	html_overlay_helper: "<div class='overlay_menu'><button id='overlay_hide'>Hide Overlay</button>", 
 
   	start: function () { 
+		this.rawStore = new Array();
 		this.contentTab = jetpack.tabs.open(xWid.transport.repository);
                 this.contentTab.focus();
 		var refThis = this; 
