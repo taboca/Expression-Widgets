@@ -3,7 +3,9 @@ widgets.textify = {
 
   name		: "text/textify", 
   slideDoc      : null, 
+  iframe 	: null, 
   selectedText  : "",
+  fullURL	: "",
 
   register: function (slideDoc) { 
 	
@@ -21,6 +23,7 @@ widgets.textify = {
   },
 
   init: function () { 
+
         jQuery("#widgetscanvas",this.slideDoc).html("<div class='textify'>Type textify equation <br /><input id='widget_textify_field' value='' ><br /><button id='widget_textify_render'>Render</button><button id='widget_textify_help'>Help</button><br /><div id='widget_textify_canvas'></div></div>");
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
 	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#ffa");
@@ -36,16 +39,23 @@ widgets.textify = {
 
 		var data = jQuery("#widget_textify_field",refThis.slideDoc).val();
 		var encoded = escape(data); 
-		var fullURL = "http://www.texify.com/img/%5Cnormalsize%5C%21"+ encoded +".gif";
+		refThis.fullURL = "http://www.texify.com/img/%5Cnormalsize%5C%21"+ encoded +".gif";
 
-                jQuery("#widget_textify_canvas", refThis.slideDoc).append('<iframe id="widget_textify_frame" class="widget_textify_frame" src="'+fullURL+'"></iframe>');
+		if(refThis.iframe) { 
+			refThis.iframe.attr("src",refThis.fullURL);
+  		} else {
+	                jQuery("#widget_textify_canvas", refThis.slideDoc).append('<iframe id="widget_textify_frame" class="widget_textify_frame" src="'+refThis.fullURL+'"></iframe>');
 
-		jQuery("#widgetscanvas", refThis.slideDoc).append("<button id='widget_textify_send'>Send</button>");
-		jQuery("#widget_textify_send", refThis.slideDoc).click(function() { 
-                	xWid.digester.add(refThis, fullURL);
-                	jQuery("#widgetscanvas",refThis.slideDoc).html("");
-              		jQuery("#widgetscanvas",refThis.slideDoc).css("display","none");
-		});
+			refThis.iframe = jQuery("#widget_textify_frame",refThis.slideDoc); 
+
+			jQuery("#widgetscanvas", refThis.slideDoc).append("<button id='widget_textify_send'>Send</button>");
+			jQuery("#widget_textify_send", refThis.slideDoc).click(function() { 
+       	         		xWid.digester.add(refThis, refThis.fullURL);
+       	        	 	jQuery("#widgetscanvas",refThis.slideDoc).html("");
+       		       		jQuery("#widgetscanvas",refThis.slideDoc).css("display","none");
+			});
+
+		} 
         });
   } 
 } 
