@@ -38,6 +38,7 @@ var xWid = {
   uiDoc     : null, 
   transport : null,       // This is a plugin. See the build system. 
   digester  : null,       // This is a plugin. See the build system. 
+  overlay   : null, 	  // This is a plugin. See the build system. 
     
   cssStack_slidebar: new Array(), 
  
@@ -122,8 +123,7 @@ var xWid = {
 				xWid.transport.init();
 			});
 			jQuery("#goclass",slide.contentDocument).click( function () { 
-				var visitRepo = jetpack.tabs.open(xWid.transport.repository);
-				visitRepo.focus();
+				xWid.overlay.start();
 			});
 			jQuery("#gosave",slide.contentDocument).click( function () { 
 				xWid.digester.serialize();
@@ -188,9 +188,10 @@ var manifest = {
 	<div style="padding:1em;-moz-box-shadow: black 0 0 30px; border: 8px solid black;  -moz-border-radius:30px;background-image: -moz-linear-gradient(top, lightblue, #fff);  ">
 	<h1>Welcome to Expression Widgets</h1>
     <p>  
-	To open the Expression Widgets panel please use the slide bar element on the left acessible using the icon ( <img src='chrome://jetpack/content/gfx/arrowRight.png' /> ) at the left hand corder of your browser window. 
+1	To open the Expression Widgets panel please use the slide bar element on the left acessible using the icon ( <img src='chrome://jetpack/content/gfx/arrowRight.png' /> ) at the left hand corder of your browser window. 
     </p>  
 	</div>
+
 	</div>
   </>  
 }; 
@@ -878,7 +879,9 @@ widgets.textify = {
 
   name		: "text/textify", 
   slideDoc      : null, 
+  iframe 	: null, 
   selectedText  : "",
+  fullURL	: "",
 
   register: function (slideDoc) { 
 	
@@ -896,6 +899,7 @@ widgets.textify = {
   },
 
   init: function () { 
+
         jQuery("#widgetscanvas",this.slideDoc).html("<div class='textify'>Type textify equation <br /><input id='widget_textify_field' value='' ><br /><button id='widget_textify_render'>Render</button><button id='widget_textify_help'>Help</button><br /><div id='widget_textify_canvas'></div></div>");
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
 	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#ffa");
@@ -911,16 +915,23 @@ widgets.textify = {
 
 		var data = jQuery("#widget_textify_field",refThis.slideDoc).val();
 		var encoded = escape(data); 
-		var fullURL = "http://www.texify.com/img/%5Cnormalsize%5C%21"+ encoded +".gif";
+		refThis.fullURL = "http://www.texify.com/img/%5Cnormalsize%5C%21"+ encoded +".gif";
 
-                jQuery("#widget_textify_canvas", refThis.slideDoc).append('<iframe id="widget_textify_frame" class="widget_textify_frame" src="'+fullURL+'"></iframe>');
+		if(refThis.iframe) { 
+			refThis.iframe.attr("src",refThis.fullURL);
+  		} else {
+	                jQuery("#widget_textify_canvas", refThis.slideDoc).append('<iframe id="widget_textify_frame" class="widget_textify_frame" src="'+refThis.fullURL+'"></iframe>');
 
-		jQuery("#widgetscanvas", refThis.slideDoc).append("<button id='widget_textify_send'>Send</button>");
-		jQuery("#widget_textify_send", refThis.slideDoc).click(function() { 
-                	xWid.digester.add(refThis, fullURL);
-                	jQuery("#widgetscanvas",refThis.slideDoc).html("");
-              		jQuery("#widgetscanvas",refThis.slideDoc).css("display","none");
-		});
+			refThis.iframe = jQuery("#widget_textify_frame",refThis.slideDoc); 
+
+			jQuery("#widgetscanvas", refThis.slideDoc).append("<button id='widget_textify_send'>Send</button>");
+			jQuery("#widget_textify_send", refThis.slideDoc).click(function() { 
+       	         		xWid.digester.add(refThis, refThis.fullURL);
+       	        	 	jQuery("#widgetscanvas",refThis.slideDoc).html("");
+       		       		jQuery("#widgetscanvas",refThis.slideDoc).css("display","none");
+			});
+
+		} 
         });
   } 
 } 
@@ -930,15 +941,143 @@ widgets.list[widgets.textify.name] = widgets.textify;
 
 xWid.cssStack_slidebar.push("#widgetscanvas .textify  { text-align:center; padding:.5em  } #widgetscanvas .textify input { width:100% }   #widgetscanvas .textify button { margin:.5em } #widget_textify_frame { width:200px; height:70px;background-color:white; border:1px solid black} ");
 
+xWid.overlay = { 
+
+	contentTab: null, 
+	contentDoc: null, 
+
+	rawStore    : new Array(),
+	storeIndex  : null, 
+
+	html_overlay_helper: "<div class='overlay_menu'><button id='overlay_hide'>Hide Overlay</button>", 
+
+  	start: function () { 
+		this.contentTab = jetpack.tabs.open(xWid.transport.repository);
+                this.contentTab.focus();
+		var refThis = this; 
+		this.contentTab.onReady(function(doc){
+			refThis.contentDoc = doc; 
+			jQuery("body",doc).append("<div id='overlay_base'></div><div id='historypanel'></div>");
+
+			var cc = refThis.contentTab.contentWindow; 
+			var ww = cc.innerWidth + cc.scrollMaxX; 
+			var hh = cc.innerHeight + cc.scrollMaxY; 
+
+			if(ww<700) { 
+				ww = 700;
+			} 
+
+                        jQuery(doc.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",doc)).append( "#historypanel { background-color:white; padding:2em; width:80%; left:50px; top:80px; position:absolute; z-index:10000;   -moz-border-radius:30px; -moz-box-shadow: white 0 0 30px; border:10px solid white; }  #overlay_base {position:absolute; z-index:9999; width:"+ ww +"px; height:"+ hh+"px; left:0; top:0;;   background-color:rgba(0,0,0,.8);} span.statement { width:90%; overflow:hidden; display:block; border:1px solid black; padding:1em; margin-bottom:1em; } ");
+
+
+
+			refThis.showHelp(); 
+			refThis.load();
+		});
+	}, 
+
+	showHelp: function () { 
+
+		jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
+		jQuery("#notificationpanel",xWid.uiDoc).append(this.html_overlay_helper);
+		var refThis = this; 
+		jQuery("#overlay_hide",xWid.uiDoc).click(function () { 
+			jQuery("#overlay_base",refThis.contentDoc).css("display","none");
+			jQuery("#historypanel",refThis.contentDoc).css("display","none");
+		});
+
+	},
+
+ 	load: function () { 
+
+		refThis = this; 
+		jQuery("pre", this.contentDoc).each( function () { 
+			refThis.addItem(jQuery(this).text());
+		});
+		this.renderData();
+	},
+
+	addItem: function (lineStr) { 
+		this.rawStore.push(lineStr);
+	}, 
+
+	renderData: function () { 
+
+			this.storeIndex = new Array();
+
+			for (var key in this.rawStore) { 
+				let currLine = this.rawStore[key];
+
+				currLine = jQuery.trim(currLine);
+				let dataChunks = currLine.split("  "); 
+				let metaChunks = dataChunks[0].split(" ");
+				if(metaChunks.length>=2) { 
+					let date = metaChunks[0]; 
+					let hour = metaChunks[1]; 
+				 	let data = dataChunks[1]; 	
+					var contentData =""; 
+					var appData  ="";
+ 					try { 
+						appData     = data.split("::")[0];
+						contentData = data.split("::")[1];
+					} catch(i) {  } 
+
+					this.addStore(date, hour, appData, contentData); 
+
+				} else { 
+				} 	
+			} 
+			this.sortData();
+	}, 
+
+	addStore: function ( date, hour, app, data) {
+                var nodeEntry = {
+                       date: date,
+                       hour: hour,
+                       app : app,
+                       data: data
+                }
+                this.storeIndex[date+hour +"-"+Math.random()] = nodeEntry;
+        },
+
+
+        sortData: function () {
+                jQuery("#historypanel", this.contentDoc).html("");
+
+                var keysArray = new Array();
+                for (var k in this.storeIndex ) {
+xWid.dump("*");
+                        keysArray.push(k);
+                }
+                keysArray.sort();
+
+                for(var i=0;i<keysArray.length;i++) {
+
+                        jQuery("#historypanel", this.contentDoc).append(this.render(this.storeIndex[keysArray[i]]));
+                }
+        },
+	render: function (node) { 
+		let nodeEntry = this.contentDoc.createElementNS("http://www.w3.org/1999/xhtml","span");
+		nodeEntry.setAttribute("class","statement"); 
+		nodeEntry.setAttribute("date",node.date); 
+		nodeEntry.setAttribute("hour",node.hour); 
+		nodeEntry.innerHTML=this.parseData(node.app,node.data);
+		return nodeEntry;
+	}, 
+
+	parseData: function (app,data) { 
+		return widgets.list[app].parse(data);
+	}
+} 
 /* Put this file at the end of the build :) process */
 
 // Enable the iframe-based wiki negotiation transport 
 xWid.transport = libCataliser_post; 
 
 // Enable this to disable debugging 
-xWid.dump = function () { } 
+//xWid.dump = function () { } 
 
-//xWid.cssStack_slidebar.push("#debug {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #555, #555); display:none;  display:block; font-size:80%; color: white; } ");
+xWid.cssStack_slidebar.push("#debug {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #555, #555); display:none;  display:block; font-size:80%; color: white; } ");
 
 xWid.cssStack_slidebar.push(".frame { width:1px; height:1px; position:absolute; left:-10px } ");
 

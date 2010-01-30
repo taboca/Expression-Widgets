@@ -1,1 +1,1 @@
-cat ./src/core.js ./src/firstrun.js ./src/digester.js ./src/transport_wiki_mozilla_post.js ./src/widget_drop.js ./src/widget_snapshot.js ./src/widget_selection.js  ./src/widget_3rd_textify.js after_settings.js > ./output/expressionwidgets.js
+cat ./src/core.js ./src/firstrun.js ./src/digester.js ./src/transport_wiki_mozilla_post.js ./src/widget_drop.js ./src/widget_snapshot.js ./src/widget_selection.js  ./src/widget_3rd_textify.js ./src/overlay.js after_settings.js > ./output/expressionwidgets.js

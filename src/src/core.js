@@ -38,6 +38,7 @@ var xWid = {
   uiDoc     : null, 
   transport : null,       // This is a plugin. See the build system. 
   digester  : null,       // This is a plugin. See the build system. 
+  overlay   : null, 	  // This is a plugin. See the build system. 
     
   cssStack_slidebar: new Array(), 
  
@@ -122,8 +123,7 @@ var xWid = {
 				xWid.transport.init();
 			});
 			jQuery("#goclass",slide.contentDocument).click( function () { 
-				var visitRepo = jetpack.tabs.open(xWid.transport.repository);
-				visitRepo.focus();
+				xWid.overlay.start();
 			});
 			jQuery("#gosave",slide.contentDocument).click( function () { 
 				xWid.digester.serialize();
