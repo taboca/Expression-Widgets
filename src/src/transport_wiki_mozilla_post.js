@@ -14,6 +14,15 @@ var libCataliser_post = {
    		this.wikiTab = jetpack.tabs.open(this.repository);
                 this.wikiTab.focus();   // TODO remove the focus to the tab soon
     	}, 
+ 	helper_instructions: function () { 
+   		this.wikiTab = jetpack.tabs.open("http://taboca.github.com/Expression-Widgets/instructions.html");
+                this.wikiTab.focus();   // TODO remove the focus to the tab soon
+    	}, 
+
+ 	helper_nouser_login: function () { 
+   		this.wikiTab = jetpack.tabs.open(this.repository);
+                this.wikiTab.focus();   // TODO remove the focus to the tab soon
+    	}, 
 
         init: function () {
 		var stampedThis = this; 
@@ -33,40 +42,53 @@ var libCataliser_post = {
 		xWid.loadingOn(); // animation
         },
 
+	// This function is temporary 
+	findDocBase: function () { 
+		var chunks = this.repository.split("/");
+		var base = chunks[0]+"/"+chunks[1]+"/"+chunks[2];
+xWid.dump("!");
+		return base; 
+	}, 
+
         load: function () {
 
 		var doc = this.wikiDoc; 
-		var foundLogin = false; 
+		var foundLogin = -1; 
 		var stampedThis = this; 
-                jQuery("a[title^='Edit section: "+this.login+"']", doc).each( function () {
-                        item = jQuery(this).attr("href");
-	
-			// warning replace this to the base for the wiki site
 
-                        var toURL = "https://wiki.mozilla.org"+item;
-			foundLogin = true; 
+		var loginSimpleTrap = this.login.replace(/^\s+|\s+$/g,""); 
 
-		 	stampedThis.isloading=true;	
-			xWid.loadingOn();
+		if(loginSimpleTrap=="") { 
+			this.login="!!!nouser!!!";
+			foundLogin = -2; 
+		} else { 
+			jQuery("a[title^='Edit section: "+this.login+"']", doc).each( function () {
+				var item = jQuery(this).attr("href");
+				var toURL = stampedThis.findDocBase() + item;
+				foundLogin = 1; 
+				stampedThis.isloading=true;	
+				xWid.loadingOn();
+				stampedThis.bufferFrameLoadCallback = function () { 
+					stampedThis.isloading=false;
+					xWid.loadingOff();
+					xWid.digester.init(xWid.uiDoc);
+					let doc = xWid.uiDoc.getElementById('frame').contentDocument;
+					xWid.digester.userContent = jQuery("#wpTextbox1",doc).val();
+					xWid.transport.wikiEditDoc = doc;
+					xWid.digester.load();
+				} 
+				jQuery(".frame", xWid.uiDoc).attr("src", toURL);
+                	});
+		} 
 
-			stampedThis.bufferFrameLoadCallback = function () { 
-				stampedThis.isloading=false;
-				xWid.loadingOff();
-				
-				// warning - just moved here to load the text
-				// content area just one time. 
-
-				xWid.digester.init(xWid.uiDoc);
-                                let doc = xWid.uiDoc.getElementById('frame').contentDocument;
-				xWid.digester.userContent = jQuery("#wpTextbox1",doc).val();
-                                xWid.transport.wikiEditDoc = doc;
-                                xWid.digester.load();
-			} 
-			jQuery(".frame", xWid.uiDoc).attr("src", toURL);
-
-                })
-
-		if(!foundLogin) { 
+		if(foundLogin == 1)  { 
+			jQuery("#goinit", xWid.uiDoc).html("Expressing ON");
+			jQuery("#goinit", xWid.uiDoc).attr("disabled","disabled");
+			jQuery("#gosave", xWid.uiDoc).removeAttr("disabled");
+			jQuery("#historybgcontainer", xWid.uiDoc).css("display","block");
+			jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
+		} 
+		if(foundLogin == -1) { 
 			jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
 			jQuery("#notificationpanel",xWid.uiDoc).append(xWid.resources.html_login_helper);
 			this.helper_login();
@@ -75,14 +97,21 @@ var libCataliser_post = {
 				jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
 				xWid.transport.init();
 			});
-		} else { 
-			jQuery("#goinit", xWid.uiDoc).html("Expressing ON");
-			jQuery("#goinit", xWid.uiDoc).attr("disabled","disabled");
-			jQuery("#gosave", xWid.uiDoc).removeAttr("disabled");
-			jQuery("#historybgcontainer", xWid.uiDoc).css("display","block");
-			jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
-		} 
-
+		}
+		if(foundLogin == -2) {
+                        jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
+                        jQuery("#notificationpanel",xWid.uiDoc).append(xWid.resources.html_login_nouser_helper);
+                        this.helper_nouser_login();
+			let refThis = this; 
+                        jQuery("#gotry",xWid.uiDoc).click( function () {
+                                jQuery("#notificationpanel",xWid.uiDoc).html("");
+                                jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
+                                xWid.transport.init();
+                        });
+                        jQuery("#gohelp",xWid.uiDoc).click( function () {
+				refThis.helper_instructions();
+                        });
+                } 
         },
         grab: function () {
 

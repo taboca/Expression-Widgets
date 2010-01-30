@@ -165,9 +165,11 @@ xWid.init();
 */
 
 xWid.resources = { 
-    html_panel     : "<div id='topheader'>ExpressionWidgets<img align='top' width='30' id='loadingfeedback' src='chrome://global/skin/media/throbber.png'></div><table id='mainpanel'><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass'>Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='goinit'>Login</button><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historybgcontainer'><div id='historycontainer'><div id='historypanel'></div></div></div> <div id='debug'></div>", 
+    html_panel     : "<div id='topheader'>ExpressionWidgets<img align='top' width='30' id='loadingfeedback' src='chrome://global/skin/media/throbber.png'></div><table id='mainpanel'><tr><td><button id='goinit'>Login</button></td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass'>Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2'><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historybgcontainer'><div id='historycontainer'><div id='historypanel'></div></div></div> <div id='debug'></div>", 
     html_login_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You are not logged in. Log over the wiki and then click here <button id='gotry'>Retry</button> </div>",
-    style_slidebar_head: " #loadingfeedback { margin-left:6px; display:none; } table { margin:auto;  margin-top:0em; margin-bottom:0; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:92%; border:6px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; }  #topheader { text-align:center;  color:black; font-weight:bold; margin:auto; margin-top:0; margin-bottom:0; height:32px; width:80%;  padding:.2em } #widgetspanel { display:none; margin:auto; margin-top:0; width:80%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius: 0 0 10px 10px; background-image: -moz-linear-gradient(top, #000, #000);  } #widgetscanvas { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%;  }  #notificationpanel { margin:auto; padding:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:0 0 10px 10px; width: 210px; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historybgcontainer { display:none; margin:auto; width:250px; height:300px; padding:.5em; margin-top:.5em; -moz-border-radius:20px; -moz-box-shadow: black 0 0 10px;  background-image: -moz-linear-gradient(top, #fff, #fff);  } #historycontainer {  margin:auto; width:100%; height:100%; overflow:scroll } #historypanel { width:1400px; } #widgetspanel button { -moz-border-radius:8px; border:1px solid black; padding:3px; margin:2px } .statement {  display:block; font-size:86%; font-family:arial; margin-bottom:.5em; -moz-border-radius:10px; padding:4px; background-image: -moz-linear-gradient(top, #fff, #ddd);}  ",
+    html_login_nouser_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You don't have the username/wiki settings. Please follow the instructions on how to set your user section in the wiki class repository.  <button id='gotry'>Retry</button> </div>",
+
+    style_slidebar_head: " #loadingfeedback { margin-left:6px; display:none; } table { margin:auto;  margin-top:0em; margin-bottom:0; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:92%; border:6px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; }  #topheader { text-align:center;  color:black; font-weight:bold; margin:auto; margin-top:0; margin-bottom:0; height:32px; width:80%;  padding:.2em } #widgetspanel { display:none; margin:auto; margin-top:0; width:80%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius: 0 0 10px 10px; background-image: -moz-linear-gradient(top, #000, #000);  } #widgetscanvas { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%;  }  #notificationpanel { margin:auto; padding:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:0 0 10px 10px; width: 210px; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historybgcontainer { display:none; margin:auto; width:250px; height:300px; padding:.5em; margin-top:.5em; -moz-border-radius:20px; -moz-box-shadow: black 0 0 10px;  background-image: -moz-linear-gradient(top, #fff, #fff);  } #historycontainer {  margin:auto; width:100%; height:100%; overflow:scroll } #historypanel { width:1400px; } #widgetspanel button { -moz-border-radius:8px; border:1px solid black; padding:3px; margin:2px } .statement {  display:block; font-size:86%; font-family:arial; margin-bottom:.5em; -moz-border-radius:10px; padding:6px; background-image: -moz-linear-gradient(top, #fff, #ddd);}  ",
 } 
 
 
@@ -383,6 +385,11 @@ var libCataliser_post = {
                 this.wikiTab.focus();   // TODO remove the focus to the tab soon
     	}, 
 
+ 	helper_nouser_login: function () { 
+   		this.wikiTab = jetpack.tabs.open(this.repository);
+                this.wikiTab.focus();   // TODO remove the focus to the tab soon
+    	}, 
+
         init: function () {
 		var stampedThis = this; 
 		if(!this.bufferFrame) { 
@@ -401,40 +408,53 @@ var libCataliser_post = {
 		xWid.loadingOn(); // animation
         },
 
+	// This function is temporary 
+	findDocBase: function () { 
+		var chunks = this.repository.split("/");
+		var base = chunks[0]+"/"+chunks[1]+"/"+chunks[2];
+xWid.dump("!");
+		return base; 
+	}, 
+
         load: function () {
 
 		var doc = this.wikiDoc; 
-		var foundLogin = false; 
+		var foundLogin = -1; 
 		var stampedThis = this; 
-                jQuery("a[title^='Edit section: "+this.login+"']", doc).each( function () {
-                        item = jQuery(this).attr("href");
-	
-			// warning replace this to the base for the wiki site
 
-                        var toURL = "https://wiki.mozilla.org"+item;
-			foundLogin = true; 
+		var loginSimpleTrap = this.login.replace(/^\s+|\s+$/g,""); 
 
-		 	stampedThis.isloading=true;	
-			xWid.loadingOn();
+		if(loginSimpleTrap=="") { 
+			this.login="!!!nouser!!!";
+			foundLogin = -2; 
+		} else { 
+			jQuery("a[title^='Edit section: "+this.login+"']", doc).each( function () {
+				var item = jQuery(this).attr("href");
+				var toURL = stampedThis.findDocBase() + item;
+				foundLogin = 1; 
+				stampedThis.isloading=true;	
+				xWid.loadingOn();
+				stampedThis.bufferFrameLoadCallback = function () { 
+					stampedThis.isloading=false;
+					xWid.loadingOff();
+					xWid.digester.init(xWid.uiDoc);
+					let doc = xWid.uiDoc.getElementById('frame').contentDocument;
+					xWid.digester.userContent = jQuery("#wpTextbox1",doc).val();
+					xWid.transport.wikiEditDoc = doc;
+					xWid.digester.load();
+				} 
+				jQuery(".frame", xWid.uiDoc).attr("src", toURL);
+                	});
+		} 
 
-			stampedThis.bufferFrameLoadCallback = function () { 
-				stampedThis.isloading=false;
-				xWid.loadingOff();
-				
-				// warning - just moved here to load the text
-				// content area just one time. 
-
-				xWid.digester.init(xWid.uiDoc);
-                                let doc = xWid.uiDoc.getElementById('frame').contentDocument;
-				xWid.digester.userContent = jQuery("#wpTextbox1",doc).val();
-                                xWid.transport.wikiEditDoc = doc;
-                                xWid.digester.load();
-			} 
-			jQuery(".frame", xWid.uiDoc).attr("src", toURL);
-
-                })
-
-		if(!foundLogin) { 
+		if(foundLogin == 1)  { 
+			jQuery("#goinit", xWid.uiDoc).html("Expressing ON");
+			jQuery("#goinit", xWid.uiDoc).attr("disabled","disabled");
+			jQuery("#gosave", xWid.uiDoc).removeAttr("disabled");
+			jQuery("#historybgcontainer", xWid.uiDoc).css("display","block");
+			jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
+		} 
+		if(foundLogin == -1) { 
 			jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
 			jQuery("#notificationpanel",xWid.uiDoc).append(xWid.resources.html_login_helper);
 			this.helper_login();
@@ -443,14 +463,17 @@ var libCataliser_post = {
 				jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
 				xWid.transport.init();
 			});
-		} else { 
-			jQuery("#goinit", xWid.uiDoc).html("Expressing ON");
-			jQuery("#goinit", xWid.uiDoc).attr("disabled","disabled");
-			jQuery("#gosave", xWid.uiDoc).removeAttr("disabled");
-			jQuery("#historybgcontainer", xWid.uiDoc).css("display","block");
-			jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
-		} 
-
+		}
+		if(foundLogin == -2) {
+                        jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
+                        jQuery("#notificationpanel",xWid.uiDoc).append(xWid.resources.html_login_nouser_helper);
+                        this.helper_nouser_login();
+                        jQuery("#gotry",xWid.uiDoc).click( function () {
+                                jQuery("#notificationpanel",xWid.uiDoc).html("");
+                                jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
+                                xWid.transport.init();
+                        });
+                } 
         },
         grab: function () {
 
@@ -1092,9 +1115,9 @@ xWid.overlay = {
 xWid.transport = libCataliser_post; 
 
 // Enable this to disable debugging 
-xWid.dump = function () { } 
+//xWid.dump = function () { } 
 
-//xWid.cssStack_slidebar.push("#debug {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #555, #555); display:none;  display:block; font-size:80%; color: white; } ");
+xWid.cssStack_slidebar.push("#debug {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #555, #555); display:none;  display:block; font-size:80%; color: white; } ");
 
 xWid.cssStack_slidebar.push(".frame { width:1px; height:1px; position:absolute; left:-10px } ");
 
