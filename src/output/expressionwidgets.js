@@ -946,16 +946,28 @@ xWid.overlay = {
 	contentTab: null, 
 	contentDoc: null, 
 
-	rawStore    : new Array(),
+	rawStore    : null,
 	storeIndex  : null, 
 
 	html_overlay_helper: "<div class='overlay_menu'><button id='overlay_hide'>Hide Overlay</button>", 
 
   	start: function () { 
-		this.contentTab = jetpack.tabs.open(xWid.transport.repository);
-                this.contentTab.focus();
+		this.rawStore = new Array();
 		var refThis = this; 
-		this.contentTab.onReady(function(doc){
+
+		if(this.contentTab) { 
+			this.contentDoc.location=(xWid.transport.repository);
+		} 
+		else { 
+			this.contentTab = jetpack.tabs.open(xWid.transport.repository);
+			this.contentTab.onReady(function (doc) { refThis.readyTab(doc) }); 
+		} 
+                this.contentTab.focus();
+
+	}, 
+
+	readyTab: function(doc){
+			var refThis = this; 
 			refThis.contentDoc = doc; 
 			jQuery("body",doc).append("<div id='overlay_base'></div><div id='historypanel'></div>");
 
@@ -973,11 +985,11 @@ xWid.overlay = {
 
 			refThis.showHelp(); 
 			refThis.load();
-		});
-	}, 
+	},
 
 	showHelp: function () { 
-
+			
+		jQuery("#notificationpanel",xWid.uiDoc).html("");
 		jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
 		jQuery("#notificationpanel",xWid.uiDoc).append(this.html_overlay_helper);
 		var refThis = this; 
@@ -1046,7 +1058,6 @@ xWid.overlay = {
 
                 var keysArray = new Array();
                 for (var k in this.storeIndex ) {
-xWid.dump("*");
                         keysArray.push(k);
                 }
                 keysArray.sort();
