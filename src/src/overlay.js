@@ -12,7 +12,7 @@ xWid.overlay = {
 		this.rawStore = new Array();
 		var refThis = this; 
 
-		if(this.contentTab) { 
+		if(this.contentTab && this.contentTab.contentDocument) { 
 			this.contentDoc.location=(xWid.transport.repository);
 		} 
 		else { 
