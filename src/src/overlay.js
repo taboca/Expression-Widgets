@@ -36,7 +36,7 @@ xWid.overlay = {
 				ww = 700;
 			} 
 
-                        jQuery(doc.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",doc)).append( "#historypanel { background-color:white; padding:2em; width:80%; left:50px; top:80px; position:absolute; z-index:10000;   -moz-border-radius:30px; -moz-box-shadow: white 0 0 30px; border:10px solid white; }  #overlay_base {position:absolute; z-index:9999; width:"+ ww +"px; height:"+ hh+"px; left:0; top:0;;   background-color:rgba(0,0,0,.8);} span.statement { width:90%; overflow:hidden; display:block; border:1px solid black; padding:1em; margin-bottom:1em; } ");
+                        jQuery(doc.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",doc)).append( "#historypanel { background-color:white; padding:2em; width:80%; left:50px; top:80px; position:absolute; z-index:10000;   -moz-border-radius:30px; -moz-box-shadow: black 0 0 30px; border:1px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); }  #overlay_base {position:absolute; z-index:9999; width:"+ ww +"px; height:"+ hh+"px; left:0; top:0;;   background-color:rgba(0,0,0,.7);} span.statement { width:90%; overflow:hidden; display:block; -moz-border-radius:15px;  ; padding:1em; background-image: -moz-linear-gradient(top, #fff, #dee); margin-bottom:1em; } ");
 
 
 
@@ -61,7 +61,7 @@ xWid.overlay = {
 
 		refThis = this; 
 		jQuery("pre", this.contentDoc).each( function () { 
-			refThis.addItem(jQuery(this).text());
+			refThis.addItem(jQuery(this).html());
 		});
 		this.renderData();
 	},
@@ -76,23 +76,16 @@ xWid.overlay = {
 
 			for (var key in this.rawStore) { 
 				let currLine = this.rawStore[key];
-
 				currLine = jQuery.trim(currLine);
-				let dataChunks = currLine.split("  "); 
-				let metaChunks = dataChunks[0].split(" ");
-				if(metaChunks.length>=2) { 
-					let date = metaChunks[0]; 
-					let hour = metaChunks[1]; 
-				 	let data = dataChunks[1]; 	
-					var contentData =""; 
-					var appData  ="";
- 					try { 
-						appData     = data.split("::")[0];
-						contentData = data.split("::")[1];
-					} catch(i) {  } 
-
+				let dataChunks  = currLine.split("::"); 
+				let metaChunks  = dataChunks[0].split("  ");
+				let stampChunks = metaChunks[0].split(" ");
+				if(stampChunks.length>=2) { 
+					let date = stampChunks[0]; 
+					let hour = stampChunks[1]; 
+					var contentData = dataChunks[1]; 
+					var appData     = metaChunks[1];;
 					this.addStore(date, hour, appData, contentData); 
-
 				} else { 
 				} 	
 			} 
@@ -134,6 +127,10 @@ xWid.overlay = {
 	}, 
 
 	parseData: function (app,data) { 
+		if(app=="text/textify") {
+                        return data;
+                }
+
 		return widgets.list[app].parse(data);
 	}
 } 
