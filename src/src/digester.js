@@ -128,6 +128,10 @@ xWid.digester = {
                 var hh = this.time_getHour(); 
                 var mm = this.time_getMin(); 
                 var ss = this.time_getSec(); 
+
+		if(parseInt(ss)<10) { ss="0"+ss } 
+		if(parseInt(mm)<10) { mm="0"+mm } 
+		if(parseInt(hh)<10) { hh="0"+hh } 
                 
                 var hour = hh+":"+mm+":"+ss; 
 

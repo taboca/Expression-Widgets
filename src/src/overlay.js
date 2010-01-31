@@ -83,12 +83,12 @@ xWid.overlay = {
 			for (var key in this.rawStore) { 
 				let currLine = this.rawStore[key];
 				currLine = jQuery.trim(currLine);
-				let dataChunks  = currLine.split("::"); 
-				let metaChunks  = dataChunks[0].split("  ");
-				let stampChunks = metaChunks[0].split(" ");
+				var dataChunks  = currLine.split("::"); 
+				var metaChunks  = dataChunks[0].split("  ");
+				var stampChunks = metaChunks[0].split(" ");
 				if(stampChunks.length>=2) { 
-					let date = stampChunks[0]; 
-					let hour = stampChunks[1]; 
+					let date = stampChunks[1]; 
+					let hour = stampChunks[2]; 
 					var contentData = dataChunks[1]; 
 					var appData     = metaChunks[1];;
 					this.addStore(date, hour, appData, contentData); 
@@ -99,13 +99,21 @@ xWid.overlay = {
 	}, 
 
 	addStore: function ( date, hour, app, data) {
+
                 var nodeEntry = {
                        date: date,
                        hour: hour,
                        app : app,
                        data: data
                 }
-                this.storeIndex[date+hour +"-"+Math.random()] = nodeEntry;
+
+		var dd = date.split("-");
+		var hh = hour.split(":");
+		var d1 = dd[0]+dd[1]+dd[2];
+		var h1 = hh[0]+hh[1]+hh[2];
+                //this.storeIndex[date+"-"+hour] = nodeEntry;
+xWid.dump("["+d1+h1+"]");
+                this.storeIndex["key"+d1+h1] = nodeEntry;
         },
 
 
