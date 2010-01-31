@@ -1,0 +1,2 @@
+taboca:video marciogalli$ ~marciogalli/Desktop/working/roger/roger/ffmpeg/ffmpeg/ffmpeg -i expressionwidgets2.mp4 -croptop 22 -cropbottom 104 -cropright 302   test.mp4 -s 600x414
+
