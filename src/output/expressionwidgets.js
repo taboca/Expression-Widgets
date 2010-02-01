@@ -923,7 +923,7 @@ widgets.selection = {
   },
 
   init: function () { 
-        jQuery("#widgetscanvas",this.slideDoc).html("<div class='selection'>Type text or select from browser: <br /><textarea id='widget_selection_field'  /><br /><button id='widget_selection_send'>Send</button></div>");
+        jQuery("#widgetscanvas",this.slideDoc).html("<div class='selection'>Type text or select from browser: <br /><input id='widget_selection_field'  /><br /><button id='widget_selection_send'>Send</button></div>");
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
 	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#cec");
 	refThis = this; 
