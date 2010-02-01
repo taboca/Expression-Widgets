@@ -41,7 +41,7 @@ xWid.overlay = {
 				ww = 700;
 			} 
 
-                        jQuery(doc.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",doc)).append( " #menu { background-color:white; padding:1em;  ; height:100px; left:50px; top:40px; position:absolute; z-index:9999;   -moz-border-radius:20px; -moz-box-shadow: black 0 0 30px; border:1px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } #historypanel { background-color:white; padding:2em; width:80%; left:50px; top:80px; position:absolute; z-index:10000;   -moz-border-radius:30px; -moz-box-shadow: black 0 0 30px; border:1px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); }  #overlay_base {position:absolute; z-index:9998; width:"+ ww +"px; height:"+ hh+"px; left:0; top:0;;   background-color:rgba(0,0,0,.7);} span.statement { width:90%; overflow:hidden; display:block; -moz-border-radius:15px;  ; padding:1em; background-image: -moz-linear-gradient(top, #fff, #dee); margin-bottom:1em; } ");
+                        jQuery(doc.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",doc)).append( " #menu { background-color:white; padding:1em;  ; height:100px; left:50px; top:40px; position:absolute; z-index:9999;   -moz-border-radius:20px; -moz-box-shadow: black 0 0 30px; border:1px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } #historypanel { background-color:white; padding:2em; width:80%; left:50px; top:80px; position:absolute; z-index:10000;   -moz-border-radius:30px; -moz-box-shadow: black 0 0 30px; border:1px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); }  #overlay_base {position:absolute; z-index:9998; width:"+ ww +"px; height:"+ hh+"px; left:0; top:0;;   background-color:rgba(0,0,0,.7);} span.statement { width:90%; overflow:hidden; display:block; -moz-border-radius:15px;  ; padding:1em; background-image: -moz-linear-gradient(top, #fff, #dee); margin-bottom:1em; } span.datetime { background-color:#ddd; padding:.2em ; margin-right:1em; font-size:80%} ");
 
 
 			refThis.showHelp(); 
@@ -136,7 +136,7 @@ xWid.dump("["+d1+h1+"]");
 		nodeEntry.setAttribute("class","statement"); 
 		nodeEntry.setAttribute("date",node.date); 
 		nodeEntry.setAttribute("hour",node.hour); 
-		nodeEntry.innerHTML=this.parseData(node.app,node.data);
+		nodeEntry.innerHTML="<span class='datetime'>"+node.date+" "+node.hour+"</span><span class=''>"+this.parseData(node.app,node.data)+"</span>";
 		return nodeEntry;
 	}, 
 
