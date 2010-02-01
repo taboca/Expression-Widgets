@@ -167,6 +167,14 @@ var xWid = {
 				xWid.transport.sync(xWid.digester.userContent);
 			});
 
+			jQuery("#goproject", slide.contentDocument).click(function () { 
+	                        let help = jetpack.tabs.open("http://taboca.github.com/Expression-Widgets");
+				help.focus();
+				return false;
+
+
+			});
+
 
 			// We check the initial state. If we have no username and repository 
 			// then we simply point the basic instructions. 
@@ -205,12 +213,12 @@ xWid.init();
 */
 
 xWid.resources = { 
-    html_panel     : "<div id='topheader'>ExpressionWidgets<img align='top' width='30' id='loadingfeedback' src='chrome://global/skin/media/throbber.png'></div><table id='mainpanel'><tr><td><button id='goinit'>Login</button></td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass'>Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2' id='topactions'><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historybgcontainer'><div id='historycontainer'><div id='historypanel'></div></div></div> <div id='debug'></div>", 
+    html_panel     : "<div id='topheader'><button alt='Visit the project' id='goproject' href='javascript:'>ExpressionWidgets</button><img align='top' width='30' id='loadingfeedback' src='chrome://global/skin/media/throbber.png'></div><table id='mainpanel'><tr><td><button id='goinit'>Login</button></td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass' title='Visit the Wiki Class URL in overlay mode' >Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2' id='topactions'><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historybgcontainer'><div id='historycontainer'><div id='historypanel'></div></div></div> <div id='debug'></div>", 
     html_login_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You are not logged in. Log over the wiki and then click here <button id='gotry'>Retry</button> </div>",
     html_login_nouser_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You don't have the username/wiki settings. Please follow the instructions on how to set your user section in the wiki class repository.  <button id='gotry'>Retry</button> <button style='margin:.5em' id='gohelp'>Instructions</button></div>",
     html_login_noinfo_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You don't have the username/wiki settings. Please follow the instructions on how to set your user section in the wiki class repository. <button style='margin:1em' id='gohelp'>Instructions</button></div>",
 
-    style_slidebar_head: " #loadingfeedback { margin-left:6px; display:none; } table { margin:auto;  margin-top:0em; margin-bottom:0; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:92%; border:6px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; }  #topheader { text-align:center;  color:black; font-weight:bold; margin:auto; margin-top:0; margin-bottom:0; height:32px; width:80%;  padding:.2em } #widgetspanel { display:none; margin:auto; margin-top:0; width:80%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius: 0 0 10px 10px; background-image: -moz-linear-gradient(top, #000, #000);  } #widgetscanvas { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%;  }  #notificationpanel { margin:auto; padding:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:0 0 10px 10px; width: 210px; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historybgcontainer { display:none; margin:auto; width:250px; height:300px; padding:.5em; margin-top:.5em; -moz-border-radius:20px; -moz-box-shadow: black 0 0 10px;  background-image: -moz-linear-gradient(top, #fff, #fff);  } #historycontainer {  margin:auto; width:100%; height:100%; overflow:scroll } #historypanel { width:1400px; } #widgetspanel button { -moz-border-radius:8px; border:1px solid black; padding:3px; margin:2px } .statement {  display:block; font-size:86%; font-family:arial; margin-bottom:.5em; -moz-border-radius:10px; padding:6px; background-image: -moz-linear-gradient(top, #fff, #ddd);}  ",
+    style_slidebar_head: " #loadingfeedback { margin-left:6px; display:none; } table { margin:auto;  margin-top:0em; margin-bottom:0; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:92%; border:6px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; }  #topheader { text-align:center;  color:black; font-weight:bold; margin:auto; margin-top:0; margin-bottom:0; height:32px; width:80%;  padding:.2em } #widgetspanel { display:none; margin:auto; margin-top:0; width:80%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius: 0 0 10px 10px; background-image: -moz-linear-gradient(top, #000, #000);  } #widgetscanvas { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%;  }  #notificationpanel { margin:auto; padding:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:0 0 10px 10px; width: 210px; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historybgcontainer { display:none; margin:auto; width:250px; height:300px; padding:.5em; margin-top:.5em; -moz-border-radius:20px; -moz-box-shadow: black 0 0 10px;  background-image: -moz-linear-gradient(top, #fff, #fff);  } #historycontainer {  margin:auto; width:100%; height:100%; overflow:scroll } #historypanel { width:1400px; } #widgetspanel button { -moz-border-radius:8px; border:1px solid black; padding:3px; margin:2px } .statement {  display:block; font-size:86%; font-family:arial; margin-bottom:.5em; -moz-border-radius:10px; padding:6px; background-image: -moz-linear-gradient(top, #fff, #ddd);} #goproject { border:0; -moz-border-radius:6px; padding:3px; background-color:#ddd; cursor:pointer}  button { cursor: pointer } ",
 } 
 
 
@@ -248,7 +256,7 @@ jetpack.me.onFirstRun(function () {
 		// In case we have no previous settings.. 
  	} else { 
  		xWid.localStore.repository = "https://wiki.mozilla.org/Education/Projects/JetpackForLearning/Profiles/expressionWidjets/class2"; 
-		xWid.localStore.login = "Marcio";
+		xWid.localStore.login = "";
 	} 
 });
 
@@ -1061,7 +1069,7 @@ xWid.overlay = {
 				ww = 700;
 			} 
 
-                        jQuery(doc.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",doc)).append( " #menu { background-color:white; padding:1em;  ; height:100px; left:50px; top:40px; position:absolute; z-index:9999;   -moz-border-radius:20px; -moz-box-shadow: black 0 0 30px; border:1px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } #historypanel { background-color:white; padding:2em; width:80%; left:50px; top:80px; position:absolute; z-index:10000;   -moz-border-radius:30px; -moz-box-shadow: black 0 0 30px; border:1px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); }  #overlay_base {position:absolute; z-index:9998; width:"+ ww +"px; height:"+ hh+"px; left:0; top:0;;   background-color:rgba(0,0,0,.7);} span.statement { width:90%; overflow:hidden; display:block; -moz-border-radius:15px;  ; padding:1em; background-image: -moz-linear-gradient(top, #fff, #dee); margin-bottom:1em; } ");
+                        jQuery(doc.createElementNS("http://www.w3.org/1999/xhtml", "style")).appendTo(jQuery("head",doc)).append( " #menu { background-color:white; padding:1em;  ; height:100px; left:50px; top:40px; position:absolute; z-index:9999;   -moz-border-radius:20px; -moz-box-shadow: black 0 0 30px; border:1px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } #historypanel { background-color:white; padding:2em; width:80%; left:50px; top:80px; position:absolute; z-index:10000;   -moz-border-radius:30px; -moz-box-shadow: black 0 0 30px; border:1px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); }  #overlay_base {position:absolute; z-index:9998; width:"+ ww +"px; height:"+ hh+"px; left:0; top:0;;   background-color:rgba(0,0,0,.7);} span.statement { width:90%; overflow:hidden; display:block; -moz-border-radius:15px;  ; padding:1em; background-image: -moz-linear-gradient(top, #fff, #dee); margin-bottom:1em; } span.datetime { background-color:#ddd; padding:.2em ; margin-right:1em; font-size:80%} ");
 
 
 			refThis.showHelp(); 
@@ -1156,7 +1164,7 @@ xWid.dump("["+d1+h1+"]");
 		nodeEntry.setAttribute("class","statement"); 
 		nodeEntry.setAttribute("date",node.date); 
 		nodeEntry.setAttribute("hour",node.hour); 
-		nodeEntry.innerHTML=this.parseData(node.app,node.data);
+		nodeEntry.innerHTML="<span class='datetime'>"+node.date+" "+node.hour+"</span><span class=''>"+this.parseData(node.app,node.data)+"</span>";
 		return nodeEntry;
 	}, 
 
