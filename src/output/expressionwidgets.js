@@ -316,7 +316,7 @@ xWid.digester = {
 		var preParse = this.userContent.split("===");
 		if (preParse.length==3) { 
 			xWid.dump("Found user..");
-			var userData = preParse[1].split("*"); 
+			var userData = preParse[2].split("*"); 
 			this.storeIndex = new Array();
 			for (var key in userData) { 
 				let currLine = userData[key];
