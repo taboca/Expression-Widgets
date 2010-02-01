@@ -50,8 +50,9 @@ xWid.digester = {
 
  	load: function () { 
                 jQuery("#historypanel", this.slideDoc).html("");
-		var preParse = this.userContent.split("=== "+xWid.transport.login+ " ===");
-		if (preParse.length==2) { 
+		//var preParse = this.userContent.split("=== "+xWid.transport.login+ " ===");
+		var preParse = this.userContent.split("===");
+		if (preParse.length==3) { 
 			xWid.dump("Found user..");
 			var userData = preParse[1].split("*"); 
 			this.storeIndex = new Array();
