@@ -543,6 +543,7 @@ var libCataliser_post = {
 
  		stampedThis.bufferFrameLoadCallback = function () {
                                 stampedThis.isloading=false;
+				jQuery("#gosave", xWid.uiDoc).removeAttr("disabled");
                                 xWid.loadingOff();
 				xWid.dump("Saved...");
 				stampedThis.load();
@@ -553,6 +554,8 @@ var libCataliser_post = {
 
 		stampedThis.isloading = true; 
 		xWid.loadingOn();
+
+		jQuery("#gosave", xWid.uiDoc).attr("disabled","disabled");
                 jQuery("#wpSave",this.wikiEditDoc).trigger("click");
 		
 		
