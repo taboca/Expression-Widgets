@@ -21,7 +21,7 @@ jetpack.me.onFirstRun(function () {
 		// In case we have no previous settings.. 
  	} else { 
  		xWid.localStore.repository = "https://wiki.mozilla.org/Education/Projects/JetpackForLearning/Profiles/expressionWidjets/class2"; 
-		xWid.localStore.login = "Marcio";
+		xWid.localStore.login = "";
 	} 
 });
 
