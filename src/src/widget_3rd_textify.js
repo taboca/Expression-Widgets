@@ -52,6 +52,7 @@ widgets.textify = {
 			jQuery("#widget_textify_send", refThis.slideDoc).click(function() { 
        	         		xWid.digester.add(refThis, refThis.fullURL);
        	        	 	jQuery("#widgetscanvas",refThis.slideDoc).html("");
+				refThis.iframe=null;
        		       		jQuery("#widgetscanvas",refThis.slideDoc).css("display","none");
 			});
 
