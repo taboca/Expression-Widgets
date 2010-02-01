@@ -45,7 +45,7 @@ widgets.snapshot = {
 
 	jQuery("#widgetscanvas",this.slideDoc).css("display","block");
 	jQuery("#widgetscanvas",this.slideDoc).css("background-color","#ecc");
-        jQuery("#widgetscanvas",this.slideDoc).html("<div class='snapshot'>Select area from the taken page screenshot.</div>");
+        jQuery("#widgetscanvas",this.slideDoc).html("<div class='snapshot'>Select area from the taken page screenshot. WARNING - SELECT SMALL AREA OF THE PAGE to send fewer bytes to MOZILLA WIKI. </div>");
 
 	this.edited = false; 
 	this.editor.on = false; 
