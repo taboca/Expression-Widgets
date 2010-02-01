@@ -1,7 +1,7 @@
 //////
 /////
 ////         Expression Widgets - JetPack for Learning 2010
-///
+///   0.5.2 
 //
 
 /* JEP Profile Disclaimer 
