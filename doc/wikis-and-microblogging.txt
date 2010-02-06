@@ -1,0 +1,14 @@
+== Open-based Repositories, Wiki Resources, MicroBlogging Reources ==
+
+Expression Widgets proposes a scenario where a group of participants can use browser-based tools to create open-based educational resources collaboratively. During the phase II of the JetPack for Learning Design competition, the protype demonstrated a scenario where partitipants were able to use a Firefox-based JetPack application to add statements of contribution to a wiki-based web page. In the scope of the project, user statements are also refered as user expression and its concept relates to the concept of microblogging, however, this project aims to explore the space where participants are contributing around a specific topic. 
+
+In traditional microblogging services, users can talk about anything. The social communication infra-structure may also support participants to build conventions. A popular communication form was raised from the users and not from the service. The concept of Retweet became popular as users needed to quote things from others. This form of communication supports users to add reference about their statements, thus indicating the source or value. In some circunstances, the limits of of the framework can also support users to find means to express their thoughts. The limit of 140 characters in Twitter allow users to find creative ways that depends on the social culture to be effective and become forms of communication. If you take an user Retweet example and separate it from the Twitter social network, the sample itself loose its value. 
+
+Establishing a space that supports team-based conventions can help the system to adapt in different spaces and supports teams to learn via interaction. This is one of the key concepts that this project wants to explore. 
+
+== References ==
+
+* Microblogging - http://en.wikipedia.org/wiki/Microblogging
+* Tweet, Tweet, Retweet: Conversational Aspects of Retweeting on Twitter - danah boyd  Microsoft Research dmb@microsoft.com / @zephoria Scott Golder  Cornell / Microsoft Research sag262@cornell.edu / @redlog Gilad Lotan  Microsoft giladl@microsoft.com / @gilgul 
+
+* 
