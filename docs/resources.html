@@ -1,0 +1,27 @@
+<html>
+<body>
+
+<h2>Analysis of Jetpack-based Applications and Code Development</h2>
+
+During the Jetpack for Learning Design Challenge classes it was presented a few scenarios of code development. Most of the Jetpack-based applications are implemented using one JavaScript file that represents the whole application. The application itself uses various types of resources but they can basically be placed inline as part of the same source-code or be remotelly hosted and loaded. 
+
+<h2>Challenge</h2>
+
+No way to see bring additional resources as part of a Jetpack application. No way to associate markup or rich user experience events or effects with a event chains in the application side.  
+
+<h2>Solution</h2>
+
+<ul>
+<li>Possible - Dynamically load resources from remote locations - possible using built in XMLHTTPRequest of jQuery functions</li>
+<li>Possible - Bring inline data that can contain resources defined using any open-based format being XML, JavaScript, JSON, RSS, SVG, or even binary formats using PNG.</li>
+<li>Not possible - Bring a resource that is both shipped with the Jetpack-based extension and at the same time can be replaced. We need to check how the Reboot platform is addressing localization.</li>
+<li>Not possible - Some way to access the scope/space of resources of another Jepack. One possible approach for a Jetpack to load resources would be a Jetpack to be able to access data from another Jetpack. Then an aggregated Jetpack-based app could eventually be a bundle of multiple Jetpack-based resources with different manifest information associated with it. </li>
+
+</ul>
+
+
+Just wanted to share this as I feel that the use of general icons seems to be a structured way to leverage existing value in user experience etc. Just like we are using JEPs for behavior. Beyond that I am also understanding better the future about JetPack apps and the space of resources. Localization and Graphic resources seems to be good examples of resources that could be separated from the app, and yet part of the app. I feel that would be interesting to have some sort of resources storage that could serve as a space where a JetPack could be packaged with these resources. For example if I developed JetPack A I could define local strings and also some graphics as being X, Y let's say. So A + X + Y could be a JetPack that I have deployed in the gallery. The gallery itself could be smart to know that A+X+Y is an item but also to know the degree of separation aiming that other combinations could be produced by developers or even end-users. This is a bit towards the idea of distributed resources forming an application. If we think in a social space, where users could be voting on things, and depending on licenses, creating variations, It seems that would really be amazing the impact.
+
+I can imagine users adding new localizations and creating "compound jetpacks" associating jetpacks and resources in different ways. The resource mechanism could also eventually go beyond code time ( download bits ) to reach a Web service level too.
+</body>
+</html>
