@@ -1,0 +1,6 @@
+{
+  "description": "This is my first package, it's tiny.",
+  "dependencies": ["jetpack-core"],
+  "author": "Me (http://me.org)"
+}
+
