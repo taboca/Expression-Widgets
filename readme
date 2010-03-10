@@ -20,7 +20,7 @@ Project Abstract
 
 An annotation system that uses JetPack infra-structure and introduces a concept of expression widgets. The model leverages the browsing experience and JetPacks are used to support learners to annotate using Web language, given a live session - let's say a lecture given by a professor. The model is suggested initially as a rich annotation and collaboration framework where students can interact with a variety of Web-based widgets. It explores various communication forms such as text, canvas-based drawing, SVG, MathML, and also some interactive scenarios where teams can build together. The annotated resources are organized and kept using simple wiki pages with less rules to the server and more focus on possibilities for team-centred conventions.
 
-Licensing 
+Licensing and Trademark Notice
 ===
 This project is subject to be licensed using an OSI-approved license. This is part of agreement as part of the Jetpack for Learning Design Challenge project which is coordinated by Mozilla, McArthur Foundation and others. The name Expression Widgets is trademark of Marcio dos Santos Galli informatica. Additional terms may apply associated with the use of the trademark. 
 
