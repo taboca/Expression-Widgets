@@ -1,3 +1,5 @@
+Draft Node
+
 == Open-based Repositories, Wiki Resources, MicroBlogging Reources ==
 
 Expression Widgets proposes a scenario where a group of participants can use browser-based tools to create open-based educational resources collaboratively. During the phase II of the JetPack for Learning Design competition, the protype demonstrated a scenario where partitipants were able to use a Firefox-based JetPack application to add statements of contribution to a wiki-based web page. In the scope of the project, user statements are also refered as user expression and its concept relates to the concept of microblogging, however, this project aims to explore the space where participants are contributing around a specific topic. 

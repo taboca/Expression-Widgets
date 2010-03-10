@@ -1,0 +1,80 @@
+
+<p>
+This web page was generated to support the development of the Expression Widgets project which is part of Jetpack for Learning effort. The documentation posted here is not related to the Expression Widgets project and is intended to help others to create Jetpack-based applications for Firefox, Thunberbird and other XULRunner based products.. 
+</p>
+
+<h1>Jetpack Framework and Development Notes</h1>
+
+<pre>
+
+  Browser Overlay -> Browser.xul <-> Browser.js 
+                       \
+                        \____ JetpackSetup ( <- ../modules/setup.js )  
+                            \
+                             \_____ Extension ( <- ../modules.init.js ) 	
+                                  \
+                                   \___load  
+			 	 
+ 			 When the browser.xul overlays the core app's 
+			 main browser element, it starts JetpackSetup 
+		  	 which starts Extension which loads the 
+			 about:jetpack app in a hidden iframe document.   
+
+</pre>
+
+<h2>What is about:jetpack</h2>
+
+<p>About:jetpack app is a web page that is acessible via the about: protocol. You can check the about:jetpack component under the jetpack prototype's component directory ( ./components/about-jetpack.js ). What really matters is that this is a web page with chrome priviledges that is the same of chrome://jetpack/content/index.html.</p>
+
+<p>There are two modes this page will run. One is the invisible mode. Let's stay your browser has the Jetpack prototype foundation and you have just started it. Other case is the visible more which is when the developer-user types about:jetpack in the location bar. This second mode is used when the developer wants to check the Jetpacks installed, restart Jetpacks, see the source code, and more. 
+</p>
+
+<h2>Jetpack Infra Environment</h2>
+
+<p>
+<pre>
+
+	jetpack-environment seems to load jQuery in a sandbox, the whole file
+	but first it prepares a systemPrincipal-based sandbox and sort of traps
+	this sandbox. it addes a fakeWindow, a new object, 
+  	in it with a .document getComputedStyle function which seems 
+	to be neede by jQuery. 
+
+	it also changes the __proto__ of this fakeWindow and sets
+ 	XMLHttpRequest, setInterval, clearInterval, setTimeout to be functions
+	that are in the scope of the Jetpac feature itself. 
+
+	So the jQuery thinks the default window functions are in the current 
+	doc , actually the current doc is the window Jetpack feature context
+	document. It also passes the reference of the jetpackFeature to the 
+	window ( newly created sandbox ) anf sets the feature's # and jQuery 
+	variables to be the current $ and jQuery defined in the current jquery 
+	sandbox thus passing the jQuery itself to the feature sandbox.  	
+
+</pre>
+
+</p>
+
+<h2>Jetpack Runtime ( Contexts for Sandboxed Scripts ) </h2>
+
+<p>
+This section refers to the code under jetpack-runtime.js. A Jetpack feature is the actual script a developer can create. This is kept as an object with references to a bunch of things. Some of them: 
+
+<pre>
+ unsafeSandbox - a sandbox that is created with a SystemPrincipal
+ sandbox
+ code ( Script txt of the code ) 
+
+</pre>
+ 
+What means this? 
+
+<pre>
+ unsafeSandbox = Components.utils.Sandbox(systemPrincipal);
+    sandbox = new Object();
+    //unsafeSandbox.__proto__ = SecureMembrane.wrapTrusted(sandbox);
+    unsafeSandbox.__proto__ = sandbox;
+
+</pre>
+
+

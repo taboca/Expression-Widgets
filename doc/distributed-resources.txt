@@ -1,3 +1,5 @@
+Draft Note
+
 January 27, 2010 
 
 During the development of the ExpressionWidgets I feel I needed to use icons - like warnings, question marks so that  couldI point the user to help, etc. Inspired by the examples of the slidebar where I saw icons being used from the application chrome:// space ( like that little jetpack icon), I started searching for other firefox icons. Examples of icons I am now using are:

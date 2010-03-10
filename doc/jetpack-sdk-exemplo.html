@@ -1,0 +1,68 @@
+
+<h2>Introdução ao Jetpack SDK</h2>
+<p>
+O Jetpack SDK é uma solução Mozilla que lhe permite escrever aplicações em JavaScript que funcionam como extensões para o Firefox, Thunderbird, e também para outros sistemas baseados no XUL-Runner. Este novo modelo foi criado com o objetivo de modernizar o desenvolvimento de extensões e também para permitir que extensões possam ser desenvolvidas com modelos mais formais em relação a segurança e também reuso de código. O Jetpack SDK pode ser visto também como um framework de desenvolvimento para extensões.
+</p>
+
+
+<h2>
+Background do Jetpack SDK?
+</h2>
+
+<p>
+O trabalho do Jetpack SDK é relacionado com o protótipo Jetpack criado pela Mozilla e tem base na solução chamada de Cuddlefish que é uma solução que permite que códigos JavaScript possam ser carregados dinamicamente em um contexto de execução protegido ( sandbox ). Além disto, o Cuddlefish utiliza da proposta CommonJS para organizar a maneira que scripts podem se exportar para outros scripts ou mesmo como scripts podem importar comportamento de outros scripts. Este modelo é importante pois elimina problemas tradicionais de conflitos entre scripts que estão compartilhando o mesmo espaço no documento.
+</p>
+
+<p>
+Outra coisa importante da arquitetura do Jetpack é que o código deste tipo de extensão é mantido no contexto do navegador de maneira parecida com uma página web. Desta maneira, esta aplicação-extensão pode ser instalada, desinstalada ou reinicializada sem a necessidade de se reiniciar o browser. Outro aspecto interessante é que por se tratar de um tipo página web, o desenvolvedor pode utilizar de ferramentas como o Firebug durante o ciclo de desenvolvimento. 
+</p>
+
+<p>
+Uma pergunta que surge é como uma aplicação tipo Web pode então oferecer funcionalidade do tipo extensão no browser. O que acontece é que a infra-estrutura do Jetpack exporta certas funções, como parte de uma API, assim permitindo que o código criado possa ter acesso a várias funcionalidades e também no contexto da interface visual. Por exemplo, colocar um item na statusbar do browser passa a ser uma funcionalidade provida pela API do Jetpack, o que difere do modelo anterior de extensões onde o desenvolvedor precisava adicionar um elemento XUL dentro do elemento XUL id=statusbar do Firefox. 
+
+</p>
+
+<h2>Primeiro Programa</h2>
+
+<pre>
+ feito com o Jetpack SDK - Observador Firefox do Startup
+
+ob  = require("observer-service");
+
+exports.main = function(options, callbacks) {
+  console.log("Hello World!");
+  ob.add("xpcom-startup", function () { console.log('xpcom!')}) ;
+  ob.add("app-startup",function (s,d) { console.log("app-startup!")});
+  callbacks.quit("OK");
+}
+</pre>
+
+<h2>Exemplo</h2>
+
+<p>
+Next Example to be a Sandboxed World condition, recursive. The main problem here I had here is to find what path to pass to the SecurableModule Loader constructor. When I have passed the chrome:// it worked but I was not able to pass a chrome URL or reltive URL in the scope of my own application. Using rootPaths["./lib/"] being .lib under the marcio's sample package directory, did not work and in fact generated the exception ' [Exception... "Component returned failure code: 0x804b000a (NS_ERROR_MALFORMED_URI) [nsIIOService.newURI]"  nsresult: "0x804b000a (NS_ERROR_MALFORMED_URI)" ' So the workaround was to place the lib scripts under another extension domain (chrome://otherextension/content/etc).
+
+</p>
+<pre>
+
+sec = require("securable-module");
+
+exports.main = function(options, callbacks) {
+  console.log("Hello World!");
+  var self = function (s) { console.log(s) } ;
+
+  var myLoader = new sec.Loader({ rootPaths:["./lib_FAILS/", "chrome://tagvisor/content/visor/lib/"], print: self });
+  var ss = myLoader.runScript({ contents: "a=require('choreographer'); print(a)" } );
+  callbacks.quit("OK");
+}
+
+</pre>
+
+<h2>References</h2>
+
+<ul>
+<li><a href='http://hg.mozilla.org/users/avarma_mozilla.com/jep-28/'>Jep 28</a></li>
+<li><a href='http://hg.mozilla.org/users/avarma_mozilla.com/jep-28/archive/tip.zip'>Jet 28 ZIP</a></li>
+<li><a href='https://wiki.mozilla.org/Labs/Jetpack/Reboot/Getting_Started'>Reboot Jetpack</a></li>
+<li><a href='http://wiki.commonjs.org/wiki/CommonJS/Modules/SecurableModules'>SecurableModules Specification</a></li>
+
