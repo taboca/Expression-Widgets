@@ -133,8 +133,6 @@ var libCataliser_post = {
 
 		jQuery("#gosave", xWid.uiDoc).attr("disabled","disabled");
                 jQuery("#wpSave",this.wikiEditDoc).trigger("click");
-		
-		
         }
 
 } 

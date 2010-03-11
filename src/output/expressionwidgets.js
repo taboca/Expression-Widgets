@@ -236,6 +236,9 @@ var widgets = {
 /* firstRun */
 // https://developer.mozilla.org/en/Jetpack/Meta/First_run
 
+// Revision note: We are not using anymore the static welcome markup. It's just
+// here for the sake of an emergency plan. 
+
 var manifest = {  
   
   firstRunPage: <>  
@@ -561,8 +564,6 @@ var libCataliser_post = {
 
 		jQuery("#gosave", xWid.uiDoc).attr("disabled","disabled");
                 jQuery("#wpSave",this.wikiEditDoc).trigger("click");
-		
-		
         }
 
 } 
