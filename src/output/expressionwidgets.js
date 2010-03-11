@@ -1183,7 +1183,11 @@ xWid.dump("["+d1+h1+"]");
 } 
 /* Put this file at the end of the build :) process */
 
-// Enable the iframe-based wiki negotiation transport 
+// Enable the iframe-based wiki negotiation transport. This project was 
+// designed to possibly have multiple mediators. This transport is fundamental
+// component of the mediator concept. The mediator is something in the middle
+// that supports Web R/W operations. 
+
 xWid.transport = libCataliser_post; 
 
 // Enable this to disable debugging 

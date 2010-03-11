@@ -1,1 +1,11 @@
-* Check the snapshot close() not working on tabs
+[x] 0.6 - FirstRun to become a Guide that runs in the iframe 
+ 		Guides - 
+		 	Welcome
+			Setup
+			Annotate 
+			Project 
+
+[x] 0.6 - Contextual Help and Feedback for panels 
+[x] 0.6 - Resource Login 
+[x] 0.6 - User Section 
+[x] 0.6 - 
