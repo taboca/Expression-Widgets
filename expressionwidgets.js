@@ -136,7 +136,8 @@ var xWid = {
 				
 				var newCommand = currCommand[0]+"?#show=setup";
 
-				contentDoc.location=newCommand;
+				//contentDoc.location=newCommand;
+				contentDoc.location="http://taboca.github.com/Expression-Widgets/guide-en-0.6.html?#show=setup";
 
 			}
 
