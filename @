@@ -80,9 +80,8 @@
 
  <h2>ExpressionWidgets successfully installed!</h2>
     <p>
-<table><tr><td valign='top'>
-Have you noticed the little blue icon on the left? ExpressionWidgets is installed and can be opened using the blue icon. Please locate it and click to expand the main panel. </td><td><img src='images/corner.png' /></tr>
-</table>
+To open the Expression Widgets panel please use the slidebar element on the le
+t acessible using the icon ( <img src='chrome://jetpack/content/gfx/arrowRight.png' /> ) at the left hand corder of your browser window.
     </p>
 
 </div>
