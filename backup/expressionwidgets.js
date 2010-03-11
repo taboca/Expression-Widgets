@@ -1,7 +1,7 @@
 //////
 /////
 ////         Expression Widgets - JetPack for Learning 2010
-///
+/// 0.5.8 
 //
 
 /* JEP Profile Disclaimer 
@@ -213,7 +213,7 @@ xWid.init();
 */
 
 xWid.resources = { 
-    html_panel     : "<div id='topheader'><button alt='Visit the project' id='goproject' href='javascript:'>ExpressionWidgets</button><img align='top' width='30' id='loadingfeedback' src='chrome://global/skin/media/throbber.png'></div><table id='mainpanel'><tr><td><button id='goinit'>Login</button></td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass' title='Visit the Wiki Class URL in overlay mode' >Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2' id='topactions'><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historybgcontainer'><div id='historycontainer'><div id='historypanel'></div></div></div> <div id='debug'></div>", 
+    html_panel     : "<div id='topheader'><button alt='Visit the project' id='goproject' href='javascript:'>ExpressionWidgets 0.5.8</button><img align='top' width='30' id='loadingfeedback' src='chrome://global/skin/media/throbber.png'></div><table id='mainpanel'><tr><td><button id='goinit'>Login</button></td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass' title='Visit the Wiki Class URL in overlay mode' >Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2' id='topactions'><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historybgcontainer'><div id='historycontainer'><div id='historypanel'></div></div></div> <div id='debug'></div>", 
     html_login_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You are not logged in. Log over the wiki and then click here <button id='gotry'>Retry</button> </div>",
     html_login_nouser_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You don't have the username/wiki settings. Please follow the instructions on how to set your user section in the wiki class repository.  <button id='gotry'>Retry</button> <button style='margin:.5em' id='gohelp'>Setup/Help Instructions</button></div>",
     html_login_noinfo_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You don't have the username/wiki settings. Please follow the instructions on how to set your user section in the wiki class repository. <button style='margin:1em' id='gohelp'>Instructions</button></div>",
@@ -1183,11 +1183,7 @@ xWid.dump("["+d1+h1+"]");
 } 
 /* Put this file at the end of the build :) process */
 
-// Enable the iframe-based wiki negotiation transport. This project was 
-// designed to possibly have multiple mediators. This transport is fundamental
-// component of the mediator concept. The mediator is something in the middle
-// that supports Web R/W operations. 
-
+// Enable the iframe-based wiki negotiation transport 
 xWid.transport = libCataliser_post; 
 
 // Enable this to disable debugging 
