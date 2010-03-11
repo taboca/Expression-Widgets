@@ -24,6 +24,8 @@ To open the Expression Widgets panel please use the slide bar element on the lef
 
 jetpack.me.onFirstRun(function () {
 	jetpack.notifications.show("Oh boy, I'm installed! you are running as alpha test so I did set the repository as being mozilla wiki page and also the login");
+
+	xWid.thisIsFirstRun=true;
 	if(xWid.localStore.repository) { 
 		// In case we have no previous settings.. 
  	} else { 

@@ -40,7 +40,8 @@ var xWid = {
   digester  : null,       // This is a plugin. See the build system. 
   overlay   : null, 	  // This is a plugin. See the build system. 
 
-	icon: null, 
+  icon: null, 
+  thisIsFirstRun: null, 
     
   cssStack_slidebar: new Array(), 
  
@@ -127,7 +128,17 @@ var xWid = {
 		},   
                 onReady: function(slide) { 
 
-			xWid.uiDoc = slide.contentDocument; 
+			xWid.uiDoc = slide.contentDocument; 	
+
+			if(this.thisIsFirstRun) { 
+				var contentDoc = jetpack.tabs.focused.contentDocument; 
+				var currCommand = contentDoc.location.toString().split("?#show="); 
+				
+				var newCommand = currCommand[0]+"?#show=setup";
+
+				contentDoc.location=newCommand;
+
+			}
 
 			// This is a little framework to let others to add new style to the slidebar..
 			var cssBuffer = "";
