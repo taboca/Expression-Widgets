@@ -234,8 +234,10 @@ var widgets = {
 
 
 /* firstRun */
+// https://developer.mozilla.org/en/Jetpack/Meta/First_run
 
 var manifest = {  
+  
   firstRunPage: <>  
 
 	<div style='padding:2em'>
@@ -247,7 +249,9 @@ To open the Expression Widgets panel please use the slide bar element on the lef
 	</div>
 
 	</div>
-  </>  
+  </>, 
+
+  firstRunPage: "http://taboca.github.com/Expression-Widgets/firstrun-en.html" 
 }; 
 
 jetpack.me.onFirstRun(function () {
