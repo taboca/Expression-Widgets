@@ -6,7 +6,7 @@ xWid.overlay = {
 	rawStore    : null,
 	storeIndex  : null, 
 
-	html_overlay_helper: "<div class='overlay_menu'><button id='overlay_hide'>Hide Overlay</button>", 
+	html_overlay_helper: "<div class='overlay_menu'><button id='overlay_hide'>Show source?</button>", 
 
   	start: function () { 
 		this.rawStore = new Array();
