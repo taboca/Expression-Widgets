@@ -128,11 +128,13 @@ var xWid = {
                         if(xWid.thisIsFirstRun) {
                                 var contentDoc = jetpack.tabs.focused.contentDoc
 ument;
+				/*
                                 var currCommand = contentDoc.location.toString()
 .split("?#show=");
                                 var newCommand = currCommand[0]+"?#show=setup";
 
                                 //contentDoc.location=newCommand;
+				*/
                                 contentDoc.location="http://taboca.github.com/Expression-Widgets/guide-en-0.6.html?#show=setup";
                         }
 		},
