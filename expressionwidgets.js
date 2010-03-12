@@ -125,8 +125,6 @@ var xWid = {
 		onClick: function(slide) {
 			slide.icon.src = "chrome://branding/content/icon48.png";
 			this.icon = slide.icon; 
-		},   
-		onSelect: function(slide) { 
                         if(xWid.thisIsFirstRun) {
                                 var contentDoc = jetpack.tabs.focused.contentDoc
 ument;
