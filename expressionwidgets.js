@@ -214,6 +214,11 @@ var xWid = {
 					currWidget.init();
 				}) 
 			} 
+			jQuery("#widgetspanel",slide.contentDocument).append("<button style='background-color:#333' id='contribute'>Contribute ..</button>");
+			jQuery("#contribute",slide.contentDocument).click( function ()  {
+				let help = jetpack.tabs.open(xWid.baseURL_guidepage + "?#show=project");
+				help.focus(); 
+			});
 
 			// use this to speed up widgets panels in the UI aside from the login state
 			// jQuery("#widgetspanel", xWid.uiDoc).css("display","block");
@@ -1078,7 +1083,7 @@ xWid.overlay = {
 	rawStore    : null,
 	storeIndex  : null, 
 
-	html_overlay_helper: "<div class='overlay_menu'><button id='overlay_hide'>Hide Overlay</button>", 
+	html_overlay_helper: "<div class='overlay_menu'><button id='overlay_hide'>Show source?</button>", 
 
   	start: function () { 
 		this.rawStore = new Array();
