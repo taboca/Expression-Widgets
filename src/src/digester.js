@@ -72,7 +72,7 @@ xWid.digester = {
 						contentData = data.split("::")[1];
 					} catch(i) {  } 
 
-					this.addStore(date, hour, appData, contentData); 
+					this.addStore(date, hour, appData, contentData, true); 
 
 				} else { 
 					xWid.dump("Not understand statement..");
@@ -98,7 +98,11 @@ xWid.digester = {
         },
 	render: function (node) { 
 		let nodeEntry = this.slideDoc.createElementNS("http://www.w3.org/1999/xhtml","span");
-		nodeEntry.setAttribute("class","statement"); 
+		if(node.saved) { 
+			nodeEntry.setAttribute("class","statement"); 
+		} else { 
+			nodeEntry.setAttribute("class","statement-notsaved"); 
+		} 
 		nodeEntry.setAttribute("date",node.date); 
 		nodeEntry.setAttribute("hour",node.hour); 
 		nodeEntry.innerHTML=this.parseData(node.app,node.data);
@@ -110,8 +114,9 @@ xWid.digester = {
 		return widgets.list[app].parse(data);
 	},	
 
-        addStore: function ( date, hour, app, data) {
+        addStore: function ( date, hour, app, data, saved) {
                 var nodeEntry = {
+		       saved: saved, 
                        date: date,
                        hour: hour,
                        app : app,
@@ -136,7 +141,7 @@ xWid.digester = {
                 
                 var hour = hh+":"+mm+":"+ss; 
 
-                this.addStore(date, hour, refWidget.name, data);
+                this.addStore(date, hour, refWidget.name, data, false);
 //              var sortableDateTimeStamp = yy+"-"+mo+"-"+dd+" "+hh+":"+mm+":"+ss+" ";  
 //              this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+"::"+data + "\n" ;
                 //jQuery("#wikitextarea", this.slideDoc).val( this.userContent );
