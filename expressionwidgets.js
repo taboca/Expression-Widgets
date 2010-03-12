@@ -130,7 +130,7 @@ var xWid = {
 
 			xWid.uiDoc = slide.contentDocument; 	
 
-			if(this.thisIsFirstRun) { 
+			if(xWid.thisIsFirstRun) { 
 				var contentDoc = jetpack.tabs.focused.contentDocument; 
 				var currCommand = contentDoc.location.toString().split("?#show="); 
 				
