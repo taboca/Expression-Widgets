@@ -27,6 +27,9 @@ $(document).ready(function() {
 });
 
 function execCommand(command) { 
+     $('.wizard-panel').css('display','none');
+     $('.wizard-button').removeClass('wizard-selected');
+
      $("#wizard-panel-"+command).css("display","block");
      $('#wizard-button-'+command).addClass('wizard-selected');
 } 
