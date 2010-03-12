@@ -76,6 +76,8 @@ var xWid = {
 	xWid.transport.repository = xWid.localStore.repository;
 	xWid.transport.login      = xWid.localStore.login;
 
+	xWid.digester.clean();
+	jQuery("#goinit", xWid.uiDoc).html("Enable");
 	this.checkLoginRepoStates();
   },
 
@@ -103,14 +105,25 @@ var xWid = {
 
 	if(loginCheck =="" || repoCheck == "") { 
 
+		jQuery("#notificationpanel",xWid.uiDoc).html("");
 		jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
                 jQuery("#notificationpanel",xWid.uiDoc).append(xWid.resources.html_login_noinfo_helper);
 		let refThis = this;
+
+		let contentDoc = jetpack.tabs.focused.contentDocument;
+		xWid.dump("Page current location toString = " + contentDoc.location.toString() +" and indexOf is " + contentDoc.location.toString().indexOf(xWid.baseURL_guidepage));
+
 		jQuery("#gohelp",xWid.uiDoc).click( function () {
-			jQuery("#notificationpanel",xWid.uiDoc).html("");
-			jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
-			let help = jetpack.tabs.open("http://taboca.github.com/Expression-Widgets/instructions.html");
-		help.focus(); 
+			jQuery("#notificationpanel",xWid.uiDoc).html("Intructions are loaded in your browser tab.");
+			//jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
+			//let help = jetpack.tabs.open("http://taboca.github.com/Expression-Widgets/instructions.html");
+                        let contentDoc = jetpack.tabs.focused.contentDocument;
+			if(contentDoc.location.toString().indexOf(xWid.baseURL_guidepage)>-1) { 
+                        	contentDoc.location= xWid.baseURL_guidepage+"?#show=setup";
+			} else {  
+				let help = jetpack.tabs.open(xWid.baseURL_guidepage + "?#show=setup");
+				help.focus(); 
+			} 
 		});
 	} 
 
@@ -131,6 +144,7 @@ var xWid = {
                           let contentDoc = jetpack.tabs.focused.contentDocument;
                           contentDoc.location= xWid.baseURL_guidepage+"?#show=setup";
                         }
+			xWid.checkLoginRepoStates();
 		},   
                 onReady: function(slide) { 
 			xWid.uiDoc = slide.contentDocument; 	
@@ -167,13 +181,14 @@ var xWid = {
 				xWid.overlay.start();
 			});
 			jQuery("#gosave",slide.contentDocument).click( function () { 
+				jQuery("#gosave",slide.contentDocument).removeClass("saveneeded");
 				xWid.digester.serialize();
 				//xWid.dump(xWid.digester.userContent);
 				xWid.transport.sync(xWid.digester.userContent);
 			});
 
 			jQuery("#goproject", slide.contentDocument).click(function () { 
-	                        let help = jetpack.tabs.open("http://taboca.github.com/Expression-Widgets");
+	                        let help = jetpack.tabs.open(xWid.baseURL_guidepage);
 				help.focus();
 				return false;
 
@@ -218,12 +233,12 @@ xWid.init();
 */
 
 xWid.resources = { 
-    html_panel     : "<div id='topheader'><button alt='Visit the project' id='goproject' href='javascript:'>ExpressionWidgets</button><img align='top' width='30' id='loadingfeedback' src='chrome://global/skin/media/throbber.png'></div><table id='mainpanel'><tr><td><button id='goinit'>Login</button></td><td><input id='login' type='text' /></td></tr><tr><td><button id='goclass' title='Visit the Wiki Class URL in overlay mode' >Class:</button></td><td><input id='repository' type='text' /></td></tr><tr><td align='center' colspan='2' id='topactions'><button id='gosave' disabled='disabled'>Save wiki</button></td></tr></table><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historybgcontainer'><div id='historycontainer'><div id='historypanel'></div></div></div> <div id='debug'></div>", 
+    html_panel     : "<div id='topheader'><button alt='Visit the project' id='goproject' href='javascript:'>ExpressionWidgets</button><img align='top' width='30' id='loadingfeedback' src='chrome://global/skin/media/throbber.png'></div><table id='mainpanel'><tr><td>Repository:</td><td><input id='repository' type='text' /></td></tr><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td align='center' colspan='2' id='topactions'><button class='actionbutton' id='goinit'>Enable</button><button id='gosave' class='actionbutton'  disabled='disabled'>Push Notes</button><button class='actionbutton' id='goclass' title='Visit the Wiki Class URL in overlay mode' >All Notes</button></td></tr></table><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historybgcontainer'><div id='historycontainer'><div id='historypanel'></div></div></div> <div id='debug'></div>", 
     html_login_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You are not logged in. Log over the wiki and then click here <button id='gotry'>Retry</button> </div>",
     html_login_nouser_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You don't have the username/wiki settings. Please follow the instructions on how to set your user section in the wiki class repository.  <button id='gotry'>Retry</button> <button style='margin:.5em' id='gohelp'>Setup/Help Instructions</button></div>",
     html_login_noinfo_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You don't have the username/wiki settings. Please follow the instructions on how to set your user section in the wiki class repository. <button style='margin:1em' id='gohelp'>Instructions</button></div>",
 
-    style_slidebar_head: " #loadingfeedback { margin-left:6px; display:none; } table { margin:auto;  margin-top:0em; margin-bottom:0; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:92%; border:6px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; }  #topheader { text-align:center;  color:black; font-weight:bold; margin:auto; margin-top:0; margin-bottom:0; height:32px; width:80%;  padding:.2em } #widgetspanel { display:none; margin:auto; margin-top:0; width:80%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius: 0 0 10px 10px; background-image: -moz-linear-gradient(top, #000, #000);  } #widgetscanvas { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%;  }  #notificationpanel { margin:auto; padding:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:0 0 10px 10px; width: 210px; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historybgcontainer { display:none; margin:auto; width:250px; height:300px; padding:.5em; margin-top:.5em; -moz-border-radius:20px; -moz-box-shadow: black 0 0 10px;  background-image: -moz-linear-gradient(top, #fff, #fff);  } #historycontainer {  margin:auto; width:100%; height:100%; overflow:scroll } #historypanel { width:1400px; } #widgetspanel button { -moz-border-radius:8px; border:1px solid black; padding:3px; margin:2px } .statement {  display:block; font-size:86%; font-family:arial; margin-bottom:.5em; -moz-border-radius:10px; padding:6px; background-image: -moz-linear-gradient(top, #fff, #ddd);} #goproject { border:0; -moz-border-radius:6px; padding:3px; background-color:#ddd; cursor:pointer}  button { cursor: pointer } ",
+    style_slidebar_head: " #loadingfeedback { margin-left:6px; display:none; } table { margin:auto;  margin-top:0em; margin-bottom:0; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:92%; border:6px solid black; background-image: -moz-linear-gradient(top, lightblue, #fff); } table td { padding:.2em }  input { -moz-border-radius:8px; }  #topheader { text-align:center;  color:black; font-weight:bold; margin:auto; margin-top:0; margin-bottom:0; height:32px; width:80%;  padding:.2em } #widgetspanel { display:none; margin:auto; margin-top:0; width:80%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius: 0 0 10px 10px; background-image: -moz-linear-gradient(top, #000, #000);  } #widgetscanvas { display:none; margin:auto; margin-top:.5em; width:90%; padding:.2em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%;  }  #notificationpanel { margin:auto; padding:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:0 0 10px 10px; width: 210px; background-image: -moz-linear-gradient(top, lightyellow, #fff); display:none  } #historybgcontainer { display:none; margin:auto; width:250px; height:300px; padding:.5em; margin-top:.5em; -moz-border-radius:20px; -moz-box-shadow: black 0 0 10px;  background-image: -moz-linear-gradient(top, #fff, #fff);  } #historycontainer {  margin:auto; width:100%; height:100%; overflow:scroll } #historypanel { width:1400px; } #widgetspanel button { -moz-border-radius:8px; border:1px solid black; padding:3px; margin:2px } .statement-notsaved { border-left:5px solid lightgreen; display:block; font-size:86%; font-family:arial; margin-bottom:.5em; -moz-border-radius:10px; padding:6px; background-image: -moz-linear-gradient(top, #fff, #ddd); border-left:5px solid yellow; }  .statement {  border-left:5px solid lightgreen; display:block; font-size:86%; font-family:arial; margin-bottom:.5em; -moz-border-radius:10px; padding:6px; background-image: -moz-linear-gradient(top, #fff, #ddd);} #goproject { border:0; -moz-border-radius:6px; padding:3px; background-color:#ddd; cursor:pointer}  button { cursor: pointer } .actionbutton { background-image: -moz-linear-gradient(top, #ddd, #fff); margin-right:3px; -moz-border-radius:7px; -moz-box-shadow: black 0 0 4px  } .saveneeded { border:3px solid yellow} ",
 } 
 
 
@@ -320,10 +335,15 @@ xWid.digester = {
 		xWid.dump("Digester init...");	
 	}, 
 
+	clean: function () { 
+		
+                jQuery("#historypanel", this.slideDoc).html("");
+	},
 	// Digest the data loaded and kept in userContent 
   	// to a new structure that can be displayed, maybe modified 
 	// maybe merged with other students. We are trying to understand
  	// the various ways we can digest the information. 
+
 
  	load: function () { 
                 jQuery("#historypanel", this.slideDoc).html("");
@@ -349,7 +369,7 @@ xWid.digester = {
 						contentData = data.split("::")[1];
 					} catch(i) {  } 
 
-					this.addStore(date, hour, appData, contentData); 
+					this.addStore(date, hour, appData, contentData, true); 
 
 				} else { 
 					xWid.dump("Not understand statement..");
@@ -367,28 +387,33 @@ xWid.digester = {
                         keysArray.push(k);
                 }
                 keysArray.sort();
-                for(var i=0;i<keysArray.length;i++) {
+                //for(var i=0;i<keysArray.length;i++) {
+                for(var i=keysArray.length-1;i>-1;i--) {
 
                         jQuery("#historypanel", this.slideDoc).append(this.render(this.storeIndex[keysArray[i]]));
                 }
         },
 	render: function (node) { 
 		let nodeEntry = this.slideDoc.createElementNS("http://www.w3.org/1999/xhtml","span");
-		nodeEntry.setAttribute("class","statement"); 
+		if(node.saved) { 
+			nodeEntry.setAttribute("class","statement"); 
+		} else { 
+			nodeEntry.setAttribute("class","statement-notsaved"); 
+		} 
 		nodeEntry.setAttribute("date",node.date); 
 		nodeEntry.setAttribute("hour",node.hour); 
 		nodeEntry.innerHTML=this.parseData(node.app,node.data);
 		return nodeEntry;
 	}, 
 
-	/* So far we have the various types here hardcoded. But these visualization/parsing needs 
-	to be defined in the widget time. */
+	/* So far we have the various types here hardcoded. But these visualization/parsing needs to be defined in the widget time. */
 	parseData: function (app,data) { 
 		return widgets.list[app].parse(data);
 	},	
 
-        addStore: function ( date, hour, app, data) {
+        addStore: function ( date, hour, app, data, saved) {
                 var nodeEntry = {
+		       saved: saved, 
                        date: date,
                        hour: hour,
                        app : app,
@@ -413,10 +438,11 @@ xWid.digester = {
                 
                 var hour = hh+":"+mm+":"+ss; 
 
-                this.addStore(date, hour, refWidget.name, data);
+                this.addStore(date, hour, refWidget.name, data, false);
 //              var sortableDateTimeStamp = yy+"-"+mo+"-"+dd+" "+hh+":"+mm+":"+ss+" ";  
 //              this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+"::"+data + "\n" ;
                 //jQuery("#wikitextarea", this.slideDoc).val( this.userContent );
+		jQuery("#gosave",this.slideDoc).addClass("saveneeded");
 		this.sortData();
         }, 
 
@@ -519,7 +545,7 @@ var libCataliser_post = {
 		} 
 
 		if(foundLogin == 1)  { 
-			jQuery("#goinit", xWid.uiDoc).html("Expressing ON");
+			jQuery("#goinit", xWid.uiDoc).html("Enabled");
 			jQuery("#goinit", xWid.uiDoc).attr("disabled","disabled");
 			jQuery("#gosave", xWid.uiDoc).removeAttr("disabled");
 			jQuery("#historybgcontainer", xWid.uiDoc).css("display","block");
