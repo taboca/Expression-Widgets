@@ -126,20 +126,22 @@ var xWid = {
 			slide.icon.src = "chrome://branding/content/icon48.png";
 			this.icon = slide.icon; 
 		},   
+		onSelect: function(slide { 
+                        if(xWid.thisIsFirstRun) {
+                                var contentDoc = jetpack.tabs.focused.contentDoc
+ument;
+                                var currCommand = contentDoc.location.toString()
+.split("?#show=");
+                                var newCommand = currCommand[0]+"?#show=setup";
+
+                                //contentDoc.location=newCommand;
+                                contentDoc.location="http://taboca.github.com/Ex
+pression-Widgets/guide-en-0.6.html?#show=setup";
+                        }
+		},
                 onReady: function(slide) { 
 
 			xWid.uiDoc = slide.contentDocument; 	
-
-			if(xWid.thisIsFirstRun) { 
-				var contentDoc = jetpack.tabs.focused.contentDocument; 
-				var currCommand = contentDoc.location.toString().split("?#show="); 
-				
-				var newCommand = currCommand[0]+"?#show=setup";
-
-				//contentDoc.location=newCommand;
-				contentDoc.location="http://taboca.github.com/Expression-Widgets/guide-en-0.6.html?#show=setup";
-
-			}
 
 			// This is a little framework to let others to add new style to the slidebar..
 			var cssBuffer = "";
