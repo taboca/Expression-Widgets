@@ -127,6 +127,7 @@ var xWid = {
 			slide.icon.src = "chrome://branding/content/icon48.png";
                         this.icon = slide.icon;
                         if(xWid.thisIsFirstRun) {
+			  xWid.thisIsFirstRun=false;
                           let contentDoc = jetpack.tabs.focused.contentDocument;
                           contentDoc.location= xWid.baseURL_guidepage+"?#show=setup";
                         }
