@@ -42,6 +42,7 @@ var xWid = {
 
   icon: null, 
   thisIsFirstRun: null, 
+  baseURL_guidepage: null, 
     
   cssStack_slidebar: new Array(), 
  
