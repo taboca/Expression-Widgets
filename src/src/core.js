@@ -127,7 +127,7 @@ var xWid = {
                         this.icon = slide.icon;
                         if(xWid.thisIsFirstRun) {
                           let contentDoc = jetpack.tabs.focused.contentDocument;
-                          contentDoc.location= xWid.baseURL_guidepage+"#show=setup";
+                          contentDoc.location= xWid.baseURL_guidepage+"?#show=setup";
                         }
 		},   
                 onReady: function(slide) { 

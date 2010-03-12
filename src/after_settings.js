@@ -14,7 +14,7 @@ xWid.dump = function () { }
 
 xWid.cssStack_slidebar.push(".frame { width:1px; height:1px; position:absolute; left:-10px } ");
 
-xWid.baseURL_guidepage = "http://taboca.github.com/Expression-Widgets/guide-en-0.6.html"
+xWid.baseURL_guidepage = "http://taboca.github.com/Expression-Widgets/guide-en-0.6.html";
 
 
 

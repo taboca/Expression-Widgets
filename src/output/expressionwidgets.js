@@ -127,7 +127,7 @@ var xWid = {
                         this.icon = slide.icon;
                         if(xWid.thisIsFirstRun) {
                           let contentDoc = jetpack.tabs.focused.contentDocument;
-                          contentDoc.location= xWid.baseURL_guidepage+"#show=setup";
+                          contentDoc.location= xWid.baseURL_guidepage+"?#show=setup";
                         }
 		},   
                 onReady: function(slide) { 
@@ -1208,7 +1208,7 @@ xWid.dump = function () { }
 
 xWid.cssStack_slidebar.push(".frame { width:1px; height:1px; position:absolute; left:-10px } ");
 
-xWid.baseURL_guidepage = "http://taboca.github.com/Expression-Widgets/guide-en-0.6.html"
+xWid.baseURL_guidepage = "http://taboca.github.com/Expression-Widgets/guide-en-0.6.html";
 
 
 
