@@ -42,7 +42,7 @@ var xWid = {
 
   icon: null, 
   thisIsFirstRun: null, 
-  baseURL_guidepage: null, 
+  baseURL_guidepage : "http://taboca.github.com/Expression-Widgets/guide-en-0.6.html",
     
   cssStack_slidebar: new Array(), 
  
