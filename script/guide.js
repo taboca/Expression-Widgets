@@ -26,7 +26,7 @@ $(document).ready(function() {
 
 });
 
-function execCommand(str) { 
+function execCommand(command) { 
      $("#wizard-panel-"+command).css("display","block");
      $('#wizard-button-'+command).addClass('wizard-selected');
 } 
