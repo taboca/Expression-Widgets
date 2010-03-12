@@ -124,22 +124,14 @@ var xWid = {
  		persist: true, 
 		onClick: function(slide) {
 			slide.icon.src = "chrome://branding/content/icon48.png";
-			this.icon = slide.icon; 
+                        this.icon = slide.icon;
+                        if(xWid.thisIsFirstRun) {
+                          let contentDoc = jetpack.tabs.focused.contentDocument;
+                          contentDoc.location= xWid.baseURL_guidepage+"#show=setup";
+                        }
 		},   
                 onReady: function(slide) { 
-
 			xWid.uiDoc = slide.contentDocument; 	
-
-			if(this.thisIsFirstRun) { 
-				var contentDoc = jetpack.tabs.focused.contentDocument; 
-				var currCommand = contentDoc.location.toString().split("?#show="); 
-				
-				var newCommand = currCommand[0]+"?#show=setup";
-
-				contentDoc.location=newCommand;
-
-			}
-
 			// This is a little framework to let others to add new style to the slidebar..
 			var cssBuffer = "";
 			for (var key in xWid.cssStack_slidebar) { 
@@ -265,7 +257,8 @@ To open the Expression Widgets panel please use the slide bar element on the lef
 	</div>
   </>, 
 
-  firstRunPage: "http://taboca.github.com/Expression-Widgets/guide-en-0.6.html?#show=welcome" 
+  firstRunPage: xWid.baseURL_guidepage + "?#show=welcome"  /* Check the ../after settings to see this constant definition */
+
 }; 
 
 jetpack.me.onFirstRun(function () {
@@ -1215,6 +1208,7 @@ xWid.dump = function () { }
 
 xWid.cssStack_slidebar.push(".frame { width:1px; height:1px; position:absolute; left:-10px } ");
 
+xWid.baseURL_guidepage = "http://taboca.github.com/Expression-Widgets/guide-en-0.6.html"
 
 
 

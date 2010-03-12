@@ -124,22 +124,14 @@ var xWid = {
  		persist: true, 
 		onClick: function(slide) {
 			slide.icon.src = "chrome://branding/content/icon48.png";
-			this.icon = slide.icon; 
+                        this.icon = slide.icon;
+                        if(xWid.thisIsFirstRun) {
+                          let contentDoc = jetpack.tabs.focused.contentDocument;
+                          contentDoc.location= xWid.baseURL_guidepage+"#show=setup";
+                        }
 		},   
                 onReady: function(slide) { 
-
 			xWid.uiDoc = slide.contentDocument; 	
-
-			if(this.thisIsFirstRun) { 
-				var contentDoc = jetpack.tabs.focused.contentDocument; 
-				var currCommand = contentDoc.location.toString().split("?#show="); 
-				
-				var newCommand = currCommand[0]+"?#show=setup";
-
-				contentDoc.location=newCommand;
-
-			}
-
 			// This is a little framework to let others to add new style to the slidebar..
 			var cssBuffer = "";
 			for (var key in xWid.cssStack_slidebar) { 

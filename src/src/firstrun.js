@@ -19,7 +19,8 @@ To open the Expression Widgets panel please use the slide bar element on the lef
 	</div>
   </>, 
 
-  firstRunPage: "http://taboca.github.com/Expression-Widgets/guide-en-0.6.html?#show=welcome" 
+  firstRunPage: xWid.baseURL_guidepage + "?#show=welcome"  /* Check the ../after settings to see this constant definition */
+
 }; 
 
 jetpack.me.onFirstRun(function () {
