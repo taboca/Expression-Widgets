@@ -90,7 +90,8 @@ xWid.digester = {
                         keysArray.push(k);
                 }
                 keysArray.sort();
-                for(var i=0;i<keysArray.length;i++) {
+                //for(var i=0;i<keysArray.length;i++) {
+                for(var i=keysArray.length-1;i>-1;i--) {
 
                         jQuery("#historypanel", this.slideDoc).append(this.render(this.storeIndex[keysArray[i]]));
                 }
@@ -104,8 +105,7 @@ xWid.digester = {
 		return nodeEntry;
 	}, 
 
-	/* So far we have the various types here hardcoded. But these visualization/parsing needs 
-	to be defined in the widget time. */
+	/* So far we have the various types here hardcoded. But these visualization/parsing needs to be defined in the widget time. */
 	parseData: function (app,data) { 
 		return widgets.list[app].parse(data);
 	},	

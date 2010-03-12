@@ -103,14 +103,25 @@ var xWid = {
 
 	if(loginCheck =="" || repoCheck == "") { 
 
+		jQuery("#notificationpanel",xWid.uiDoc).html("");
 		jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
                 jQuery("#notificationpanel",xWid.uiDoc).append(xWid.resources.html_login_noinfo_helper);
 		let refThis = this;
+
+		let contentDoc = jetpack.tabs.focused.contentDocument;
+		xWid.dump("Page current location toString = " + contentDoc.location.toString() +" and indexOf is " + contentDoc.location.toString().indexOf(xWid.baseURL_guidepage));
+
 		jQuery("#gohelp",xWid.uiDoc).click( function () {
-			jQuery("#notificationpanel",xWid.uiDoc).html("");
-			jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
-			let help = jetpack.tabs.open("http://taboca.github.com/Expression-Widgets/instructions.html");
-		help.focus(); 
+			jQuery("#notificationpanel",xWid.uiDoc).html("Intructions are loaded in your browser tab.");
+			//jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
+			//let help = jetpack.tabs.open("http://taboca.github.com/Expression-Widgets/instructions.html");
+                        let contentDoc = jetpack.tabs.focused.contentDocument;
+			if(contentDoc.location.toString().indexOf(xWid.baseURL_guidepage)>-1) { 
+                        	contentDoc.location= xWid.baseURL_guidepage+"?#show=setup";
+			} else {  
+				let help = jetpack.tabs.open(xWid.baseURL_guidepage + "?#show=setup");
+				help.focus(); 
+			} 
 		});
 	} 
 
@@ -131,6 +142,7 @@ var xWid = {
                           let contentDoc = jetpack.tabs.focused.contentDocument;
                           contentDoc.location= xWid.baseURL_guidepage+"?#show=setup";
                         }
+			xWid.checkLoginRepoStates();
 		},   
                 onReady: function(slide) { 
 			xWid.uiDoc = slide.contentDocument; 	

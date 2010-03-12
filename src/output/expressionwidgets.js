@@ -103,14 +103,25 @@ var xWid = {
 
 	if(loginCheck =="" || repoCheck == "") { 
 
+		jQuery("#notificationpanel",xWid.uiDoc).html("");
 		jQuery("#notificationpanel",xWid.uiDoc).css("display","block");
                 jQuery("#notificationpanel",xWid.uiDoc).append(xWid.resources.html_login_noinfo_helper);
 		let refThis = this;
+
+		let contentDoc = jetpack.tabs.focused.contentDocument;
+		xWid.dump("Page current location toString = " + contentDoc.location.toString() +" and indexOf is " + contentDoc.location.toString().indexOf(xWid.baseURL_guidepage));
+
 		jQuery("#gohelp",xWid.uiDoc).click( function () {
-			jQuery("#notificationpanel",xWid.uiDoc).html("");
-			jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
-			let help = jetpack.tabs.open("http://taboca.github.com/Expression-Widgets/instructions.html");
-		help.focus(); 
+			jQuery("#notificationpanel",xWid.uiDoc).html("Intructions are loaded in your browser tab.");
+			//jQuery("#notificationpanel",xWid.uiDoc).css("display","none");
+			//let help = jetpack.tabs.open("http://taboca.github.com/Expression-Widgets/instructions.html");
+                        let contentDoc = jetpack.tabs.focused.contentDocument;
+			if(contentDoc.location.toString().indexOf(xWid.baseURL_guidepage)>-1) { 
+                        	contentDoc.location= xWid.baseURL_guidepage+"?#show=setup";
+			} else {  
+				let help = jetpack.tabs.open(xWid.baseURL_guidepage + "?#show=setup");
+				help.focus(); 
+			} 
 		});
 	} 
 
@@ -131,6 +142,7 @@ var xWid = {
                           let contentDoc = jetpack.tabs.focused.contentDocument;
                           contentDoc.location= xWid.baseURL_guidepage+"?#show=setup";
                         }
+			xWid.checkLoginRepoStates();
 		},   
                 onReady: function(slide) { 
 			xWid.uiDoc = slide.contentDocument; 	
@@ -367,7 +379,8 @@ xWid.digester = {
                         keysArray.push(k);
                 }
                 keysArray.sort();
-                for(var i=0;i<keysArray.length;i++) {
+                //for(var i=0;i<keysArray.length;i++) {
+                for(var i=keysArray.length-1;i>-1;i--) {
 
                         jQuery("#historypanel", this.slideDoc).append(this.render(this.storeIndex[keysArray[i]]));
                 }
@@ -381,8 +394,7 @@ xWid.digester = {
 		return nodeEntry;
 	}, 
 
-	/* So far we have the various types here hardcoded. But these visualization/parsing needs 
-	to be defined in the widget time. */
+	/* So far we have the various types here hardcoded. But these visualization/parsing needs to be defined in the widget time. */
 	parseData: function (app,data) { 
 		return widgets.list[app].parse(data);
 	},	
@@ -1204,9 +1216,9 @@ xWid.dump("["+d1+h1+"]");
 xWid.transport = libCataliser_post; 
 
 // Enable this to disable debugging 
-xWid.dump = function () { } 
+//xWid.dump = function () { } 
 
-//xWid.cssStack_slidebar.push("#debug {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #555, #555); display:none;  display:block; font-size:80%; color: white; } ");
+xWid.cssStack_slidebar.push("#debug {  margin:auto; width:90%; padding:.2em; margin-top:.5em; -moz-box-shadow: black 0 0 10px; -moz-border-radius:10px; width:94%; background-image: -moz-linear-gradient(top, #555, #555); display:none;  display:block; font-size:80%; color: white; } ");
 
 xWid.cssStack_slidebar.push(".frame { width:1px; height:1px; position:absolute; left:-10px } ");
 

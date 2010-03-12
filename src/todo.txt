@@ -1,11 +1,24 @@
-[x] 0.6 - FirstRun to become a Guide that runs in the iframe 
- 		Guides - 
-		 	Welcome
-			Setup
-			Annotate 
-			Project 
+[DONE] QA to the order history of the additions
+[DONE] QA to the Instructios new page
+[DONE] GuidePane 0.1
+
+[x] Repository Session, Peer Name, Notes ( All/Save)  
+[x] Changing Repository Case  - Reset whole app quickly with page . refresh? 
+
+[x] Maybe review the loading state icon when content is being loaded in the store history
+[x] Top Title to go to FirstRun Remote Page - check on tooltips  
+[x] You dont have username/ wiki please follow instructions
+[x] Check the case of no wiki with username...
+[x] Polish - Move Video help to the Setup Tab under the Guide
+
+
+[DONE] 0.6 - Analytics in the Welcome/Guide page
+	[x] DONE
 
 [x] 0.6 - Contextual Help and Feedback for panels 
-[x] 0.6 - Resource Login 
+[x] 0.6 - Resource Setup. Login 
+[x] 0.6 - Flip the order the other way around. 
 [x] 0.6 - User Section 
 [x] 0.6 - 
+
+[Review] 0.6? - put the arrow to the slidebar area...
