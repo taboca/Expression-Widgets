@@ -7,7 +7,7 @@
 
 $(document).ready(function() {
      $('.wizard-panel').css('display','none');
-     $('.wizard-button').onClick( function (refEl) { 
+     $('.wizard-button').click( function (refEl) { 
 	
 	 var currentButton = $(refEl).attr("id");
 	 var command       = currentButton.split("wizard-button-")[1].toString();
