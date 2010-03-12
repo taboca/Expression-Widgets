@@ -43,10 +43,15 @@ xWid.digester = {
 		xWid.dump("Digester init...");	
 	}, 
 
+	clean: function () { 
+		
+                jQuery("#historypanel", this.slideDoc).html("");
+	},
 	// Digest the data loaded and kept in userContent 
   	// to a new structure that can be displayed, maybe modified 
 	// maybe merged with other students. We are trying to understand
  	// the various ways we can digest the information. 
+
 
  	load: function () { 
                 jQuery("#historypanel", this.slideDoc).html("");

@@ -76,6 +76,7 @@ var xWid = {
 	xWid.transport.repository = xWid.localStore.repository;
 	xWid.transport.login      = xWid.localStore.login;
 
+	xWid.digester.clean();
 	this.checkLoginRepoStates();
   },
 
@@ -185,7 +186,7 @@ var xWid = {
 			});
 
 			jQuery("#goproject", slide.contentDocument).click(function () { 
-	                        let help = jetpack.tabs.open("http://taboca.github.com/Expression-Widgets");
+	                        let help = jetpack.tabs.open(xWid.baseURL_guidepage);
 				help.focus();
 				return false;
 
@@ -230,7 +231,7 @@ xWid.init();
 */
 
 xWid.resources = { 
-    html_panel     : "<div id='topheader'><button alt='Visit the project' id='goproject' href='javascript:'>ExpressionWidgets</button><img align='top' width='30' id='loadingfeedback' src='chrome://global/skin/media/throbber.png'></div><table id='mainpanel'><tr><td></td><td><input id='repository' type='text' /></td></tr><tr><td></td><td><input id='login' type='text' /></td></tr><tr><td align='center' colspan='2' id='topactions'><button id='goinit'>Enable</button><button id='goclass' title='Visit the Wiki Class URL in overlay mode' >All Notes</button><button id='gosave' disabled='disabled'>Push Notes</button></td></tr></table><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historybgcontainer'><div id='historycontainer'><div id='historypanel'></div></div></div> <div id='debug'></div>", 
+    html_panel     : "<div id='topheader'><button alt='Visit the project' id='goproject' href='javascript:'>ExpressionWidgets</button><img align='top' width='30' id='loadingfeedback' src='chrome://global/skin/media/throbber.png'></div><table id='mainpanel'><tr><td>Repository:</td><td><input id='repository' type='text' /></td></tr><tr><td>User</td><td><input id='login' type='text' /></td></tr><tr><td align='center' colspan='2' id='topactions'><button id='goinit'>Enable</button><button id='goclass' title='Visit the Wiki Class URL in overlay mode' >All Notes</button><button id='gosave' disabled='disabled'>Push Notes</button></td></tr></table><div id='notificationpanel'></div> <div id='widgetspanel'></div><div id='widgetscanvas'></div> <div id='historybgcontainer'><div id='historycontainer'><div id='historypanel'></div></div></div> <div id='debug'></div>", 
     html_login_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You are not logged in. Log over the wiki and then click here <button id='gotry'>Retry</button> </div>",
     html_login_nouser_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You don't have the username/wiki settings. Please follow the instructions on how to set your user section in the wiki class repository.  <button id='gotry'>Retry</button> <button style='margin:.5em' id='gohelp'>Setup/Help Instructions</button></div>",
     html_login_noinfo_helper: "<div id='helper'><img src='chrome://global/skin/notification/warning-icon.png' /> You don't have the username/wiki settings. Please follow the instructions on how to set your user section in the wiki class repository. <button style='margin:1em' id='gohelp'>Instructions</button></div>",

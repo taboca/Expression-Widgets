@@ -1,8 +1,7 @@
 [DONE] QA to the order history of the additions
 [DONE] QA to the Instructios new page
 [DONE] GuidePane 0.1
-
-[x] Repository Session, Peer Name, Notes ( All/Save)  
+[DONE] Repository Session, Peer Name, Notes ( All/Save)  
 [x] Changing Repository Case  - Reset whole app quickly with page . refresh? 
 
 [x] Maybe review the loading state icon when content is being loaded in the store history
