@@ -150,6 +150,7 @@ xWid.digester = {
 //              var sortableDateTimeStamp = yy+"-"+mo+"-"+dd+" "+hh+":"+mm+":"+ss+" ";  
 //              this.userContent = this.userContent + "\n * "+ sortableDateTimeStamp +" "+refWidget.name+"::"+data + "\n" ;
                 //jQuery("#wikitextarea", this.slideDoc).val( this.userContent );
+		jQuery("#gosave",this.slideDoc).addClass("saveneeded");
 		this.sortData();
         }, 
 

@@ -80,7 +80,7 @@ var libCataliser_post = {
 		} 
 
 		if(foundLogin == 1)  { 
-			jQuery("#goinit", xWid.uiDoc).html("Expressing ON");
+			jQuery("#goinit", xWid.uiDoc).html("Enabled");
 			jQuery("#goinit", xWid.uiDoc).attr("disabled","disabled");
 			jQuery("#gosave", xWid.uiDoc).removeAttr("disabled");
 			jQuery("#historybgcontainer", xWid.uiDoc).css("display","block");
